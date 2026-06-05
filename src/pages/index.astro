@@ -1,0 +1,38 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import HeroSection from '../components/HeroSection.astro';
+import FeaturesSection from '../components/FeaturesSection.astro';
+import SpecsSection from '../components/SpecsSection.astro';
+import OpenSourceSection from '../components/OpenSourceSection.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<Layout title="TypixNode — Compact CNC Cyberdeck">
+  <Nav />
+  <div class="fullpage-container" id="fullpage">
+    <HeroSection />
+    <FeaturesSection />
+    <SpecsSection />
+    <OpenSourceSection />
+  </div>
+  <Footer />
+
+  <script>
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    document.querySelectorAll('.fade-in').forEach((el) => {
+      observer.observe(el);
+    });
+  </script>
+</Layout>

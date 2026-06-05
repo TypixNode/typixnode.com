@@ -1,0 +1,32 @@
+---
+const specs = [
+  ['Compute', 'Raspberry Pi CM4 / CM5 (BCM2711 / BCM2712)'],
+  ['Co-processor', 'ESP32-S3-PICO-1 (8MB Flash, 8MB PSRAM)'],
+  ['Enclosure', 'CNC 6061-T6 Aluminum, anodized'],
+  ['Display', '3.2" IPS (HD317001C40, 800×480)'],
+  ['Storage', 'M.2 2230 NVMe SSD + TF card'],
+  ['Keyboard', '~70mm × 110mm, mechanical switches, QMK'],
+  ['Connectivity', 'WiFi 5 / BT 5.0 (external SMA antenna)'],
+  ['USB', 'USB 2.0 Hub (USB2514B), Type-C charging'],
+  ['Battery', 'Li-Po with INA219 + STC3117 fuel gauge'],
+  ['Cooling', 'Passive — CNC body as heatsink + thermal pads'],
+  ['Audio', 'ES8389 codec + Class-K amplifier'],
+  ['OS', 'Raspberry Pi OS / any ARM64 Linux'],
+];
+---
+<section id="specs" class="section-screen">
+  <div class="max-w-4xl mx-auto px-6 py-20">
+    <div class="text-center mb-16 fade-in">
+      <p class="text-brand-400 font-mono text-sm tracking-widest uppercase mb-3">Technical</p>
+      <h2 class="text-4xl md:text-5xl font-bold tracking-tight">Specifications</h2>
+    </div>
+    <div class="fade-in rounded-2xl border border-white/10 overflow-hidden">
+      {specs.map(([label, value], i) => (
+        <div class={`flex flex-col sm:flex-row sm:items-center px-6 py-4 ${i % 2 === 0 ? 'bg-white/[0.02]' : 'bg-transparent'}`}>
+          <span class="text-gray-500 font-mono text-sm w-40 shrink-0">{label}</span>
+          <span class="text-gray-200">{value}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,51 @@
+---
+const features = [
+  {
+    icon: '⬡',
+    title: 'CNC Aluminum Body',
+    desc: '6061-T6 aluminum alloy, precision CNC machined. The chassis doubles as a massive heatsink — fanless passive cooling.',
+  },
+  {
+    icon: '⚡',
+    title: 'Raspberry Pi CM4/CM5',
+    desc: 'Full desktop Linux in your pocket. Dual SODIMM connectors support both CM4 and CM5 compute modules.',
+  },
+  {
+    icon: '⌨',
+    title: 'Integrated Keyboard',
+    desc: 'Compact ~70mm wide mechanical keyboard. QMK firmware, hot-swap switches, backlit.',
+  },
+  {
+    icon: '🔧',
+    title: 'ESP32-S3 Co-processor',
+    desc: 'Always-on power management, battery monitoring, display control, and peripheral I/O via ESP32-S3.',
+  },
+  {
+    icon: '💾',
+    title: 'NVMe + TF Storage',
+    desc: 'M.2 2230 NVMe SSD via PCIe for fast storage, plus TF card slot for boot flexibility.',
+  },
+  {
+    icon: '📡',
+    title: 'External Antenna',
+    desc: 'SMA antenna ports bypass metal shielding. Full WiFi 5 / BT 5.0 performance through CNC enclosure.',
+  },
+];
+---
+<section id="features" class="section-screen">
+  <div class="max-w-6xl mx-auto px-6 py-20">
+    <div class="text-center mb-16 fade-in">
+      <p class="text-brand-400 font-mono text-sm tracking-widest uppercase mb-3">Why TypixNode</p>
+      <h2 class="text-4xl md:text-5xl font-bold tracking-tight">Built Different</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {features.map((f) => (
+        <div class="fade-in p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-500/30 transition-colors">
+          <div class="text-3xl mb-4">{f.icon}</div>
+          <h3 class="text-lg font-semibold mb-2">{f.title}</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">{f.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
