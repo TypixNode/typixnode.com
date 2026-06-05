@@ -5,31 +5,20 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    overflow: hidden;
   }
   body {
     @apply bg-gray-950 text-white antialiased;
-    overflow: hidden;
-    height: 100vh;
   }
 }
 
 @layer components {
   .section-screen {
-    @apply h-screen w-full flex items-center justify-center relative;
-    scroll-snap-align: start;
+    @apply min-h-screen w-full flex items-center justify-center relative;
   }
 }
 
 .fullpage-container {
-  height: 100vh;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
-}
-
-.fullpage-container::-webkit-scrollbar {
-  display: none;
 }
 
 .fade-in {

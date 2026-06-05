@@ -1,0 +1,31 @@
+---
+const images = [
+  { src: '/images/front-view.png', alt: 'Front view — screen and keyboard', caption: 'Front View' },
+  { src: '/images/front-left.png', alt: 'Front-left isometric view', caption: '3D Overview' },
+  { src: '/images/top-front.png', alt: 'Top-down front view', caption: 'Top Down' },
+  { src: '/images/open-view.png', alt: 'Open clamshell view', caption: 'Open Layout' },
+  { src: '/images/side-ports.png', alt: 'Left side — USB-C, HDMI ports', caption: 'Left Side Ports' },
+  { src: '/images/side-usb.png', alt: 'Right side — USB-A ports', caption: 'Right Side Ports' },
+  { src: '/images/back-panel.png', alt: 'Back panel with ventilation', caption: 'Back Panel' },
+  { src: '/images/internals.png', alt: 'Internal PCB layout with CM4 module', caption: 'Internals' },
+];
+---
+<section id="gallery" class="section-screen !h-auto min-h-screen py-24">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16 fade-in">
+      <p class="text-brand-400 font-mono text-sm tracking-widest uppercase mb-3">Design</p>
+      <h2 class="text-4xl md:text-5xl font-bold tracking-tight">Every Angle</h2>
+      <p class="text-gray-400 mt-4 max-w-lg mx-auto">CNC machined from solid 6061-T6 aluminum. Precision engineered for durability and thermal performance.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {images.map((img) => (
+        <div class="fade-in group relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 hover:border-brand-500/40 transition-all hover:scale-[1.02]">
+          <img src={img.src} alt={img.alt} class="w-full aspect-[4/3] object-contain p-3" loading="lazy" />
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-950/90 to-transparent p-4 pt-8">
+            <p class="text-sm font-medium text-gray-200">{img.caption}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
