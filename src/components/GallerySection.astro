@@ -1,31 +1,106 @@
 ---
-const images = [
-  { src: '/images/front-view.png', alt: 'Front view — screen and keyboard', caption: 'Front View' },
-  { src: '/images/front-left.png', alt: 'Front-left isometric view', caption: '3D Overview' },
-  { src: '/images/top-front.png', alt: 'Top-down front view', caption: 'Top Down' },
-  { src: '/images/open-view.png', alt: 'Open clamshell view', caption: 'Open Layout' },
-  { src: '/images/side-ports.png', alt: 'Left side — USB-C, HDMI ports', caption: 'Left Side Ports' },
-  { src: '/images/side-usb.png', alt: 'Right side — USB-A ports', caption: 'Right Side Ports' },
-  { src: '/images/back-panel.png', alt: 'Back panel with ventilation', caption: 'Back Panel' },
-  { src: '/images/internals.png', alt: 'Internal PCB layout with CM4 module', caption: 'Internals' },
+const sections = [
+  {
+    image: '/images/hero-isometric.png',
+    title: 'CNC Aluminum Unibody',
+    desc: 'Precision machined from solid 6061-T6 aluminum. The entire chassis acts as a passive heatsink — no fans needed.',
+  },
+  {
+    image: '/images/front-view.png',
+    title: 'Compact Full-Feature Layout',
+    desc: 'Screen and keyboard in a pocketable form factor. 3.2" IPS display up top, full mechanical keyboard below with QMK firmware.',
+  },
+  {
+    image: '/images/side-ports.png',
+    title: 'Left Side — Connectivity',
+    desc: 'USB-C charging, full-size HDMI output, and dual micro-HDMI. Everything you need for external displays and power.',
+  },
+  {
+    image: '/images/side-usb.png',
+    title: 'Right Side — USB Expansion',
+    desc: 'Two USB-A ports via USB2514B hub. Plug in flash drives, keyboards, mice, or any USB peripheral directly.',
+  },
+  {
+    image: '/images/back-panel.png',
+    title: 'Back Panel',
+    desc: 'Ventilation slots with TypixNode branding. SMA antenna mount for external WiFi bypassing the metal enclosure.',
+  },
+  {
+    image: '/images/open-view.png',
+    title: 'Open Clamshell',
+    desc: 'Slide-out keyboard reveals the full typing surface. Compact 70mm width with optimized key layout for terminal use.',
+  },
+  {
+    image: '/images/internals.png',
+    title: 'Internal Architecture',
+    desc: 'Raspberry Pi CM4/CM5 on dual SODIMM connectors. M.2 2230 NVMe SSD, ESP32-S3 co-processor, INA219 power monitoring, and Li-Po battery — all in one board.',
+  },
 ];
 ---
-<section id="gallery" class="section-screen !h-auto min-h-screen py-24">
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="text-center mb-16 fade-in">
-      <p class="text-brand-400 font-mono text-sm tracking-widest uppercase mb-3">Design</p>
-      <h2 class="text-4xl md:text-5xl font-bold tracking-tight">Every Angle</h2>
-      <p class="text-gray-400 mt-4 max-w-lg mx-auto">CNC machined from solid 6061-T6 aluminum. Precision engineered for durability and thermal performance.</p>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {images.map((img) => (
-        <div class="fade-in group relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 hover:border-brand-500/40 transition-all hover:scale-[1.02]">
-          <img src={img.src} alt={img.alt} class="w-full aspect-[4/3] object-contain p-3" loading="lazy" />
-          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-950/90 to-transparent p-4 pt-8">
-            <p class="text-sm font-medium text-gray-200">{img.caption}</p>
+<section id="gallery" class="relative">
+  <!-- Desktop: sticky scroll layout -->
+  <div class="hidden lg:flex max-w-7xl mx-auto px-6 min-h-screen">
+    <!-- Left: scrolling text -->
+    <div class="flex-1 py-[50vh]">
+      <div class="space-y-[80vh]">
+        {sections.map((s, i) => (
+          <div class="max-w-md scroll-text" data-index={i}>
+            <p class="text-brand-400 font-mono text-xs tracking-widest uppercase mb-2">0{i + 1}</p>
+            <h3 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">{s.title}</h3>
+            <p class="text-lg text-gray-400 leading-relaxed">{s.desc}</p>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
+    </div>
+    <!-- Right: sticky image -->
+    <div class="flex-1 sticky top-0 h-screen flex items-center justify-center">
+      <div class="relative w-full max-w-lg">
+        {sections.map((s, i) => (
+          <img
+            src={s.image}
+            alt={s.title}
+            class={`scroll-image absolute inset-0 w-full h-auto object-contain transition-opacity duration-500 ${i === 0 ? 'opacity-100' : 'opacity-0'}`}
+            data-index={i}
+            loading="lazy"
+          />
+        ))}
+      </div>
     </div>
   </div>
+
+  <!-- Mobile: stacked layout -->
+  <div class="lg:hidden px-6 py-20 space-y-20 max-w-2xl mx-auto">
+    {sections.map((s, i) => (
+      <div class="fade-in">
+        <img src={s.image} alt={s.title} class="w-full max-w-sm mx-auto mb-6" loading="lazy" />
+        <p class="text-brand-400 font-mono text-xs tracking-widest uppercase mb-2">0{i + 1}</p>
+        <h3 class="text-2xl font-bold mb-3">{s.title}</h3>
+        <p class="text-gray-400 leading-relaxed">{s.desc}</p>
+      </div>
+    ))}
+  </div>
 </section>
+
+<script>
+  const textBlocks = document.querySelectorAll('.scroll-text');
+  const images = document.querySelectorAll('.scroll-image');
+
+  if (textBlocks.length && images.length) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = entry.target.dataset.index;
+            images.forEach((img) => {
+              img.classList.toggle('opacity-100', img.dataset.index === index);
+              img.classList.toggle('opacity-0', img.dataset.index !== index);
+            });
+          }
+        });
+      },
+      { rootMargin: '-40% 0px -40% 0px' }
+    );
+
+    textBlocks.forEach((block) => observer.observe(block));
+  }
+</script>
