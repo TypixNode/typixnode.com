@@ -1,0 +1,45 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from './Nav.astro';
+import HeroSection from './HeroSection.astro';
+import GallerySection from './GallerySection.astro';
+import FeaturesSection from './FeaturesSection.astro';
+import SpecsSection from './SpecsSection.astro';
+import OpenSourceSection from './OpenSourceSection.astro';
+import Footer from './Footer.astro';
+import '../styles/global.css';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+---
+
+<Layout title="TypixNode — Compact CNC Cyberdeck">
+  <Nav locale={locale} />
+  <div class="fullpage-container" id="fullpage">
+    <HeroSection locale={locale} />
+    <GallerySection locale={locale} />
+    <FeaturesSection locale={locale} />
+    <SpecsSection locale={locale} />
+    <OpenSourceSection locale={locale} />
+    <Footer locale={locale} />
+  </div>
+
+  <script>
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll('.fade-in').forEach((el) => {
+      observer.observe(el);
+    });
+  </script>
+</Layout>

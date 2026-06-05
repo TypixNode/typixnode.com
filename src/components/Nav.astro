@@ -1,14 +1,23 @@
 ---
+import { useTranslations, languages, type Locale } from '../i18n/ui';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const t = useTranslations(locale);
 ---
 <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between backdrop-blur-md bg-gray-950/70 border-b border-white/5">
-  <a href="/" class="flex items-center gap-2">
+  <a href={`/${locale}/`} class="flex items-center gap-2">
     <span class="text-xl font-bold tracking-tight">TypixNode</span>
   </a>
   <div class="hidden md:flex items-center gap-8 text-sm text-gray-400">
-    <a href="#gallery" class="hover:text-white transition-colors">Design</a>
-    <a href="#features" class="hover:text-white transition-colors">Features</a>
-    <a href="#specs" class="hover:text-white transition-colors">Specs</a>
-    <a href="#open-source" class="hover:text-white transition-colors">Open Source</a>
-    <a href="https://github.com/TypixNode" target="_blank" rel="noopener" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors">GitHub</a>
+    <a href="#gallery" class="hover:text-white transition-colors">{t('nav.design')}</a>
+    <a href="#features" class="hover:text-white transition-colors">{t('nav.features')}</a>
+    <a href="#specs" class="hover:text-white transition-colors">{t('nav.specs')}</a>
+    <a href="#open-source" class="hover:text-white transition-colors">{t('nav.opensource')}</a>
+    <div class="flex items-center gap-2 text-xs">
+      {Object.entries(languages).map(([code, label]) => (
+        <a href={`/${code}/`} class={`px-2 py-1 rounded ${code === locale ? 'bg-white/20 text-white' : 'hover:text-white'}`}>{label}</a>
+      ))}
+    </div>
+    <a href="https://github.com/TypixNode" target="_blank" rel="noopener" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors">{t('nav.github')}</a>
   </div>
 </nav>

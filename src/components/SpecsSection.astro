@@ -1,4 +1,9 @@
 ---
+import { useTranslations, type Locale } from '../i18n/ui';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
 const specs = [
   ['Compute', 'Raspberry Pi CM4 / CM5 (BCM2711 / BCM2712)'],
   ['Co-processor', 'ESP32-S3-PICO-1 (8MB Flash, 8MB PSRAM)'],
@@ -17,8 +22,8 @@ const specs = [
 <section id="specs" class="section-screen">
   <div class="max-w-4xl mx-auto px-6 py-20">
     <div class="text-center mb-16 fade-in">
-      <p class="text-brand-400 font-mono text-sm tracking-widest uppercase mb-3">Technical</p>
-      <h2 class="text-4xl md:text-5xl font-bold tracking-tight">Specifications</h2>
+      <p class="text-brand-400 font-mono text-sm tracking-widest uppercase mb-3">{t('specs.tagline')}</p>
+      <h2 class="text-4xl md:text-5xl font-bold tracking-tight">{t('specs.title')}</h2>
     </div>
     <div class="fade-in rounded-2xl border border-white/10 overflow-hidden">
       {specs.map(([label, value], i) => (

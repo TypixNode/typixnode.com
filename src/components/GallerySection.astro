@@ -1,40 +1,17 @@
 ---
+import { useTranslations, type Locale } from '../i18n/ui';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
 const sections = [
-  {
-    image: '/images/hero-isometric.png',
-    title: 'CNC Aluminum Unibody',
-    desc: 'Precision machined from solid 6061-T6 aluminum. The entire chassis acts as a passive heatsink — no fans needed.',
-  },
-  {
-    image: '/images/front-view.png',
-    title: 'Compact Full-Feature Layout',
-    desc: 'Screen and keyboard in a pocketable form factor. 3.2" IPS display up top, full mechanical keyboard below with QMK firmware.',
-  },
-  {
-    image: '/images/side-ports.png',
-    title: 'Left Side — Connectivity',
-    desc: 'USB-C charging, full-size HDMI output, and dual micro-HDMI. Everything you need for external displays and power.',
-  },
-  {
-    image: '/images/side-usb.png',
-    title: 'Right Side — USB Expansion',
-    desc: 'Two USB-A ports via USB2514B hub. Plug in flash drives, keyboards, mice, or any USB peripheral directly.',
-  },
-  {
-    image: '/images/back-panel.png',
-    title: 'Back Panel',
-    desc: 'Ventilation slots with TypixNode branding. SMA antenna mount for external WiFi bypassing the metal enclosure.',
-  },
-  {
-    image: '/images/open-view.png',
-    title: 'Open Clamshell',
-    desc: 'Slide-out keyboard reveals the full typing surface. Compact 70mm width with optimized key layout for terminal use.',
-  },
-  {
-    image: '/images/internals.png',
-    title: 'Internal Architecture',
-    desc: 'Raspberry Pi CM4/CM5 on dual SODIMM connectors. M.2 2230 NVMe SSD, ESP32-S3 co-processor, INA219 power monitoring, and Li-Po battery — all in one board.',
-  },
+  { image: '/images/hero-isometric.png', title: t('gallery.01.title'), desc: t('gallery.01.desc') },
+  { image: '/images/front-view.png', title: t('gallery.02.title'), desc: t('gallery.02.desc') },
+  { image: '/images/side-ports.png', title: t('gallery.03.title'), desc: t('gallery.03.desc') },
+  { image: '/images/side-usb.png', title: t('gallery.04.title'), desc: t('gallery.04.desc') },
+  { image: '/images/back-panel.png', title: t('gallery.05.title'), desc: t('gallery.05.desc') },
+  { image: '/images/open-view.png', title: t('gallery.06.title'), desc: t('gallery.06.desc') },
+  { image: '/images/internals.png', title: t('gallery.07.title'), desc: t('gallery.07.desc') },
 ];
 ---
 <section id="gallery" class="relative">

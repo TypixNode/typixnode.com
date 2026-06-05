@@ -1,40 +1,18 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Nav from '../components/Nav.astro';
-import HeroSection from '../components/HeroSection.astro';
-import GallerySection from '../components/GallerySection.astro';
-import FeaturesSection from '../components/FeaturesSection.astro';
-import SpecsSection from '../components/SpecsSection.astro';
-import OpenSourceSection from '../components/OpenSourceSection.astro';
-import Footer from '../components/Footer.astro';
-import '../styles/global.css';
 ---
-
-<Layout title="TypixNode — Compact CNC Cyberdeck">
-  <Nav />
-  <div class="fullpage-container" id="fullpage">
-    <HeroSection />
-    <GallerySection />
-    <FeaturesSection />
-    <SpecsSection />
-    <OpenSourceSection />
-    <Footer />
-  </div>
-
-  <script>
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    document.querySelectorAll('.fade-in').forEach((el) => {
-      observer.observe(el);
-    });
-  </script>
-</Layout>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content="0;url=/en/" />
+    <title>Redirecting…</title>
+  </head>
+  <body>
+    <script is:inline>
+      const supported = ['en', 'zh-cn', 'zh-tw'];
+      const lang = navigator.language.toLowerCase();
+      const match = supported.find(l => lang.startsWith(l))
+        || (lang.startsWith('zh') ? 'zh-cn' : 'en');
+      window.location.replace('/' + match + '/');
+    </script>
+  </body>
+</html>
