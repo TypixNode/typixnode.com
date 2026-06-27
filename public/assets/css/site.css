@@ -3,14 +3,15 @@
   --bg:#eef3f1; --ink:#0c1a16; --soft:#4a5f58; --soft2:#7c8e87;
   --line:#0c1a1614; --line2:#0c1a1626;
   --teal:#0fb88f; --emerald:#0a8f6e; --aqua:#5fd0c0; --amber:#ffb347; --coral:#ff7a59;
-  --glass:#ffffffb3; --glass2:#ffffffd9; --glassb:#ffffffcc;
+  /* lower alpha = see-through to the base + a soft (not painted-white) rim */
+  --glass:#ffffff80; --glass2:#ffffffbf; --glassb:#ffffff40;
   --photobg:#ffffff;
   --d:'Bricolage Grotesque',sans-serif; --b:'Hanken Grotesk',sans-serif;
 }
 [data-theme="dark"]{
   --bg:#08120f; --ink:#e9f2ee; --soft:#9db2aa; --soft2:#6e827a;
   --line:#ffffff12; --line2:#ffffff24;
-  --glass:#13201bb0; --glass2:#16241ed9; --glassb:#ffffff22;
+  --glass:#13201b8c; --glass2:#16241ebf; --glassb:#ffffff1a;
   --photobg:#0d1916;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -49,31 +50,30 @@ nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;max-width:1140px;padd
 /* Liquid Glass pill nav. height 66 -> pill radius 33.
    Concentric corners: .navbuy is 44px tall, centered in 66px -> gap (66-44)/2 = 11px,
    so .navbuy radius = 33 - 11 = 22px (shares corner centres with the nav pill). */
-.nav{display:flex;align-items:center;gap:20px;height:66px;padding:0 12px 0 20px;border-radius:33px;position:relative;isolation:isolate;
-  /* Translucent so the backdrop actually shows through (was 85% opaque = looked solid). */
-  background:linear-gradient(180deg,#ffffff80,#ffffff4d);
-  -webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%);
-  border:1px solid var(--glassb);
-  box-shadow:0 12px 40px #0c1a1622,            /* drop shadow */
-    0 1px 0 #ffffff80,                          /* top outer highlight */
-    inset 0 1px 1px #ffffffb3,                  /* inner top glass sheen */
-    inset 0 -1px 1px #0c1a1612,                 /* inner bottom shade */
-    inset 0 0 0 1px #ffffff1f}                  /* faint inner edge */
+.nav{display:flex;align-items:center;gap:20px;height:66px;padding:0 12px 0 20px;border-radius:33px;position:relative;isolation:isolate;overflow:hidden;
+  /* Translucent so the backdrop shows through. No painted white border —
+     the rim is a soft inset highlight (top bright, bottom dim) that reads as
+     a rounded glass edge instead of a hard white line. */
+  background:linear-gradient(180deg,#ffffff40,#ffffff1f);
+  -webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);
+  border:0;
+  box-shadow:0 14px 44px #0c1a1626,            /* drop shadow */
+    inset 0 1px 1px #ffffff8c,                  /* soft top rim sheen */
+    inset 0 -1px 1px #0c1a1610}                 /* faint bottom shade */
 [data-theme="dark"] .nav{
-  background:linear-gradient(180deg,#1c2b2580,#101c1759);
-  box-shadow:0 12px 40px #00000055,
-    0 1px 0 #ffffff1f,
-    inset 0 1px 1px #ffffff33,
-    inset 0 -1px 1px #00000040,
-    inset 0 0 0 1px #ffffff12}
-/* Real edge refraction — only Chromium supports an SVG filter inside backdrop-filter.
-   Others keep the frosted blur above. Lighter blur here so the bent backdrop stays visible. */
-@supports (backdrop-filter: url(#tnx-liquid-glass)) or (-webkit-backdrop-filter: url(#tnx-liquid-glass)){
-  .nav{
-    -webkit-backdrop-filter:blur(4px) saturate(180%) brightness(1.06) url(#tnx-liquid-glass);
-    backdrop-filter:blur(4px) saturate(180%) brightness(1.06) url(#tnx-liquid-glass);
-  }
-}
+  background:linear-gradient(180deg,#243a3340,#0f1b1626);
+  box-shadow:0 14px 44px #00000059,
+    inset 0 1px 1px #ffffff26,
+    inset 0 -1px 1px #00000040}
+/* Diagonal specular sheen — sits below the content, above the tint. */
+.nav::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+  background:linear-gradient(135deg,#ffffff4d,#ffffff0d 26%,transparent 56%);
+  mix-blend-mode:screen}
+[data-theme="dark"] .nav::after{background:linear-gradient(135deg,#ffffff26,#ffffff08 26%,transparent 56%)}
+.nav>*{position:relative;z-index:1}
+/* When JS attaches real edge refraction the inline backdrop-filter from
+   liquid-glass.js takes over the frost; the element keeps its light --glass
+   tint for legibility (no hard border thanks to the softened --glassb). */
 .brand{display:flex;align-items:center}
 .brand img{height:40px;width:auto}
 .brand .logo-dk{display:none}
@@ -92,10 +92,12 @@ nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;max-width:1140px;padd
 .themebtn{width:38px;justify-content:center;font-size:1rem;padding:0}
 .cartbtn{position:relative}
 .cartbtn .cc{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:20px;background:var(--emerald);color:#fff;font-size:.7rem;font-weight:700}
-.burger{display:none;background:var(--glass);border:1px solid var(--glassb);border-radius:12px;width:40px;height:40px;font-size:1.2rem;cursor:pointer;color:var(--ink)}
+/* Concentric with the 66px nav pill: 40px tall -> vertical gap (66-40)/2 = 13px,
+   so radius 33-13 = 20px (a full circle on 40px); right padding below is 13px too. */
+.burger{display:none;background:var(--glass);border:1px solid var(--glassb);border-radius:20px;width:40px;height:40px;font-size:1.2rem;cursor:pointer;color:var(--ink)}
 @media(max-width:1080px){.links{display:none}}
 @media(max-width:1080px){.lbl-hide{display:none}}
-@media(max-width:760px){.burger{display:grid;place-items:center}.nav{gap:10px;padding-right:10px}.ctrls{gap:6px}.navbuy{display:none}}
+@media(max-width:760px){.burger{display:grid;place-items:center}.nav{gap:10px;padding-right:13px}.ctrls{gap:6px}.navbuy{display:none}}
 @media(max-width:480px){.selwrap.cur{display:none}}
 
 .mobnav{display:none;position:fixed;top:94px;left:14px;right:14px;z-index:55;background:var(--glass2);backdrop-filter:blur(16px);border:1px solid var(--glassb);border-radius:18px;padding:16px 22px;flex-direction:column;gap:6px;box-shadow:0 16px 40px #0c1a1622}
