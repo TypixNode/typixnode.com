@@ -49,6 +49,17 @@ export const PRODUCTS: Record<string, Product> = {
     },
     img: '/assets/cyberdeck.png',
   },
+  // CM0 version: bare body ($119) + the pre-soldered CM0→CM4 adapter ($40) = $159.
+  'typixdeck-cm0': {
+    id: 'typixdeck-cm0',
+    usd: 159,
+    name: {
+      en: 'TypixDeck · CM0 (soldered adapter)',
+      zh: 'TypixDeck · CM0（含贴片转接板）',
+      ja: 'TypixDeck · CM0（実装済アダプタ付）',
+    },
+    img: '/assets/cm0-adapter.png',
+  },
   keyboard: {
     id: 'keyboard',
     usd: 39,
@@ -76,6 +87,39 @@ export const PRODUCTS: Record<string, Product> = {
     usd: 60,
     name: { en: 'Pico-Mac Nano', zh: 'Pico-Mac Nano', ja: 'Pico-Mac Nano' },
     img: '/assets/picomac.jpg',
+  },
+  // CM0-to-CM4 adapter with a CM0 module already soldered on (ready to drop in).
+  'cm0-adapter': {
+    id: 'cm0-adapter',
+    usd: 40,
+    name: {
+      en: 'CM0→CM4 Adapter (CM0 soldered)',
+      zh: 'CM0 转 CM4 转接板（已贴片 CM0）',
+      ja: 'CM0→CM4 アダプタ（CM0 実装済）',
+    },
+    img: '/assets/cm0-adapter.png',
+  },
+  // Standalone CM0 module (castellated 132-pin, for your own adapter build).
+  'cm0-module': {
+    id: 'cm0-module',
+    usd: 30,
+    name: {
+      en: 'CM0 Module',
+      zh: 'CM0 模块',
+      ja: 'CM0 モジュール',
+    },
+    img: '/assets/cm0-module.jpeg',
+  },
+  // Bare CM0→CM4 adapter PCB (no CM0 soldered) — solder your own.
+  'cm0-adapter-raw': {
+    id: 'cm0-adapter-raw',
+    usd: 10,
+    name: {
+      en: 'CM0→CM4 Adapter (bare board)',
+      zh: 'CM0 转 CM4 转接板（裸板）',
+      ja: 'CM0→CM4 アダプタ（基板のみ）',
+    },
+    img: '/assets/cm0-adapter-raw.png',
   },
 };
 

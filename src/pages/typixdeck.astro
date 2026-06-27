@@ -29,14 +29,16 @@ const links = [
         <div class="price rise d3"><b data-usd="119">$119</b><span class="ship" data-i18n="deck.pricenote">· body only — no battery / compute module · free worldwide shipping</span></div>
         <div class="cta rise d3"><button class="btn btn--fill" data-add="typixdeck" data-i18n="deck.add">Add to cart →</button><a class="btn btn--glass" href="#inside" data-i18n="deck.look">Look inside</a></div>
         <div class="deckvariants rise d3">
+          <button class="btn btn--glass" data-add="typixdeck-cm0"><span data-i18n="deck.cm0">+ CM0 (soldered CM0→CM4 adapter)</span> · <b data-usd="159">$159</b></button>
           <button class="btn btn--glass" data-add="typixdeck-cm4"><span data-i18n="deck.cm4">+ CM4 4GB complete (incl. battery)</span> · <b data-usd="214">$214</b></button>
           <button class="btn btn--glass" data-add="typixdeck-cm5"><span data-i18n="deck.cm5">+ CM5 4GB complete (incl. battery)</span> · <b data-usd="224">$224</b></button>
         </div>
+        <p class="coolnote rise d3" data-i18n="deck.coolnote">CM0 / CM4 are fanless &amp; silent (0 dB). The CM5 build adds an optional 4-pin PWM fan + dedicated CNC case — in production.</p>
         <div class="trust rise d4"><span class="d"></span> <span data-i18n="deck.trust">In stock · ships in 2–3 days · 2-year warranty · 4,200+ makers</span></div>
       </div>
       <div class="stage rise d4">
         <span class="savebadge r"><span data-i18n="save.title">SAVE $100</span><small data-i18n="save.sub">launch price</small></span>
-        <span class="pin p1"><div class="k">TypixDeck</div><div class="v" data-i18n="pin.fanless">Fanless · CM5</div></span>
+        <span class="pin p1"><div class="k">TypixDeck</div><div class="v" data-i18n="pin.fanless">Fanless · CM0/CM4</div></span>
         <img src="/assets/cyberdeck.png" alt="TypixDeck — fanless Linux computer">
         <span class="pin p2"><div class="k">0 dB</div><div class="v" data-i18n="pin.silent">Truly silent</div></span>
       </div>
@@ -45,7 +47,7 @@ const links = [
     <div class="strip rise d4"><div class="in">
       <div class="stat"><div class="n grad">0 dB</div><div class="l" data-i18n="st.fanless">Fanless</div></div>
       <div class="stat"><div class="n grad">6061-T6</div><div class="l" data-i18n="st.alu">CNC aluminum</div></div>
-      <div class="stat"><div class="n grad">CM4/5</div><div class="l" data-i18n="st.pi">Raspberry Pi</div></div>
+      <div class="stat"><div class="n grad">CM4/5/0</div><div class="l" data-i18n="st.pi">Raspberry Pi</div></div>
       <div class="stat"><div class="n grad">100%</div><div class="l" data-i18n="st.open">Open source</div></div>
       <div class="social" data-i18n="st.social"><b>4,200+</b> makers already build on TypixNode hardware.</div>
     </div></div>
@@ -59,7 +61,7 @@ const links = [
         <p data-i18n="f.1p">Carved from a single block of 6061-T6 aluminum, bead-blasted and anodized. Rigid, cool to the touch, built to last decades.</p>
         <div class="ph"><img src="/assets/cyberdeck-open.png" alt="Milled unibody"></div>
       </div>
-      <div class="tile wide"><div class="ic">❄</div><h3 data-i18n="f.2t">Truly silent — 0 dB</h3><p data-i18n="f.2p">The chassis is the heatsink. No fan, no vents, no dust. Sustained full load stays cool and completely silent.</p></div>
+      <div class="tile wide"><div class="ic">❄</div><h3 data-i18n="f.2t">Truly silent — 0 dB</h3><p data-i18n="f.2p">The milled chassis is the heatsink — no fan, no vents, no dust. CM0 and CM4 run completely silent at 0 dB. For CM5's extra power, a dedicated CNC case with a 4-pin PWM fan header is in the works.</p></div>
       <div class="tile"><div class="ic">▢</div><h3 data-i18n="f.3t">Raspberry Pi CM4 / CM5</h3><p data-i18n="f.3p">Drop in the compute module you want, upgrade later.</p></div>
       <div class="tile"><div class="ic">⎘</div><h3 data-i18n="f.4t">Full I/O</h3><p data-i18n="f.4p">HDMI, USB-C, dual USB-A, Ethernet, 40-pin GPIO.</p></div>
       <div class="tile"><div class="ic">⚿</div><h3 data-i18n="f.5t">Open CAD &amp; firmware</h3><p data-i18n="f.5p">Every STEP file, schematic and image on GitHub.</p></div>
@@ -108,7 +110,7 @@ const links = [
     <div class="spectbl">
       <div class="r"><div class="k" data-i18n="sp.compute">Compute</div><div class="v" data-i18n="sp.compute.v">Raspberry Pi Compute Module 4 or 5 (socketed)</div></div>
       <div class="r"><div class="k" data-i18n="sp.chassis">Chassis</div><div class="v" data-i18n="sp.chassis.v">CNC-milled 6061-T6 aluminum, bead-blasted &amp; anodized</div></div>
-      <div class="r"><div class="k" data-i18n="sp.cooling">Cooling</div><div class="v" data-i18n="sp.cooling.v">Passive — chassis acts as heatsink, 0 dB</div></div>
+      <div class="r"><div class="k" data-i18n="sp.cooling">Cooling</div><div class="v" data-i18n="sp.cooling.v">Passive 0 dB on CM0/CM4 (chassis is the heatsink); CM5 adds an optional 4-pin PWM fan header + dedicated CNC case (in development)</div></div>
       <div class="r"><div class="k" data-i18n="sp.storage">Storage</div><div class="v" data-i18n="sp.storage.v">microSD + internal M.2 NVMe slot</div></div>
       <div class="r"><div class="k" data-i18n="sp.ports">Ports</div><div class="v" data-i18n="sp.ports.v">HDMI, USB-C (PD), 2× USB-A, Gigabit Ethernet, 40-pin GPIO</div></div>
       <div class="r"><div class="k" data-i18n="sp.wireless">Wireless</div><div class="v" data-i18n="sp.wireless.v">Wi-Fi 5 / Bluetooth 5.0 (CM-dependent)</div></div>

@@ -125,9 +125,10 @@ header.prod{padding:54px 0 24px}
 .price b{font-family:var(--d);font-weight:800;font-size:2rem;color:var(--ink)}
 .price s{color:var(--soft2)}.price .ship{color:var(--soft);font-size:.92rem}
 .hero .cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px}
-.deckvariants{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.deckvariants{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
 .deckvariants .btn{font-size:.9rem;padding:11px 18px}
 .deckvariants .btn b{margin-left:2px}
+.coolnote{color:var(--soft2);font-size:.84rem;line-height:1.5;max-width:52ch;margin:0 0 22px}
 .trust{display:flex;align-items:center;gap:9px;color:var(--soft);font-size:.9rem}
 .trust .d{width:7px;height:7px;border-radius:50%;background:var(--emerald)}
 
