@@ -46,9 +46,9 @@ h1,h2,h3,h4{font-family:var(--d);letter-spacing:-.02em;line-height:1.05}
 
 /* nav + controls */
 .tnx-glass-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
-/* Match .wrap (max-width 1180 / 28px gutter) so the nav pill edges line up
-   with all page content + footer. */
-nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;max-width:1180px;padding:0 28px}
+/* Slightly inset floating pill (matches the 3.5-card scroller's visual width),
+   not full content width. */
+nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;max-width:1140px;padding:0 14px}
 /* Liquid Glass pill nav. height 66 -> pill radius 33.
    Concentric corners: .navbuy is 44px tall, centered in 66px -> gap (66-44)/2 = 11px,
    so .navbuy radius = 33 - 11 = 22px (shares corner centres with the nav pill). */
