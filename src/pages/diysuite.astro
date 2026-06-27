@@ -1,0 +1,96 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CartDrawer from '../components/CartDrawer.astro';
+import Lineup from '../components/Lineup.astro';
+const links = [
+  { href: '#features', key: 'nav.features', label: 'Features' },
+  { href: '#specs', key: 'nav.specs', label: 'Specs' },
+  { href: '#faq', key: 'nav.faq', label: 'FAQ' },
+  { href: '/#products', key: 'nav.all', label: 'All products' },
+];
+---
+<Layout
+  title="DIY Suite — open-source keyboard build kit | TypixNode"
+  titleKey="doc.diy"
+  description="The TypixNode DIY Suite — an open-source, through-hole-friendly keyboard build kit with an illustrated guide and QMK firmware. Build it in an afternoon."
+  ogTitle="DIY Suite — open-source keyboard build kit"
+  ogDescription="An open-source, through-hole-friendly keyboard build kit with an illustrated guide and QMK firmware."
+>
+  <Nav links={links} buyAdd="diysuite" />
+
+  <header class="prod"><div class="wrap">
+    <div class="hero">
+      <div class="copy">
+        <span class="chip rise d1"><span class="d"></span><span class="mono" data-i18n="hero.badge">Compact open hardware · Est. 2026</span></span>
+        <h1 class="rise d2" data-i18n="diy.h1">Solder your own<br/><span class="grad">keyboard.</span></h1>
+        <p class="lead rise d3" data-i18n="diy.lead">An open-source build kit that turns an afternoon into a keyboard you made yourself.</p>
+        <div class="price rise d3"><b data-usd="59">$59</b><span class="ship" data-i18n="deck.ship">· free worldwide shipping</span></div>
+        <div class="cta rise d3"><button class="btn btn--fill" data-add="diysuite" data-i18n="cart.add">Add to cart</button><a class="btn btn--glass" href="#features" data-i18n="look">Look inside</a></div>
+        <div class="trust rise d4"><span class="d"></span> <span data-i18n="deck.trust">In stock · ships in 2–3 days · 2-year warranty · 4,200+ makers</span></div>
+      </div>
+      <div class="stage rise d4">
+        <span class="pin p1"><div class="k">DIY Suite</div><div class="v" data-i18n="diy.s3l">Firmware</div></span>
+        <img src="/assets/diysuite.jpg" alt="TypixNode DIY Suite" style="border-radius:18px">
+        <span class="pin p2"><div class="k"><span data-usd="59">$59</span></div><div class="v" data-i18n="pin.stock">In stock</div></span>
+      </div>
+    </div>
+    <div class="strip rise d4"><div class="in">
+      <div class="stat"><div class="n grad">~2 h</div><div class="l" data-i18n="diy.s1l">Build time</div></div>
+      <div class="stat"><div class="n grad">48</div><div class="l" data-i18n="diy.s2l">Keys</div></div>
+      <div class="stat"><div class="n grad">QMK</div><div class="l" data-i18n="diy.s3l">Firmware</div></div>
+      <div class="stat"><div class="n grad">100%</div><div class="l" data-i18n="diy.s4l">Open source</div></div>
+      <div class="social" data-i18n="st.social"><b>4,200+</b> makers already build on TypixNode hardware.</div>
+    </div></div>
+  </div></header>
+
+  <section><div class="wrap">
+    <div class="rows"><div class="row">
+      <div class="rimg"><img src="/assets/diysuite-exploded.jpg" alt="DIY Suite parts"></div>
+      <div class="rtxt"><div class="ic">DIY Suite</div><h3 data-i18n="diy.row.t">An afternoon well spent</h3><p data-i18n="diy.row.p">Everything is in the box — PCB, plate, switches, keycaps and a guide.</p></div>
+    </div></div>
+  </div></section>
+
+  <section id="features"><div class="wrap">
+    <div class="head"><span class="mono" data-i18n="f.kicker">Why it's different</span><h2 data-i18n="diy.feat">A kit, not a chore</h2></div>
+    <div class="feat">
+      <div class="c"><div class="ic">✎</div><h4 data-i18n="diy.f1t">Beginner-friendly</h4><p data-i18n="diy.f1p">Through-hole soldering, labeled parts and an illustrated guide.</p></div>
+      <div class="c"><div class="ic">⚿</div><h4 data-i18n="diy.f2t">Open-source PCB</h4><p data-i18n="diy.f2p">The full PCB design and bill of materials are public.</p></div>
+      <div class="c"><div class="ic">⌨</div><h4 data-i18n="diy.f3t">QMK firmware</h4><p data-i18n="diy.f3p">Remap every key, add layers and macros.</p></div>
+    </div>
+  </div></section>
+
+  <section id="specs"><div class="wrap">
+    <div class="head"><span class="mono">DIY Suite</span><h2 data-i18n="sp.title">Technical specifications</h2></div>
+    <div class="spectbl">
+      <div class="r"><div class="k" data-i18n="diy.spk1">Layout</div><div class="v" data-i18n="diy.spv1">48-key ortholinear</div></div>
+      <div class="r"><div class="k" data-i18n="diy.spk2">PCB</div><div class="v" data-i18n="diy.spv2">Open-source, through-hole</div></div>
+      <div class="r"><div class="k" data-i18n="diy.spk3">Firmware</div><div class="v" data-i18n="diy.spv3">QMK-compatible</div></div>
+      <div class="r"><div class="k" data-i18n="diy.spk4">Switches</div><div class="v" data-i18n="diy.spv4">Hot-swap compatible footprints</div></div>
+      <div class="r"><div class="k" data-i18n="diy.spk5">Includes</div><div class="v" data-i18n="diy.spv5">PCB, plate, switches, keycaps, guide</div></div>
+      <div class="r"><div class="k" data-i18n="diy.spk6">Build time</div><div class="v" data-i18n="diy.spv6">About 2 hours</div></div>
+    </div>
+  </div></section>
+
+  <section id="faq"><div class="wrap">
+    <div class="head"><span class="mono" data-i18n="faq.kicker">Good to know</span><h2 data-i18n="faq.title">Frequently asked questions</h2></div>
+    <div class="faq">
+      <div class="qa"><button><span data-i18n="diy.q1">Do I need soldering experience?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="diy.a1">No. The kit uses beginner-friendly through-hole components.</p></div></div>
+      <div class="qa"><button><span data-i18n="diy.q2">Can I customize the layout?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="diy.a2">Yes. The PCB is open-source and the board runs QMK.</p></div></div>
+    </div>
+  </div></section>
+
+  <Lineup />
+
+  <section><div class="wrap">
+    <div class="ctab">
+      <h2 data-i18n="diy.cta.t">Build it yourself</h2>
+      <p data-i18n="diy.cta.p">An open PCB, an illustrated guide and a satisfying click.</p>
+      <div class="cta"><button class="btn btn--fill" data-add="diysuite" data-i18n="cart.add">Add to cart</button><a class="btn btn--glass" href="/#products" data-i18n="see.all">See all products</a></div>
+    </div>
+  </div></section>
+
+  <Footer />
+  <CartDrawer />
+</Layout>

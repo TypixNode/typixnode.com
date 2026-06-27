@@ -1,0 +1,45 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CartDrawer from '../components/CartDrawer.astro';
+const links = [
+  { href: '/#products', key: 'nav.all', label: 'All products' },
+  { href: '/typixdeck', key: 'nav.deck', label: 'TypixDeck' },
+  { href: '/about', key: 'ft.about', label: 'About' },
+];
+---
+<Layout
+  title="Support — TypixNode"
+  titleKey="support.doc"
+  description="TypixNode support — shipping, returns, warranty and setup. Free worldwide shipping, 30-day returns and a 2-year warranty."
+  ogTitle="Support — TypixNode"
+  ogDescription="Shipping, returns, warranty and setup — the essentials, plus a human who replies."
+>
+  <Nav links={links} showBuy={false} />
+
+  <section style="padding-top:64px"><div class="wrap">
+    <div class="head">
+      <span class="mono" data-i18n="support.kicker">Help &amp; support</span>
+      <h2 data-i18n="support.h1">We're here to help.</h2>
+      <p data-i18n="support.lead">Shipping, returns, warranty and setup — the essentials are below.</p>
+    </div>
+    <div class="feat">
+      <div class="c"><div class="ic">✈</div><h4 data-i18n="support.s1t">Shipping</h4><p data-i18n="support.s1p">Free worldwide shipping. Orders ship in 2–3 business days.</p></div>
+      <div class="c"><div class="ic">↩</div><h4 data-i18n="support.s2t">Returns</h4><p data-i18n="support.s2p">30-day returns on unused items in original packaging.</p></div>
+      <div class="c"><div class="ic">⛨</div><h4 data-i18n="support.s3t">Warranty</h4><p data-i18n="support.s3p">A 2-year limited warranty against manufacturing defects.</p></div>
+      <div class="c"><div class="ic">✉</div><h4 data-i18n="support.s4t">Contact</h4><p data-i18n="support.s4p">Email hello@typixnode.com — we reply within one business day.</p></div>
+    </div>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="ctab">
+      <h2 data-i18n="support.s4t">Contact</h2>
+      <p data-i18n="support.s4p">Email hello@typixnode.com — we usually reply within one business day.</p>
+      <div class="cta"><a class="btn btn--fill" href="mailto:hello@typixnode.com">hello@typixnode.com</a><a class="btn btn--glass" href="/#products" data-i18n="see.all">See all products</a></div>
+    </div>
+  </div></section>
+
+  <Footer />
+  <CartDrawer />
+</Layout>

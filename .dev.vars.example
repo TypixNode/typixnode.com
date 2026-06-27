@@ -1,0 +1,15 @@
+# Copy to `.dev.vars` for local `wrangler dev` / `astro dev` (never commit the real file).
+# In production set these with: wrangler secret put <NAME>
+
+# Stripe (https://dashboard.stripe.com/apikeys)
+STRIPE_SECRET_KEY="sk_test_xxx"
+# Webhook signing secret from `stripe listen` or the dashboard endpoint
+STRIPE_WEBHOOK_SECRET="whsec_xxx"
+
+# Resend (https://resend.com/api-keys)
+RESEND_API_KEY="re_xxx"
+
+# Plain config (these can also go in wrangler.jsonc [vars])
+FROM_EMAIL="TypixNode <orders@typixnode.com>"
+ADMIN_EMAIL="you@typixnode.com"
+PUBLIC_SITE_URL="http://localhost:4321"

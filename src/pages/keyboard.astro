@@ -1,0 +1,96 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CartDrawer from '../components/CartDrawer.astro';
+import Lineup from '../components/Lineup.astro';
+const links = [
+  { href: '#features', key: 'nav.features', label: 'Features' },
+  { href: '#specs', key: 'nav.specs', label: 'Specs' },
+  { href: '#faq', key: 'nav.faq', label: 'FAQ' },
+  { href: '/#products', key: 'nav.all', label: 'All products' },
+];
+---
+<Layout
+  title="BLE Keyboard — card-sized wireless keyboard | TypixNode"
+  titleKey="doc.kb"
+  description="The TypixNode BLE Keyboard — a card-sized full QWERTY keyboard with a built-in gyro air-mouse and white backlight. Bluetooth 5.2 or USB-C."
+  ogTitle="BLE Keyboard — card-sized wireless keyboard"
+  ogDescription="A card-sized full keyboard with a built-in gyro air-mouse and white backlight. Bluetooth 5.2 or USB-C."
+>
+  <Nav links={links} buyAdd="keyboard" />
+
+  <header class="prod"><div class="wrap">
+    <div class="hero">
+      <div class="copy">
+        <span class="chip rise d1"><span class="d"></span><span class="mono" data-i18n="hero.badge">Compact open hardware · Est. 2026</span></span>
+        <h1 class="rise d2" data-i18n="kb.h1">A full keyboard,<br/><span class="grad">the size of a card.</span></h1>
+        <p class="lead rise d3" data-i18n="kb.lead">Pocket-sized but full-featured — a complete QWERTY layout with a built-in gyro air-mouse and a crisp white backlight.</p>
+        <div class="price rise d3"><b data-usd="129">$129</b><span class="ship" data-i18n="deck.ship">· free worldwide shipping</span></div>
+        <div class="cta rise d3"><button class="btn btn--fill" data-add="keyboard" data-i18n="cart.add">Add to cart</button><a class="btn btn--glass" href="#features" data-i18n="look">Look inside</a></div>
+        <div class="trust rise d4"><span class="d"></span> <span data-i18n="deck.trust">In stock · ships in 2–3 days · 2-year warranty · 4,200+ makers</span></div>
+      </div>
+      <div class="stage rise d4">
+        <span class="pin p1"><div class="k">BLE Keyboard</div><div class="v" data-i18n="kb.s2l">Air mouse</div></span>
+        <img src="/assets/keyboard.jpg" alt="TypixNode BLE Keyboard" style="border-radius:18px">
+        <span class="pin p2"><div class="k"><span data-usd="129">$129</span></div><div class="v" data-i18n="pin.stock">In stock</div></span>
+      </div>
+    </div>
+    <div class="strip rise d4"><div class="in">
+      <div class="stat"><div class="n grad">BT 5.2</div><div class="l" data-i18n="kb.s1l">Wireless</div></div>
+      <div class="stat"><div class="n grad">6-axis</div><div class="l" data-i18n="kb.s2l">Air mouse</div></div>
+      <div class="stat"><div class="n grad">120 g</div><div class="l" data-i18n="kb.s3l">Weight</div></div>
+      <div class="stat"><div class="n grad">USB-C</div><div class="l" data-i18n="kb.s4l">Charging</div></div>
+      <div class="social" data-i18n="st.social"><b>4,200+</b> makers already build on TypixNode hardware.</div>
+    </div></div>
+  </div></header>
+
+  <section><div class="wrap">
+    <div class="rows"><div class="row">
+      <div class="rimg"><img src="/assets/keyboard-front.jpg" alt="BLE Keyboard in hand"></div>
+      <div class="rtxt"><div class="ic">BLE Keyboard</div><h3 data-i18n="kb.row.t">Point without a mouse</h3><p data-i18n="kb.row.p">A 6-axis gyroscope turns the whole keyboard into a pointer.</p></div>
+    </div></div>
+  </div></section>
+
+  <section id="features"><div class="wrap">
+    <div class="head"><span class="mono" data-i18n="f.kicker">Why it's different</span><h2 data-i18n="kb.feat">Small, but it does everything</h2></div>
+    <div class="feat">
+      <div class="c"><div class="ic">⊹</div><h4 data-i18n="kb.f1t">Air-mouse built in</h4><p data-i18n="kb.f1p">Tilt-to-point gyro pointer plus dedicated mouse keys.</p></div>
+      <div class="c"><div class="ic">☀</div><h4 data-i18n="kb.f2t">Backlit &amp; rechargeable</h4><p data-i18n="kb.f2p">Crisp white backlight and a USB-C rechargeable battery.</p></div>
+      <div class="c"><div class="ic">⇄</div><h4 data-i18n="kb.f3t">Works with everything</h4><p data-i18n="kb.f3p">Bluetooth 5.2 or wired USB-C, with instant pairing.</p></div>
+    </div>
+  </div></section>
+
+  <section id="specs"><div class="wrap">
+    <div class="head"><span class="mono">BLE Keyboard</span><h2 data-i18n="sp.title">Technical specifications</h2></div>
+    <div class="spectbl">
+      <div class="r"><div class="k" data-i18n="kb.spk1">Layout</div><div class="v" data-i18n="kb.spv1">64-key QWERTY with function row</div></div>
+      <div class="r"><div class="k" data-i18n="kb.spk2">Pointing</div><div class="v" data-i18n="kb.spv2">6-axis gyroscope air-mouse + mouse keys</div></div>
+      <div class="r"><div class="k" data-i18n="kb.spk3">Wireless</div><div class="v" data-i18n="kb.spv3">Bluetooth 5.2 + USB-C wired</div></div>
+      <div class="r"><div class="k" data-i18n="kb.spk4">Backlight</div><div class="v" data-i18n="kb.spv4">Adjustable white LED</div></div>
+      <div class="r"><div class="k" data-i18n="kb.spk5">Battery</div><div class="v" data-i18n="kb.spv5">Rechargeable Li-Po, USB-C</div></div>
+      <div class="r"><div class="k" data-i18n="kb.spk6">Dimensions</div><div class="v" data-i18n="kb.spv6">139 × 78 × 13 mm · 120 g</div></div>
+    </div>
+  </div></section>
+
+  <section id="faq"><div class="wrap">
+    <div class="head"><span class="mono" data-i18n="faq.kicker">Good to know</span><h2 data-i18n="faq.title">Frequently asked questions</h2></div>
+    <div class="faq">
+      <div class="qa"><button><span data-i18n="kb.q1">What can I use it with?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="kb.a1">Anything that supports a Bluetooth or USB HID keyboard.</p></div></div>
+      <div class="qa"><button><span data-i18n="kb.q2">How long does the battery last?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="kb.a2">Several weeks of typical use per charge.</p></div></div>
+    </div>
+  </div></section>
+
+  <Lineup />
+
+  <section><div class="wrap">
+    <div class="ctab">
+      <h2 data-i18n="kb.cta.t">Add a keyboard to your kit</h2>
+      <p data-i18n="kb.cta.p">The pocket companion for your TypixDeck.</p>
+      <div class="cta"><button class="btn btn--fill" data-add="keyboard" data-i18n="cart.add">Add to cart</button><a class="btn btn--glass" href="/#products" data-i18n="see.all">See all products</a></div>
+    </div>
+  </div></section>
+
+  <Footer />
+  <CartDrawer />
+</Layout>

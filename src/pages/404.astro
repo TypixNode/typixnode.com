@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+---
+<Layout title="Page not found — TypixNode" titleKey="err.title" noindex={true}>
+  <nav><div class="nav">
+    <a class="brand" href="/"><img class="logo-lt" src="/assets/typixnode-logo.svg" alt="TypixNode"><img class="logo-dk" src="/assets/typixnode-logo-inverse.svg" alt="TypixNode"></a>
+    <span class="sp"></span>
+    <div class="ctrls">
+      <button class="ctrl themebtn" aria-label="Toggle theme"><span class="ti">☾</span></button>
+      <span class="selwrap lang"><select id="langsel" aria-label="Language"><option value="en">EN</option><option value="zh">中文</option><option value="ja">日本語</option></select></span>
+    </div>
+  </div></nav>
+
+  <section style="min-height:64vh;display:grid;place-items:center;text-align:center"><div class="wrap">
+    <div style="font-family:var(--d);font-weight:800;font-size:clamp(5rem,18vw,11rem);line-height:1" class="grad">404</div>
+    <h2 style="font-weight:800;font-size:clamp(1.6rem,4vw,2.4rem);margin:8px 0 12px" data-i18n="err.title">Page not found</h2>
+    <p style="color:var(--soft);max-width:46ch;margin:0 auto 26px" data-i18n="err.text">The page you're looking for has been moved, milled away, or never existed.</p>
+    <a class="btn btn--fill" href="/" data-i18n="err.btn">Back to home</a>
+  </div></section>
+
+  <Footer />
+</Layout>

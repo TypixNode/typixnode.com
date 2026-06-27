@@ -1,0 +1,136 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CartDrawer from '../components/CartDrawer.astro';
+const links = [
+  { href: '#features', key: 'nav.features', label: 'Features' },
+  { href: '#inside', key: 'nav.inside', label: 'Inside' },
+  { href: '/#products', key: 'nav.all', label: 'All products' },
+  { href: '#specs', key: 'nav.specs', label: 'Specs' },
+  { href: '#faq', key: 'nav.faq', label: 'FAQ' },
+];
+---
+<Layout
+  title="TypixDeck — A fanless Linux computer | TypixNode"
+  titleKey="doc.deck"
+  description="TypixDeck — a silent, sealed, palm-sized fanless Linux computer milled from a single block of aluminum, built around a Raspberry Pi Compute Module."
+  ogTitle="TypixDeck — A fanless Linux computer"
+  ogDescription="A silent, sealed, palm-sized fanless Linux computer milled from a single block of aluminum, built around a Raspberry Pi Compute Module."
+>
+  <Nav links={links} buyAdd="typixdeck" />
+
+  <header class="prod" id="buy"><div class="wrap">
+    <div class="hero">
+      <div class="copy">
+        <span class="chip rise d1"><span class="d"></span><span class="mono" data-i18n="hero.badge">Compact open hardware · Est. 2026</span></span>
+        <h1 class="rise d2" data-i18n="deck.h1">A fanless Linux computer,<br/><span class="grad">milled from a single block.</span></h1>
+        <p class="lead rise d3" data-i18n="deck.lead">Meet TypixDeck — a silent, sealed, palm-sized machine carved from aerospace aluminum and built around a Raspberry Pi Compute Module. Open it, hack it, make it yours.</p>
+        <div class="price rise d3"><b data-usd="599">$599</b><s data-usd="699">$699</s><span class="ship" data-i18n="deck.ship">· free worldwide shipping</span></div>
+        <div class="cta rise d3"><button class="btn btn--fill" data-add="typixdeck" data-i18n="deck.add">Add to cart →</button><a class="btn btn--glass" href="#inside" data-i18n="deck.look">Look inside</a></div>
+        <div class="trust rise d4"><span class="d"></span> <span data-i18n="deck.trust">In stock · ships in 2–3 days · 2-year warranty · 4,200+ makers</span></div>
+      </div>
+      <div class="stage rise d4">
+        <span class="savebadge r"><span data-i18n="save.title">SAVE $100</span><small data-i18n="save.sub">launch price</small></span>
+        <span class="pin p1"><div class="k">TypixDeck</div><div class="v" data-i18n="pin.fanless">Fanless · CM5</div></span>
+        <img src="/assets/cyberdeck.png" alt="TypixDeck — fanless Linux computer">
+        <span class="pin p2"><div class="k">0 dB</div><div class="v" data-i18n="pin.silent">Truly silent</div></span>
+      </div>
+    </div>
+
+    <div class="strip rise d4"><div class="in">
+      <div class="stat"><div class="n grad">0 dB</div><div class="l" data-i18n="st.fanless">Fanless</div></div>
+      <div class="stat"><div class="n grad">6061-T6</div><div class="l" data-i18n="st.alu">CNC aluminum</div></div>
+      <div class="stat"><div class="n grad">CM4/5</div><div class="l" data-i18n="st.pi">Raspberry Pi</div></div>
+      <div class="stat"><div class="n grad">100%</div><div class="l" data-i18n="st.open">Open source</div></div>
+      <div class="social" data-i18n="st.social"><b>4,200+</b> makers already build on TypixNode hardware.</div>
+    </div></div>
+  </div></header>
+
+  <section id="features"><div class="wrap">
+    <div class="head"><span class="mono" data-i18n="f.kicker">Why it's different</span><h2 data-i18n="f.title">Everything a tiny computer should be</h2><p data-i18n="f.sub">No fan to fail, no plastic to flex, no firmware locked away — just beautifully made machines you fully control.</p></div>
+    <div class="bento">
+      <div class="tile tall">
+        <div class="ic">▤</div><h3 data-i18n="f.1t">Milled unibody</h3>
+        <p data-i18n="f.1p">Carved from a single block of 6061-T6 aluminum, bead-blasted and anodized. Rigid, cool to the touch, built to last decades.</p>
+        <div class="ph"><img src="/assets/cyberdeck-open.png" alt="Milled unibody"></div>
+      </div>
+      <div class="tile wide"><div class="ic">❄</div><h3 data-i18n="f.2t">Truly silent — 0 dB</h3><p data-i18n="f.2p">The chassis is the heatsink. No fan, no vents, no dust. Sustained full load stays cool and completely silent.</p></div>
+      <div class="tile"><div class="ic">▢</div><h3 data-i18n="f.3t">Raspberry Pi CM4 / CM5</h3><p data-i18n="f.3p">Drop in the compute module you want, upgrade later.</p></div>
+      <div class="tile"><div class="ic">⎘</div><h3 data-i18n="f.4t">Full I/O</h3><p data-i18n="f.4p">HDMI, USB-C, dual USB-A, Ethernet, 40-pin GPIO.</p></div>
+      <div class="tile"><div class="ic">⚿</div><h3 data-i18n="f.5t">Open CAD &amp; firmware</h3><p data-i18n="f.5p">Every STEP file, schematic and image on GitHub.</p></div>
+      <div class="tile wide"><div class="ic">▭</div><h3 data-i18n="f.6t">Credit-card footprint</h3><p data-i18n="f.6p">Smaller than your phone, heavier than it looks. It slips into a bag and runs a full Linux desktop anywhere.</p></div>
+    </div>
+  </div></section>
+
+  <section class="exploded" id="inside"><div class="wrap in">
+    <div class="img"><img src="/assets/cyberdeck-internals.png" alt="TypixDeck internals"></div>
+    <div>
+      <span class="mono" data-i18n="in.kicker">Made to be opened</span>
+      <h2 data-i18n="in.title">Four screws and you're inside.</h2>
+      <ul class="ckl">
+        <li><span class="ck">✓</span><span data-i18n="in.1"><b>Tool-friendly.</b> Captive screws, labeled connectors and a documented teardown — no glue anywhere.</span></li>
+        <li><span class="ck">✓</span><span data-i18n="in.2"><b>Swap the brain.</b> The compute module sits on a standard socket. Move up to CM5 in minutes.</span></li>
+        <li><span class="ck">✓</span><span data-i18n="in.3"><b>Expand it.</b> M.2 slot for NVMe, a 40-pin header for HATs, internal headers for add-ons.</span></li>
+        <li><span class="ck">✓</span><span data-i18n="in.4"><b>Repair, don't replace.</b> Spare parts and CAD are public, so a scratched lid never means a new computer.</span></li>
+      </ul>
+      <a class="btn btn--glass" href="https://github.com/TypixNode" style="margin-top:24px" data-i18n="in.git">Open CAD on GitHub ↗</a>
+    </div>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="rows">
+      <div class="row"><div class="rimg"><img src="/assets/cyberdeck-open.png" alt="Silent desktop"></div>
+        <div class="rtxt"><div class="ic" data-i18n="r.1k">Silent desktop</div><h3 data-i18n="r.1t">A full Linux desktop that makes no sound</h3><p data-i18n="r.1p">Boot straight into Raspberry Pi OS or your distro of choice. Code, SSH, browse and tinker — with zero fan noise on your desk.</p></div></div>
+      <div class="row"><div class="rimg"><img src="/assets/keyboard.jpg" alt="Pocket input"></div>
+        <div class="rtxt"><div class="ic" data-i18n="r.2k">Pocket input</div><h3 data-i18n="r.2t">Pairs with a card-sized keyboard</h3><p data-i18n="r.2p">Add the TypixNode BLE Keyboard for a complete pocket workstation — full layout, gyro air-mouse and white backlight over Bluetooth or USB-C.</p></div></div>
+      <div class="row"><div class="rimg"><img src="/assets/picomac.jpg" alt="For tinkerers"></div>
+        <div class="rtxt"><div class="ic" data-i18n="r.3k">For tinkerers</div><h3 data-i18n="r.3t">Hardware that invites curiosity</h3><p data-i18n="r.3p">From a palm-sized 1984 Mac to a solder-it-yourself keyboard kit, every TypixNode device is designed to be opened, understood and modified.</p></div></div>
+    </div>
+  </div></section>
+
+  <section id="lineup"><div class="wrap">
+    <div class="head"><span class="mono" data-i18n="lu.kicker">The full lineup</span><h2 data-i18n="lu.title">Four machines. Pick your size.</h2><p data-i18n="lu.sub">A small, carefully made catalogue — no filler, every product is something we'd carry ourselves.</p></div>
+    <div class="line">
+      <a class="pc" href="/typixdeck"><div class="ph"><img src="/assets/cyberdeck.png" alt="TypixDeck"></div><h3>TypixDeck</h3><p class="ds" data-i18n="p.deck.ds">Fanless milled-aluminum Linux computer with a Raspberry Pi Compute Module.</p><div class="foot"><span class="pr" data-usd="599">$599</span><button class="add" data-add="typixdeck" aria-label="Add">+</button></div></a>
+      <a class="pc" href="/keyboard"><div class="ph"><img src="/assets/keyboard.jpg" alt="BLE Keyboard"></div><h3>BLE Keyboard</h3><p class="ds" data-i18n="p.kb.ds">Card-sized full keyboard with gyro air-mouse and backlight. BT 5.2 / USB-C.</p><div class="foot"><span class="pr" data-usd="129">$129</span><button class="add" data-add="keyboard" aria-label="Add">+</button></div></a>
+      <a class="pc" href="/diysuite"><div class="ph"><img src="/assets/diysuite.jpg" alt="DIY Suite"></div><h3>DIY Suite</h3><p class="ds" data-i18n="p.diy.ds">Solder your own 48-key keyboard in an afternoon. Open PCB + QMK firmware.</p><div class="foot"><span class="pr" data-usd="59">$59</span><button class="add" data-add="diysuite" aria-label="Add">+</button></div></a>
+      <a class="pc" href="/picomac"><div class="ph"><img src="/assets/picomac.jpg" alt="Pico-Mac Nano"></div><h3>Pico-Mac Nano</h3><p class="ds" data-i18n="p.mac.ds">A 1984 Macintosh shrunk to your palm. Boots real classic Mac OS over USB-C.</p><div class="foot"><span class="pr" data-usd="60">$60</span><button class="add" data-add="picomac" aria-label="Add">+</button></div></a>
+    </div>
+  </div></section>
+
+  <section id="specs"><div class="wrap">
+    <div class="head"><span class="mono" data-i18n="sp.kicker">TypixDeck</span><h2 data-i18n="sp.title">Technical specifications</h2></div>
+    <div class="spectbl">
+      <div class="r"><div class="k" data-i18n="sp.compute">Compute</div><div class="v" data-i18n="sp.compute.v">Raspberry Pi Compute Module 4 or 5 (socketed)</div></div>
+      <div class="r"><div class="k" data-i18n="sp.chassis">Chassis</div><div class="v" data-i18n="sp.chassis.v">CNC-milled 6061-T6 aluminum, bead-blasted &amp; anodized</div></div>
+      <div class="r"><div class="k" data-i18n="sp.cooling">Cooling</div><div class="v" data-i18n="sp.cooling.v">Passive — chassis acts as heatsink, 0 dB</div></div>
+      <div class="r"><div class="k" data-i18n="sp.storage">Storage</div><div class="v" data-i18n="sp.storage.v">microSD + internal M.2 NVMe slot</div></div>
+      <div class="r"><div class="k" data-i18n="sp.ports">Ports</div><div class="v" data-i18n="sp.ports.v">HDMI, USB-C (PD), 2× USB-A, Gigabit Ethernet, 40-pin GPIO</div></div>
+      <div class="r"><div class="k" data-i18n="sp.wireless">Wireless</div><div class="v" data-i18n="sp.wireless.v">Wi-Fi 5 / Bluetooth 5.0 (CM-dependent)</div></div>
+      <div class="r"><div class="k" data-i18n="sp.dim">Dimensions</div><div class="v" data-i18n="sp.dim.v">95 × 62 × 22 mm · 280 g</div></div>
+      <div class="r"><div class="k" data-i18n="sp.os">Open source</div><div class="v" data-i18n="sp.os.v">Full STEP files, schematics &amp; firmware on GitHub</div></div>
+    </div>
+  </div></section>
+
+  <section id="faq"><div class="wrap">
+    <div class="head"><span class="mono" data-i18n="faq.kicker">Good to know</span><h2 data-i18n="faq.title">Frequently asked questions</h2></div>
+    <div class="faq">
+      <div class="qa"><button><span data-i18n="faq.q1">Does it come with a Raspberry Pi Compute Module?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="faq.a1">The TypixDeck ships as a chassis kit. Add a CM4 or CM5 at checkout, or drop in one you already own — it uses the standard compute-module socket.</p></div></div>
+      <div class="qa"><button><span data-i18n="faq.q2">How does a fanless computer stay cool?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="faq.a2">The aluminum unibody is the heatsink. The compute module is thermally bonded to the chassis, so heat spreads across the whole body and dissipates silently, even under sustained load.</p></div></div>
+      <div class="qa"><button><span data-i18n="faq.q3">Can I really open and repair it myself?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="faq.a3">Yes. Four captive screws, no glue, labeled connectors, and a public teardown guide. Spare parts and CAD files are available so you can repair or modify anything.</p></div></div>
+      <div class="qa"><button><span data-i18n="faq.q4">Do you ship worldwide?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="faq.a4">Yes — free worldwide shipping, typically 2–3 business days handling plus carrier transit. Duties may apply depending on your region.</p></div></div>
+    </div>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="ctab">
+      <h2 data-i18n="cta.deck.t">Build your pocket Linux lab</h2>
+      <p data-i18n="cta.deck.p">Silent, open, and made to be opened. Join 4,200+ makers running TypixNode hardware.</p>
+      <div class="cta"><button class="btn btn--fill" data-add="typixdeck" data-i18n="cart.add">Add to cart</button><a class="btn btn--glass" href="/#products" data-i18n="cta.deck.b2">See all products</a></div>
+    </div>
+  </div></section>
+
+  <Footer />
+  <CartDrawer />
+</Layout>

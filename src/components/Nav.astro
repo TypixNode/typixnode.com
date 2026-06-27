@@ -1,23 +1,39 @@
 ---
-import { useTranslations, languages, type Locale } from '../i18n/ui';
-interface Props { locale: Locale; }
-const { locale } = Astro.props;
-const t = useTranslations(locale);
+interface NavLink { href: string; key: string; label: string; }
+interface Props {
+  links?: NavLink[];
+  buyHref?: string;
+  buyAdd?: string;
+  showBuy?: boolean;
+}
+const homeLinks: NavLink[] = [
+  { href: '/typixdeck', key: 'nav.deck', label: 'TypixDeck' },
+  { href: '/#products', key: 'nav.all', label: 'All products' },
+  { href: '/#why', key: 'nav.tech', label: 'Technology' },
+  { href: 'https://github.com/TypixNode', key: 'nav.open', label: 'Open' },
+];
+const { links = homeLinks, buyHref = '/typixdeck', buyAdd, showBuy = true } = Astro.props;
 ---
-<nav class="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between backdrop-blur-md bg-gray-950/70 border-b border-white/5">
-  <a href={`/${locale}/`} class="flex items-center gap-2">
-    <span class="text-xl font-bold tracking-tight">TypixNode</span>
+<nav><div class="nav">
+  <a class="brand" href="/">
+    <img class="logo-lt" src="/assets/typixnode-logo.svg" alt="TypixNode">
+    <img class="logo-dk" src="/assets/typixnode-logo-inverse.svg" alt="TypixNode">
   </a>
-  <div class="hidden md:flex items-center gap-8 text-sm text-gray-400">
-    <a href="#gallery" class="hover:text-white transition-colors">{t('nav.design')}</a>
-    <a href="#features" class="hover:text-white transition-colors">{t('nav.features')}</a>
-    <a href="#specs" class="hover:text-white transition-colors">{t('nav.specs')}</a>
-    <a href="#open-source" class="hover:text-white transition-colors">{t('nav.opensource')}</a>
-    <div class="flex items-center gap-2 text-xs">
-      {Object.entries(languages).map(([code, label]) => (
-        <a href={`/${code}/`} class={`px-2 py-1 rounded ${code === locale ? 'bg-white/20 text-white' : 'hover:text-white'}`}>{label}</a>
-      ))}
-    </div>
-    <a href="https://github.com/TypixNode" target="_blank" rel="noopener" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors">{t('nav.github')}</a>
+  <div class="links">
+    {links.map((l) => <a href={l.href} data-i18n={l.key}>{l.label}</a>)}
   </div>
-</nav>
+  <span class="sp"></span>
+  <div class="ctrls">
+    <button class="ctrl themebtn" aria-label="Toggle theme"><span class="ti">☾</span></button>
+    <span class="selwrap lang"><select id="langsel" aria-label="Language"><option value="en">EN</option><option value="zh">中文</option><option value="ja">日本語</option></select></span>
+    <span class="selwrap cur"><select id="cursel" aria-label="Currency"><option>USD</option><option>EUR</option><option>GBP</option><option>CNY</option><option>JPY</option></select></span>
+    <button class="ctrl cartbtn" aria-label="Cart">🛍<span class="cc">0</span></button>
+    {showBuy && (buyAdd
+      ? <button class="btn btn--fill navbuy" data-add={buyAdd} style="padding:11px 22px" data-i18n="nav.buy">Buy now</button>
+      : <a class="btn btn--fill navbuy" href={buyHref} style="padding:11px 22px" data-i18n="nav.buy">Buy now</a>)}
+    <button class="burger" id="burger">☰</button>
+  </div>
+</div></nav>
+<div class="mobnav" id="mobnav">
+  {links.map((l) => <a href={l.href} data-i18n={l.key}>{l.label}</a>)}
+</div>

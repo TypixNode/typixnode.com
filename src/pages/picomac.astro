@@ -1,0 +1,96 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CartDrawer from '../components/CartDrawer.astro';
+import Lineup from '../components/Lineup.astro';
+const links = [
+  { href: '#features', key: 'nav.features', label: 'Features' },
+  { href: '#specs', key: 'nav.specs', label: 'Specs' },
+  { href: '#faq', key: 'nav.faq', label: 'FAQ' },
+  { href: '/#products', key: 'nav.all', label: 'All products' },
+];
+---
+<Layout
+  title="Pico-Mac Nano — a palm-sized 1984 Macintosh | TypixNode"
+  titleKey="doc.mac"
+  description="The TypixNode Pico-Mac Nano — a palm-sized 1984 Macintosh that actually boots classic Mac OS over USB-C, Happy Mac and all."
+  ogTitle="Pico-Mac Nano — a palm-sized 1984 Macintosh"
+  ogDescription="A palm-sized 1984 Macintosh that actually boots classic Mac OS over USB-C, Happy Mac and all."
+>
+  <Nav links={links} buyAdd="picomac" />
+
+  <header class="prod"><div class="wrap">
+    <div class="hero">
+      <div class="copy">
+        <span class="chip rise d1"><span class="d"></span><span class="mono" data-i18n="hero.badge">Compact open hardware · Est. 2026</span></span>
+        <h1 class="rise d2" data-i18n="mac.h1">A 1984 Macintosh,<br/><span class="grad">in your palm.</span></h1>
+        <p class="lead rise d3" data-i18n="mac.lead">A loving miniature of the original Macintosh that actually boots classic Mac OS.</p>
+        <div class="price rise d3"><b data-usd="60">$60</b><span class="ship" data-i18n="deck.ship">· free worldwide shipping</span></div>
+        <div class="cta rise d3"><button class="btn btn--fill" data-add="picomac" data-i18n="cart.add">Add to cart</button><a class="btn btn--glass" href="#features" data-i18n="look">Look inside</a></div>
+        <div class="trust rise d4"><span class="d"></span> <span data-i18n="deck.trust">In stock · ships in 2–3 days · 2-year warranty · 4,200+ makers</span></div>
+      </div>
+      <div class="stage rise d4">
+        <span class="pin p1"><div class="k">Pico-Mac Nano</div><div class="v" data-i18n="mac.s2l">Boots</div></span>
+        <img src="/assets/picomac.jpg" alt="TypixNode Pico-Mac Nano" style="border-radius:18px">
+        <span class="pin p2"><div class="k"><span data-usd="60">$60</span></div><div class="v" data-i18n="pin.stock">In stock</div></span>
+      </div>
+    </div>
+    <div class="strip rise d4"><div class="in">
+      <div class="stat"><div class="n grad">2″</div><div class="l" data-i18n="mac.s1l">Display</div></div>
+      <div class="stat"><div class="n grad">1984</div><div class="l" data-i18n="mac.s2l">Boots</div></div>
+      <div class="stat"><div class="n grad">90 g</div><div class="l" data-i18n="mac.s3l">Weight</div></div>
+      <div class="stat"><div class="n grad">USB-C</div><div class="l" data-i18n="mac.s4l">Power</div></div>
+      <div class="social" data-i18n="st.social"><b>4,200+</b> makers already build on TypixNode hardware.</div>
+    </div></div>
+  </div></header>
+
+  <section><div class="wrap">
+    <div class="rows"><div class="row">
+      <div class="rimg"><img src="/assets/picomac-front.jpg" alt="Pico-Mac Nano display"></div>
+      <div class="rtxt"><div class="ic">Pico-Mac Nano</div><h3 data-i18n="mac.row.t">The Happy Mac lives again</h3><p data-i18n="mac.row.p">It boots an emulated classic Macintosh on a crisp little display.</p></div>
+    </div></div>
+  </div></section>
+
+  <section id="features"><div class="wrap">
+    <div class="head"><span class="mono" data-i18n="f.kicker">Why it's different</span><h2 data-i18n="mac.feat">Tiny machine, real soul</h2></div>
+    <div class="feat">
+      <div class="c"><div class="ic">☺</div><h4 data-i18n="mac.f1t">Boots real Mac OS</h4><p data-i18n="mac.f1p">Runs an emulated classic Macintosh System, Happy Mac included.</p></div>
+      <div class="c"><div class="ic">⏻</div><h4 data-i18n="mac.f2t">USB-C powered</h4><p data-i18n="mac.f2p">Plug into any USB-C port and the System starts in seconds.</p></div>
+      <div class="c"><div class="ic">◳</div><h4 data-i18n="mac.f3t">A faithful miniature</h4><p data-i18n="mac.f3p">Modeled on the 1984 original down to the beige curves.</p></div>
+    </div>
+  </div></section>
+
+  <section id="specs"><div class="wrap">
+    <div class="head"><span class="mono">Pico-Mac Nano</span><h2 data-i18n="sp.title">Technical specifications</h2></div>
+    <div class="spectbl">
+      <div class="r"><div class="k" data-i18n="mac.spk1">Display</div><div class="v" data-i18n="mac.spv1">2-inch, classic black &amp; white UI</div></div>
+      <div class="r"><div class="k" data-i18n="mac.spk2">System</div><div class="v" data-i18n="mac.spv2">Emulated classic Mac OS (Happy Mac)</div></div>
+      <div class="r"><div class="k" data-i18n="mac.spk3">Power</div><div class="v" data-i18n="mac.spv3">USB-C, no internal battery</div></div>
+      <div class="r"><div class="k" data-i18n="mac.spk4">Storage</div><div class="v" data-i18n="mac.spv4">microSD with system image</div></div>
+      <div class="r"><div class="k" data-i18n="mac.spk5">Body</div><div class="v" data-i18n="mac.spv5">Injection-molded, 1984-faithful</div></div>
+      <div class="r"><div class="k" data-i18n="mac.spk6">Dimensions</div><div class="v" data-i18n="mac.spv6">60 × 44 × 66 mm · 90 g</div></div>
+    </div>
+  </div></section>
+
+  <section id="faq"><div class="wrap">
+    <div class="head"><span class="mono" data-i18n="faq.kicker">Good to know</span><h2 data-i18n="faq.title">Frequently asked questions</h2></div>
+    <div class="faq">
+      <div class="qa"><button><span data-i18n="mac.q1">Does it really run Mac OS?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="mac.a1">Yes — it boots an emulated classic Macintosh System.</p></div></div>
+      <div class="qa"><button><span data-i18n="mac.q2">How is it powered?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="mac.a2">Over USB-C. There's no internal battery.</p></div></div>
+    </div>
+  </div></section>
+
+  <Lineup />
+
+  <section><div class="wrap">
+    <div class="ctab">
+      <h2 data-i18n="mac.cta.t">Put 1984 on your desk</h2>
+      <p data-i18n="mac.cta.p">A palm-sized Macintosh that really boots.</p>
+      <div class="cta"><button class="btn btn--fill" data-add="picomac" data-i18n="cart.add">Add to cart</button><a class="btn btn--glass" href="/#products" data-i18n="see.all">See all products</a></div>
+    </div>
+  </div></section>
+
+  <Footer />
+  <CartDrawer />
+</Layout>

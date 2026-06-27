@@ -1,8 +1,52 @@
 {
   "name": "typixnode-com",
+  "main": "./dist/_worker.js/index.js",
   "compatibility_date": "2026-06-04",
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
     "not_found_handling": "404-page"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "PUBLIC_SITE_URL": "https://typixnode.com"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "typixnode-orders",
+      "database_id": "4f59b60c-8e55-4f5d-9436-1f423986d39b",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // ---------------------------------------------------------------------------
+  // Staging / preview environment.
+  // Deploy with:  wrangler deploy --env staging   (or `npm run deploy:stg`)
+  // Serves a pre-launch preview at https://stg.typixnode.com (custom domain on
+  // the typixnode.com zone) and also at the auto *.workers.dev URL.
+  // Non-inheritable keys (vars, d1_databases) are redeclared per environment.
+  // ---------------------------------------------------------------------------
+  "env": {
+    "staging": {
+      "name": "typixnode-com-staging",
+      "workers_dev": true,
+      "routes": [
+        { "pattern": "stg.typixnode.com", "custom_domain": true }
+      ],
+      "vars": {
+        "PUBLIC_SITE_URL": "https://stg.typixnode.com"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "typixnode-orders",
+          "database_id": "4f59b60c-8e55-4f5d-9436-1f423986d39b",
+          "migrations_dir": "migrations"
+        }
+      ]
+    }
   }
 }

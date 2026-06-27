@@ -5,11 +5,21 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro build && wrangler dev",
+    "deploy": "astro build && wrangler deploy",
+    "deploy:stg": "astro build && wrangler deploy --env staging",
+    "cf:login": "wrangler login",
+    "cf:d1:create": "wrangler d1 create typixnode-orders",
+    "cf:migrate": "wrangler d1 migrations apply typixnode-orders --remote",
+    "cf:migrate:local": "wrangler d1 migrations apply typixnode-orders --local"
   },
   "dependencies": {
-    "astro": "^5.9.0",
+    "@astrojs/cloudflare": "^12.6.13",
     "@astrojs/tailwind": "^6.0.2",
+    "astro": "^5.9.0",
     "tailwindcss": "^3.4.17"
+  },
+  "devDependencies": {
+    "wrangler": "^4.59.2"
   }
 }

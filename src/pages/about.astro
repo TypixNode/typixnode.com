@@ -1,0 +1,51 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CartDrawer from '../components/CartDrawer.astro';
+const links = [
+  { href: '/#products', key: 'nav.all', label: 'All products' },
+  { href: '/typixdeck', key: 'nav.deck', label: 'TypixDeck' },
+  { href: '/support', key: 'ft.support', label: 'Support' },
+];
+---
+<Layout
+  title="About — TypixNode"
+  titleKey="about.doc"
+  description="TypixNode is a tiny studio designing and milling compact open hardware in small batches — a few machines, made very well."
+  ogTitle="About — TypixNode"
+  ogDescription="A tiny studio designing and milling compact open hardware in small batches."
+>
+  <Nav links={links} showBuy={false} />
+
+  <section style="padding-top:64px"><div class="wrap">
+    <div class="head">
+      <span class="mono" data-i18n="about.kicker">Our story</span>
+      <h2 data-i18n="about.h1">We make a few machines, very well.</h2>
+      <p data-i18n="about.lead">TypixNode is a tiny studio that designs, mills and bench-tests compact open hardware in small batches.</p>
+    </div>
+    <div class="rows"><div class="row">
+      <div class="rimg"><img src="/assets/cyberdeck-internals.png" alt="Inside a TypixNode machine"></div>
+      <div class="rtxt"><div class="ic" data-i18n="about.kicker">Our story</div><h3 data-i18n="about.believe">What we believe</h3><p data-i18n="about.story">Open CAD, schematics and firmware in every box; small, hand-checked batches; and parts you can replace.</p></div>
+    </div></div>
+  </div></section>
+
+  <section style="padding-top:0"><div class="wrap">
+    <div class="feat">
+      <div class="c"><div class="ic">⚿</div><h4 data-i18n="about.v1t">Built to be opened</h4><p data-i18n="about.v1p">Every product ships with public CAD, schematics and firmware.</p></div>
+      <div class="c"><div class="ic">◑</div><h4 data-i18n="about.v2t">Small batches, high care</h4><p data-i18n="about.v2p">We mill, assemble and test in small runs, checked by hand.</p></div>
+      <div class="c"><div class="ic">∞</div><h4 data-i18n="about.v3t">Made to last</h4><p data-i18n="about.v3p">Metal where it matters, standard sockets, replaceable parts.</p></div>
+    </div>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="ctab">
+      <h2 data-i18n="lu.title">Four machines. Pick your size.</h2>
+      <p data-i18n="lu.sub">A small, carefully made catalogue.</p>
+      <div class="cta"><a class="btn btn--fill" href="/#products" data-i18n="see.all">See all products</a><a class="btn btn--glass" href="/support" data-i18n="ft.support">Support</a></div>
+    </div>
+  </div></section>
+
+  <Footer />
+  <CartDrawer />
+</Layout>

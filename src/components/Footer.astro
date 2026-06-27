@@ -1,9 +1,14 @@
 ---
-import { useTranslations, type Locale } from '../i18n/ui';
-interface Props { locale: Locale; }
-const { locale } = Astro.props;
-const t = useTranslations(locale);
 ---
-<footer class="py-6 px-6 text-center text-sm text-gray-600 border-t border-white/5">
-  <p>{t('footer.text')}</p>
-</footer>
+<footer><div class="wrap"><div class="ft">
+  <div class="top">
+    <div class="brandcol">
+      <img class="logo-lt" src="/assets/typixnode-logo.svg" alt="TypixNode"><img class="logo-dk" src="/assets/typixnode-logo-inverse.svg" alt="TypixNode">
+      <p data-i18n="ft.tag">Compact open hardware, designed and milled in small batches. Built tiny, shipped worldwide.</p>
+    </div>
+    <div class="col"><h4 data-i18n="ft.products">Products</h4><a href="/typixdeck">TypixDeck</a><a href="/keyboard">BLE Keyboard</a><a href="/diysuite">DIY Suite</a><a href="/picomac">Pico-Mac Nano</a></div>
+    <div class="col"><h4 data-i18n="ft.company">Company</h4><a href="/about" data-i18n="ft.about">About</a><a href="/support" data-i18n="ft.support">Support</a><a href="/support" data-i18n="ft.shipping">Shipping</a><a href="/support" data-i18n="ft.warranty">Warranty</a></div>
+    <div class="col"><h4 data-i18n="ft.open">Open</h4><a href="https://github.com/TypixNode">GitHub ↗</a><a href="#" data-i18n="ft.cad">CAD files</a><a href="#" data-i18n="ft.fw">Firmware</a><a href="#" data-i18n="ft.docs">Docs</a></div>
+  </div>
+  <div class="bot"><span data-i18n="ft.copy">© 2026 TypixNode — Compact Open Hardware</span><span>hello@typixnode.com</span></div>
+</div></div></footer>
