@@ -46,7 +46,9 @@ h1,h2,h3,h4{font-family:var(--d);letter-spacing:-.02em;line-height:1.05}
 
 /* nav + controls */
 .tnx-glass-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
-nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;max-width:1140px;padding:0 14px}
+/* Match .wrap (max-width 1180 / 28px gutter) so the nav pill edges line up
+   with all page content + footer. */
+nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;max-width:1180px;padding:0 28px}
 /* Liquid Glass pill nav. height 66 -> pill radius 33.
    Concentric corners: .navbuy is 44px tall, centered in 66px -> gap (66-44)/2 = 11px,
    so .navbuy radius = 33 - 11 = 22px (shares corner centres with the nav pill). */
@@ -106,7 +108,7 @@ nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;max-width:1140px;padd
 .mobnav .mrow{display:flex;gap:8px;margin-top:8px;border-top:1px solid var(--line);padding-top:14px}
 
 /* centered hero (home) */
-header.home{padding:60px 0 24px;text-align:center}
+header.home{padding:28px 0 24px;text-align:center}
 header.home h1{font-weight:800;font-size:clamp(2.9rem,7.4vw,5.6rem);line-height:1}
 header.home .lead{color:var(--soft);font-size:1.18rem;max-width:50ch;margin:24px auto 30px}
 header.home .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
