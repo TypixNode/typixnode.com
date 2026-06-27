@@ -1,0 +1,28 @@
+{
+  // Standalone backup worker: a scheduled Cloudflare Workflow that exports the
+  // D1 order database(s) via the D1 REST API and streams the SQL dump into R2.
+  // Independent from the site worker so it can't affect the storefront.
+  "name": "typixnode-d1-backup",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-06-04",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+
+  // Daily at 03:17 UTC (off the :00 mark to avoid the global cron stampede).
+  "triggers": { "crons": ["17 3 * * *"] },
+
+  "r2_buckets": [
+    { "binding": "BACKUP_BUCKET", "bucket_name": "d1-backups" }
+  ],
+
+  "vars": {
+    "ACCOUNT_ID": "7116705d3df9eab8a9dd624092beb227",
+    // Comma-separated "label:databaseId" pairs to back up. Production id added
+    // once the prod DB carries real data.
+    "D1_TARGETS": "staging:e7ce54bd-8246-44fd-8c1b-986c5f0fca1e",
+    // Keep this many days of backups in R2; older objects are pruned each run.
+    "RETENTION_DAYS": "60"
+  }
+  // Secret (set via `wrangler secret put`): D1_REST_API_TOKEN — a token allowed
+  // to call the D1 export REST API.
+}

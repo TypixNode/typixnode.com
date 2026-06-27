@@ -16,6 +16,16 @@ interface Env {
   STRIPE_WEBHOOK_SECRET: string;
   /** Resend API key, e.g. re_... */
   RESEND_API_KEY: string;
+  /** PayPal REST app client id (sandbox or live). */
+  PAYPAL_CLIENT_ID: string;
+  /** PayPal REST app secret. */
+  PAYPAL_SECRET: string;
+  /** 'sandbox' (default) or 'live'. */
+  PAYPAL_ENV: string;
+  /** PayPal webhook id (from the registered webhook) for signature verification. */
+  PAYPAL_WEBHOOK_ID: string;
+  /** '1' to re-enable Stripe checkout entry (disabled by default). */
+  STRIPE_ENABLED: string;
 
   // --- Plain vars ---
   /** From address for transactional email, e.g. "TypixNode <orders@typixnode.com>" */
