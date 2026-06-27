@@ -44,25 +44,36 @@ h1,h2,h3,h4{font-family:var(--d);letter-spacing:-.02em;line-height:1.05}
 .navbuy{height:44px;padding:0 22px;border-radius:22px}
 
 /* nav + controls */
+.tnx-glass-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
 nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;max-width:1140px;padding:0 14px}
 /* Liquid Glass pill nav. height 66 -> pill radius 33.
    Concentric corners: .navbuy is 44px tall, centered in 66px -> gap (66-44)/2 = 11px,
    so .navbuy radius = 33 - 11 = 22px (shares corner centres with the nav pill). */
-.nav{display:flex;align-items:center;gap:20px;height:66px;padding:0 12px 0 20px;border-radius:33px;position:relative;
-  background:var(--glass2);
-  -webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+.nav{display:flex;align-items:center;gap:20px;height:66px;padding:0 12px 0 20px;border-radius:33px;position:relative;isolation:isolate;
+  /* Translucent so the backdrop actually shows through (was 85% opaque = looked solid). */
+  background:linear-gradient(180deg,#ffffff80,#ffffff4d);
+  -webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%);
   border:1px solid var(--glassb);
   box-shadow:0 12px 40px #0c1a1622,            /* drop shadow */
-    0 1px 0 #ffffff66,                          /* top outer highlight */
-    inset 0 1px 1px #ffffff80,                  /* inner top glass highlight */
-    inset 0 -1px 1px #0c1a160f,                 /* inner bottom shade */
-    inset 0 0 0 1px #ffffff14}                  /* faint inner edge */
+    0 1px 0 #ffffff80,                          /* top outer highlight */
+    inset 0 1px 1px #ffffffb3,                  /* inner top glass sheen */
+    inset 0 -1px 1px #0c1a1612,                 /* inner bottom shade */
+    inset 0 0 0 1px #ffffff1f}                  /* faint inner edge */
 [data-theme="dark"] .nav{
+  background:linear-gradient(180deg,#1c2b2580,#101c1759);
   box-shadow:0 12px 40px #00000055,
-    0 1px 0 #ffffff14,
-    inset 0 1px 1px #ffffff26,
-    inset 0 -1px 1px #00000033,
-    inset 0 0 0 1px #ffffff0a}
+    0 1px 0 #ffffff1f,
+    inset 0 1px 1px #ffffff33,
+    inset 0 -1px 1px #00000040,
+    inset 0 0 0 1px #ffffff12}
+/* Real edge refraction — only Chromium supports an SVG filter inside backdrop-filter.
+   Others keep the frosted blur above. Lighter blur here so the bent backdrop stays visible. */
+@supports (backdrop-filter: url(#tnx-liquid-glass)) or (-webkit-backdrop-filter: url(#tnx-liquid-glass)){
+  .nav{
+    -webkit-backdrop-filter:blur(4px) saturate(180%) brightness(1.06) url(#tnx-liquid-glass);
+    backdrop-filter:blur(4px) saturate(180%) brightness(1.06) url(#tnx-liquid-glass);
+  }
+}
 .brand{display:flex;align-items:center}
 .brand img{height:40px;width:auto}
 .brand .logo-dk{display:none}
