@@ -25,7 +25,7 @@
   // ---------------------------------------------------------------------------
   // Staging / preview environment.
   // Deploy with:  wrangler deploy --env staging   (or `npm run deploy:stg`)
-  // Serves a pre-launch preview at https://preview.typixnode.com (custom domain
+  // Serves a pre-launch preview at https://staging.typixnode.com (custom domain
   // on the typixnode.com zone) and also at the auto *.workers.dev URL.
   // Non-inheritable keys (vars, d1_databases) are redeclared per environment.
   // ---------------------------------------------------------------------------
@@ -34,16 +34,19 @@
       "name": "typixnode-com-staging",
       "workers_dev": true,
       "routes": [
-        { "pattern": "preview.typixnode.com", "custom_domain": true }
+        { "pattern": "staging.typixnode.com", "custom_domain": true }
       ],
       "vars": {
-        "PUBLIC_SITE_URL": "https://preview.typixnode.com"
+        "PUBLIC_SITE_URL": "https://staging.typixnode.com"
       },
       "d1_databases": [
         {
           "binding": "DB",
-          "database_name": "typixnode-orders",
-          "database_id": "4f59b60c-8e55-4f5d-9436-1f423986d39b",
+          // Dedicated staging DB — fully isolated from production orders.
+          // Create it once with:  npm run cf:d1:create:stg
+          // then paste the returned database_id below (replace REPLACE_WITH_STAGING_DB_ID).
+          "database_name": "typixnode-orders-staging",
+          "database_id": "e7ce54bd-8246-44fd-8c1b-986c5f0fca1e",
           "migrations_dir": "migrations"
         }
       ]

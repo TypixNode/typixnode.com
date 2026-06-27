@@ -10,7 +10,9 @@
     "deploy:stg": "astro build && wrangler deploy --env staging",
     "cf:login": "wrangler login",
     "cf:d1:create": "wrangler d1 create typixnode-orders",
+    "cf:d1:create:stg": "wrangler d1 create typixnode-orders-staging",
     "cf:migrate": "wrangler d1 migrations apply typixnode-orders --remote",
+    "cf:migrate:stg": "wrangler d1 migrations apply typixnode-orders-staging --env staging --remote",
     "cf:migrate:local": "wrangler d1 migrations apply typixnode-orders --local"
   },
   "dependencies": {
