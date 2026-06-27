@@ -16,11 +16,38 @@
 (function () {
   'use strict';
 
-  // Only Chromium currently applies an SVG filter inside backdrop-filter.
+  /* Only Chromium (Blink) actually applies an SVG `url(#id)` filter inside
+     backdrop-filter. The catch: Safari LIES — `CSS.supports('backdrop-filter',
+     'url(#x)')` returns true on Safari, but it then can't resolve the filter,
+     so the whole backdrop-filter declaration becomes invalid and the frosted
+     blur disappears too. So we gate on a reliable Blink-desktop signal and let
+     Safari / Firefox / iOS keep the pure CSS `-webkit-backdrop-filter: blur()`
+     frosted fallback. */
+  function isBlinkDesktop() {
+    var nav = navigator;
+    var ua = nav.userAgent || '';
+    // iOS / iPadOS browsers are all WebKit -> no url() backdrop support.
+    var isIOS =
+      /iP(hone|ad|od)/.test(ua) ||
+      (nav.platform === 'MacIntel' && nav.maxTouchPoints > 1);
+    if (isIOS) return false;
+    if (/Firefox\/|FxiOS\//.test(ua)) return false;
+    // userAgentData is a Chromium-only API -> the most reliable signal.
+    var uad = nav.userAgentData;
+    if (uad && Array.isArray(uad.brands)) {
+      return uad.brands.some(function (b) {
+        return /Chromium|Google Chrome|Microsoft Edge|Opera/i.test(b.brand);
+      });
+    }
+    // Fallback UA sniff: Blink engines, excluding Safari (no Chrome/Edg/OPR token).
+    return /(Chrome|Chromium|Edg|OPR)\//.test(ua);
+  }
+
   var SUPPORTED =
-    (window.CSS &&
-      (CSS.supports('backdrop-filter', 'url(#x)') ||
-        CSS.supports('-webkit-backdrop-filter', 'url(#x)')));
+    !!window.CSS &&
+    isBlinkDesktop() &&
+    (CSS.supports('backdrop-filter', 'url(#x)') ||
+      CSS.supports('-webkit-backdrop-filter', 'url(#x)'));
   if (!SUPPORTED) return; // CSS frosted fallback stays as-is.
 
   // Respect reduced-transparency / reduced-motion: skip the heavy effect.
