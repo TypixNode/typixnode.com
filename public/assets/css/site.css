@@ -96,10 +96,10 @@ nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;max-width:1140px;padd
 .cartbtn .cc{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:20px;background:var(--emerald);color:#fff;font-size:.7rem;font-weight:700}
 /* Concentric with the 66px nav pill: 40px tall -> vertical gap (66-40)/2 = 13px,
    so radius 33-13 = 20px (a full circle on 40px); right padding below is 13px too. */
-.burger{display:none;background:var(--glass);border:1px solid var(--glassb);border-radius:20px;width:40px;height:40px;font-size:1.2rem;cursor:pointer;color:var(--ink)}
+.burger{display:none;background:var(--glass);border:1px solid var(--glassb);border-radius:20px;width:40px;height:40px;font-size:1.2rem;line-height:1;padding:0;cursor:pointer;color:var(--ink)}
 @media(max-width:1080px){.links{display:none}}
 @media(max-width:1080px){.lbl-hide{display:none}}
-@media(max-width:760px){.burger{display:grid;place-items:center}.nav{gap:10px;padding-right:13px}.ctrls{gap:6px}.navbuy{display:none}}
+@media(max-width:760px){.burger{display:inline-flex;align-items:center;justify-content:center;line-height:1}.nav{gap:10px;padding-right:13px}.ctrls{gap:6px}.navbuy{display:none}}
 @media(max-width:480px){.selwrap.cur{display:none}}
 
 .mobnav{display:none;position:fixed;top:94px;left:14px;right:14px;z-index:55;background:var(--glass2);backdrop-filter:blur(16px);border:1px solid var(--glassb);border-radius:18px;padding:16px 22px;flex-direction:column;gap:6px;box-shadow:0 16px 40px #0c1a1622}
