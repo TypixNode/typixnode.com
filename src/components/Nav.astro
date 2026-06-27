@@ -31,7 +31,7 @@ const { links = homeLinks, buyHref = '/typixdeck', buyAdd, showBuy = true } = As
     {showBuy && (buyAdd
       ? <button class="btn btn--fill navbuy" data-add={buyAdd} data-i18n="nav.buy">Buy now</button>
       : <a class="btn btn--fill navbuy" href={buyHref} data-i18n="nav.buy">Buy now</a>)}
-    <button class="burger" id="burger">☰</button>
+    <button class="burger" id="burger" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
   </div>
 </div></nav>
 <div class="mobnav" id="mobnav">

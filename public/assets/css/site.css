@@ -57,7 +57,7 @@ nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;max-width:1140px;padd
      the rim is a soft inset highlight (top bright, bottom dim) that reads as
      a rounded glass edge instead of a hard white line. */
   background:linear-gradient(180deg,#ffffff40,#ffffff1f);
-  -webkit-backdrop-filter:blur(10px) saturate(150%);backdrop-filter:blur(10px) saturate(150%);
+  -webkit-backdrop-filter:blur(6px) saturate(150%);backdrop-filter:blur(6px) saturate(150%);
   border:0;
   box-shadow:0 14px 44px #0c1a1626,            /* drop shadow */
     inset 0 1px 1px #ffffff8c,                  /* soft top rim sheen */
@@ -76,8 +76,8 @@ nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;max-width:1140px;padd
 /* When JS attaches real edge refraction the inline backdrop-filter from
    liquid-glass.js takes over the frost; the element keeps its light --glass
    tint for legibility (no hard border thanks to the softened --glassb). */
-.brand{display:flex;align-items:center}
-.brand img{height:40px;width:auto}
+.brand{display:flex;align-items:center;flex:0 0 auto}
+.brand img{height:48px;width:auto}
 .brand .logo-dk{display:none}
 [data-theme="dark"] .brand .logo-lt{display:none}
 [data-theme="dark"] .brand .logo-dk{display:block}
@@ -99,8 +99,8 @@ nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;max-width:1140px;padd
 .burger{display:none;background:var(--glass);border:1px solid var(--glassb);border-radius:20px;width:40px;height:40px;font-size:1.2rem;line-height:1;padding:0;cursor:pointer;color:var(--ink)}
 @media(max-width:1080px){.links{display:none}}
 @media(max-width:1080px){.lbl-hide{display:none}}
-@media(max-width:760px){.burger{display:inline-flex;align-items:center;justify-content:center;line-height:1}.nav{gap:10px;padding-right:13px}.ctrls{gap:6px}.navbuy{display:none}}
-@media(max-width:480px){.selwrap.cur{display:none}}
+@media(max-width:760px){.burger{display:inline-flex;align-items:center;justify-content:center;line-height:1}.nav{gap:10px;padding-right:13px}.ctrls{gap:6px}.navbuy{display:none}.brand img{height:50px}.selwrap.cur{display:none}}
+@media(max-width:480px){.brand img{height:48px}}
 
 .mobnav{display:none;position:fixed;top:94px;left:14px;right:14px;z-index:55;background:var(--glass2);backdrop-filter:blur(16px);border:1px solid var(--glassb);border-radius:18px;padding:16px 22px;flex-direction:column;gap:6px;box-shadow:0 16px 40px #0c1a1622}
 .mobnav.on{display:flex}
@@ -199,7 +199,7 @@ section{padding:72px 0}
 .tile .ic{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--teal),var(--amber));display:grid;place-items:center;color:#fff;font-size:1.25rem;font-weight:800;margin-bottom:16px}
 .tile h3{font-weight:700;font-size:1.12rem;margin-bottom:8px}
 .tile p{color:var(--soft);font-size:.92rem}
-.tile.wide{grid-column:span 2}.tile.tall{grid-row:span 2}
+@media(min-width:561px){.tile.wide{grid-column:span 2}.tile.tall{grid-row:span 2}}
 .tile .ph{margin-top:18px;border-radius:16px;overflow:hidden;background:var(--photobg);border:1px solid var(--line)}
 .tile .ph img{width:100%;object-fit:cover}
 
