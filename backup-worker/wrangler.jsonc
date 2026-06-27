@@ -17,9 +17,8 @@
 
   "vars": {
     "ACCOUNT_ID": "7116705d3df9eab8a9dd624092beb227",
-    // Comma-separated "label:databaseId" pairs to back up. Production id added
-    // once the prod DB carries real data.
-    "D1_TARGETS": "staging:e7ce54bd-8246-44fd-8c1b-986c5f0fca1e",
+    // Comma-separated "label:databaseId" pairs to back up.
+    "D1_TARGETS": "staging:e7ce54bd-8246-44fd-8c1b-986c5f0fca1e,prod:4f59b60c-8e55-4f5d-9436-1f423986d39b",
     // Keep this many days of backups in R2; older objects are pruned each run.
     "RETENTION_DAYS": "60"
   }
