@@ -22,6 +22,9 @@
     // Keep this many days of backups in R2; older objects are pruned each run.
     "RETENTION_DAYS": "60"
   }
-  // Secret (set via `wrangler secret put`): D1_REST_API_TOKEN — a token allowed
-  // to call the D1 export REST API.
+  // Secrets (set via `wrangler secret put`):
+  //  - D1_REST_API_TOKEN — privileged token allowed to call the D1 export REST API.
+  //  - BACKUP_RUN_SECRET — low-privilege token that only gates the manual
+  //    `/run` trigger. Send it as `Authorization: Bearer <secret>` (never in the URL):
+  //      curl -X POST -H "Authorization: Bearer <BACKUP_RUN_SECRET>" https://<worker>/run
 }

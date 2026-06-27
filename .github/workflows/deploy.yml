@@ -56,9 +56,13 @@ jobs:
       #  re-trigger workflows, so this avoids a double production deploy.)
       - name: Create version tag
         if: github.event_name == 'workflow_dispatch' && steps.env.outputs.name == 'production'
+        env:
+          # Pass via env so the shell treats the value as data, never as code
+          # (prevents expression/command injection from the workflow input).
+          VERSION_INPUT: ${{ github.event.inputs.version }}
         run: |
           set -e
-          IN="${{ github.event.inputs.version }}"
+          IN="$VERSION_INPUT"
           if [ -n "$IN" ]; then
             NEW="$IN"
             case "$NEW" in v*) ;; *) NEW="v$NEW" ;; esac

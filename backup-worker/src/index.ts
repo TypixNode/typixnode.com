@@ -13,7 +13,16 @@ interface Env {
   ACCOUNT_ID: string;
   D1_TARGETS: string; // "label:dbid,label:dbid"
   RETENTION_DAYS: string;
-  D1_REST_API_TOKEN: string; // secret
+  D1_REST_API_TOKEN: string; // secret — privileged Cloudflare D1 export token
+  BACKUP_RUN_SECRET: string; // secret — low-privilege token, only gates /run
+}
+
+/** Constant-time string comparison to avoid leaking the secret via timing. */
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length || a.length === 0) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
 }
 
 const API = 'https://api.cloudflare.com/client/v4';
@@ -123,10 +132,18 @@ export default {
   async scheduled(event: ScheduledController, env: Env, ctx: ExecutionContext) {
     ctx.waitUntil(runBackup(env, event.scheduledTime));
   },
-  // Manual trigger for testing: GET /run with the secret in ?key=
+  // Manual trigger for testing: POST/GET /run with a low-privilege bearer token.
+  // Auth uses the dedicated BACKUP_RUN_SECRET sent in the Authorization header —
+  // never a URL query param (which would leak into edge/CDN logs, browser
+  // history and Referer headers) and never the privileged D1 export token.
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
-    if (url.pathname === '/run' && url.searchParams.get('key') === env.D1_REST_API_TOKEN) {
+    if (url.pathname === '/run') {
+      const auth = req.headers.get('Authorization') || '';
+      const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+      if (!safeEqual(token, env.BACKUP_RUN_SECRET || '')) {
+        return new Response('unauthorized\n', { status: 401 });
+      }
       try {
         await runBackup(env, Date.now());
         return new Response('backup ok\n');
