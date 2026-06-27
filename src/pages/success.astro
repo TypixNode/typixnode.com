@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+
+export const prerender = false;
+
+// For Stripe, the session_id query param lets us look up + confirm the order.
+const url = new URL(Astro.request.url);
+const sessionId = url.searchParams.get('session_id');
+const provider = url.searchParams.get('provider');
+let orderId: string | null = url.searchParams.get('order');
+let paid = provider === 'paypal'; // PayPal capture already confirmed client-side
+
+if (sessionId) {
+  const env = (Astro.locals as any).runtime?.env ?? {};
+  if (env.DB) {
+    try {
+      const row: any = await env.DB
+        .prepare('SELECT id, status FROM orders WHERE provider_ref = ?')
+        .bind(sessionId)
+        .first();
+      if (row) {
+        orderId = String(row.id);
+        paid = row.status === 'paid';
+      }
+    } catch {}
+  }
+}
+---
+<Layout title="Order confirmed — TypixNode" noindex={true}>
+  <nav><div class="nav">
+    <a class="brand" href="/"><img class="logo-lt" src="/assets/typixnode-logo.svg" alt="TypixNode"><img class="logo-dk" src="/assets/typixnode-logo-inverse.svg" alt="TypixNode"></a>
+    <span class="sp"></span>
+    <div class="ctrls">
+      <button class="ctrl themebtn" aria-label="Toggle theme"><span class="ti">☾</span></button>
+    </div>
+  </div></nav>
+
+  <section style="min-height:64vh;display:grid;place-items:center;text-align:center"><div class="wrap">
+    <div style="font-size:4rem;line-height:1">🎉</div>
+    <h2 style="font-weight:800;font-size:clamp(1.6rem,4vw,2.4rem);margin:12px 0 12px">Thank you for your order!</h2>
+    <p style="color:var(--soft);max-width:48ch;margin:0 auto 8px">
+      {paid
+        ? 'Your payment was received. A confirmation email is on its way.'
+        : 'Your order is being processed. We’ll email you once it’s confirmed.'}
+    </p>
+    {orderId && <p style="color:var(--soft2);font-size:.9rem;margin:0 auto 26px">Order <b>{orderId}</b></p>}
+    <a class="btn btn--fill" href="/">Back to home</a>
+  </div></section>
+
+  <Footer />
+  <script is:inline>
+    // Clear the local cart after a successful checkout return.
+    try { localStorage.setItem('tnx-cart', '[]'); } catch (e) {}
+  </script>
+</Layout>

@@ -19,6 +19,14 @@ const {
 } = Astro.props;
 const site = 'https://typixnode.com';
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site).href;
+
+// Payment config exposed to the browser (publishable values only — never secrets).
+const env = (Astro.locals as any).runtime?.env ?? {};
+const paypalClientId: string = env.PAYPAL_CLIENT_ID ?? '';
+// Stripe is intentionally disabled for now (requires a HK entity to take live
+// payments; mainland-China company can't activate it). Code is retained and
+// auto-re-enables if STRIPE_ENABLED is set truthy in the future.
+const stripeEnabled: boolean = String(env.STRIPE_ENABLED ?? '') === '1';
 ---
 <!doctype html>
 <html lang="en">
@@ -56,6 +64,18 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site).href;
   </head>
   <body data-title-key={titleKey}>
     <slot />
+    <script is:inline define:vars={{ paypalClientId, stripeEnabled }}>
+      window.TNX_CFG = {
+        paypalClientId: paypalClientId || '',
+        stripeEnabled: !!stripeEnabled,
+      };
+    </script>
+    {paypalClientId && (
+      <script
+        is:inline
+        src={`https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=USD&intent=capture`}
+      ></script>
+    )}
     <script src="/assets/js/site.js" is:inline></script>
   </body>
 </html>

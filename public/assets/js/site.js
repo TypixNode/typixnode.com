@@ -108,6 +108,7 @@
       /* cart */
       "cart.title": "Your cart", "cart.empty": "Your cart is empty.", "cart.sub": "Subtotal",
       "cart.checkout": "Checkout", "cart.note": "Taxes & shipping calculated at checkout.", "cart.add": "Add to cart",
+      "cart.unavailable": "Online payment is being set up — please check back soon.",
       "see.all": "See all products", "look": "Look inside",
       "doc.kb": "BLE Keyboard — card-sized wireless keyboard | TypixNode",
       "kb.h1": 'A full keyboard,<br/><span class="grad">the size of a card.</span>',
@@ -252,6 +253,7 @@
       "cta.deck.b2": "查看全部产品",
       "cart.title": "你的购物车", "cart.empty": "购物车是空的。", "cart.sub": "小计",
       "cart.checkout": "结账", "cart.note": "税费与运费将在结账时计算。", "cart.add": "加入购物车",
+      "cart.unavailable": "在线支付正在开通中，请稍后再来。",
       "see.all": "查看全部产品", "look": "看看内部",
       "doc.kb": "蓝牙键盘 — 卡片大小无线键盘 | TypixNode",
       "kb.h1": '一块全键盘，<br/><span class="grad">只有卡片大小。</span>',
@@ -396,6 +398,7 @@
       "cta.deck.b2": "製品一覧を見る",
       "cart.title": "カート", "cart.empty": "カートは空です。", "cart.sub": "小計",
       "cart.checkout": "レジに進む", "cart.note": "税・送料はレジで計算されます。", "cart.add": "カートに追加",
+      "cart.unavailable": "オンライン決済は準備中です。しばらくお待ちください。",
       "see.all": "製品一覧を見る", "look": "内部を見る",
       "doc.kb": "BLE キーボード — カードサイズのワイヤレスキーボード | TypixNode",
       "kb.h1": 'フルキーボードを、<br/><span class="grad">カードサイズで。</span>',
@@ -515,7 +518,7 @@
     if (!PRODUCTS[id]) return;
     var c = loadCart(), f = c.find(function (i) { return i.id === id; });
     if (f) f.qty++; else c.push({ id: id, qty: 1 });
-    saveCart(c); renderCart(); openCart();
+    saveCart(c); renderCart(); openCart(); renderPayPal();
   }
   function setQty(id, d) {
     var c = loadCart(), f = c.find(function (i) { return i.id === id; });
@@ -540,9 +543,92 @@
     }
     var sub = c.reduce(function (n, i) { var p = PRODUCTS[i.id]; return n + (p ? p.usd * i.qty : 0); }, 0);
     var st = document.getElementById("cartSub"); if (st) st.textContent = money(sub, cur);
+    // toggle checkout controls by cart emptiness + which providers are enabled
+    var empty = !c.length;
+    var cfg = window.TNX_CFG || {};
+    var stripeOn = !!cfg.stripeEnabled;          // Stripe disabled by default
+    var paypalOn = !!cfg.paypalClientId;         // PayPal shown when configured
+    var cb = document.getElementById("checkoutBtn");
+    if (cb) cb.style.display = (!empty && stripeOn) ? "block" : "none";
+    var pw = document.getElementById("paypalWrap"); if (pw) pw.style.display = empty ? "none" : "block";
+    var cn = document.getElementById("cartNote"); if (cn) cn.style.display = empty ? "none" : "block";
+    // If nothing is configured, tell the user instead of showing a dead cart.
+    var err = document.getElementById("cartErr");
+    if (err && !empty && !stripeOn && !paypalOn) {
+      err.textContent = L("cart.unavailable", lang);
+      err.style.display = "block";
+    } else if (err && (stripeOn || paypalOn)) {
+      // don't clobber a real error message
+      if (err.dataset.kind !== "error") { err.textContent = ""; err.style.display = "none"; }
+    }
   }
   function openCart() { var o = document.getElementById("cartOv"), d = document.getElementById("cartDrawer"); if (o) o.classList.add("on"); if (d) d.classList.add("on"); }
   function closeCart() { var o = document.getElementById("cartOv"), d = document.getElementById("cartDrawer"); if (o) o.classList.remove("on"); if (d) d.classList.remove("on"); }
+
+  /* ---------- checkout ---------- */
+  function cartPayload() {
+    return { items: loadCart().map(function (i) { return { id: i.id, qty: i.qty }; }), locale: lang };
+  }
+  function showCartErr(msg) {
+    var e = document.getElementById("cartErr");
+    if (e) {
+      e.textContent = msg || "";
+      e.style.display = msg ? "block" : "none";
+      e.dataset.kind = msg ? "error" : "";
+    }
+  }
+  // Stripe: POST /api/checkout -> redirect to hosted checkout
+  // Disabled by default (window.TNX_CFG.stripeEnabled). Retained for future
+  // re-enable once a Stripe-eligible (e.g. HK) entity is available.
+  function stripeCheckout() {
+    var cfg = window.TNX_CFG || {};
+    if (!cfg.stripeEnabled) return;
+    var cart = loadCart();
+    if (!cart.length) return;
+    var btn = document.getElementById("checkoutBtn");
+    if (btn) { btn.disabled = true; btn.dataset.busy = "1"; }
+    showCartErr("");
+    fetch("/api/checkout", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cartPayload())
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d && d.url) { location.href = d.url; }
+      else { showCartErr((d && d.error) || "Checkout failed."); if (btn) btn.disabled = false; }
+    }).catch(function () { showCartErr("Network error."); if (btn) btn.disabled = false; });
+  }
+  // PayPal: render buttons into #paypalWrap if SDK + client id present
+  var paypalRendered = false;
+  function renderPayPal() {
+    var wrap = document.getElementById("paypalWrap");
+    var cfg = window.TNX_CFG || {};
+    if (!wrap || paypalRendered || !window.paypal || !cfg.paypalClientId) return;
+    if (!loadCart().length) return;
+    paypalRendered = true;
+    window.paypal.Buttons({
+      style: { layout: "horizontal", height: 40, tagline: false },
+      createOrder: function () {
+        return fetch("/api/paypal/create", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(cartPayload())
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (d && d.id) return d.id;
+          throw new Error((d && d.error) || "create failed");
+        });
+      },
+      onApprove: function (data) {
+        return fetch("/api/paypal/capture", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderID: data.orderID })
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (d && d.status === "COMPLETED") {
+            saveCart([]);
+            location.href = "/success?provider=paypal" + (d.orderId ? "&order=" + d.orderId : "");
+          } else { showCartErr("Payment not completed."); }
+        });
+      },
+      onError: function () { showCartErr("PayPal error. Try card checkout."); }
+    }).render("#paypalWrap");
+  }
 
   /* ---------- wire up ---------- */
   document.addEventListener("DOMContentLoaded", function () {
@@ -573,7 +659,8 @@
     document.body.addEventListener("click", function (e) {
       var add = e.target.closest("[data-add]");
       if (add) { e.preventDefault(); addToCart(add.dataset.add); return; }
-      if (e.target.closest(".cartbtn")) { e.preventDefault(); openCart(); return; }
+      if (e.target.closest(".cartbtn")) { e.preventDefault(); openCart(); renderPayPal(); return; }
+      if (e.target.closest("#checkoutBtn")) { e.preventDefault(); stripeCheckout(); return; }
       if (e.target.id === "cartOv" || e.target.closest("[data-cart-close]")) { closeCart(); return; }
       var inc = e.target.closest("[data-inc]"); if (inc) { setQty(inc.dataset.inc, 1); return; }
       var dec = e.target.closest("[data-dec]"); if (dec) { setQty(dec.dataset.dec, -1); return; }
