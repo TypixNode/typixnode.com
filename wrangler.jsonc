@@ -25,8 +25,8 @@
   // ---------------------------------------------------------------------------
   // Staging / preview environment.
   // Deploy with:  wrangler deploy --env staging   (or `npm run deploy:stg`)
-  // Serves a pre-launch preview at https://stg.typixnode.com (custom domain on
-  // the typixnode.com zone) and also at the auto *.workers.dev URL.
+  // Serves a pre-launch preview at https://preview.typixnode.com (custom domain
+  // on the typixnode.com zone) and also at the auto *.workers.dev URL.
   // Non-inheritable keys (vars, d1_databases) are redeclared per environment.
   // ---------------------------------------------------------------------------
   "env": {
@@ -34,10 +34,10 @@
       "name": "typixnode-com-staging",
       "workers_dev": true,
       "routes": [
-        { "pattern": "stg.typixnode.com", "custom_domain": true }
+        { "pattern": "preview.typixnode.com", "custom_domain": true }
       ],
       "vars": {
-        "PUBLIC_SITE_URL": "https://stg.typixnode.com"
+        "PUBLIC_SITE_URL": "https://preview.typixnode.com"
       },
       "d1_databases": [
         {

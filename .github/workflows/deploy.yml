@@ -1,12 +1,12 @@
 name: Deploy to Cloudflare
 
-# - Pushes to `main`  -> deploy the STAGING preview (https://stg.typixnode.com)
+# - Pushes to `dev`   -> deploy the STAGING preview (https://preview.typixnode.com)
 # - Version tags `v*` -> deploy PRODUCTION (https://typixnode.com)
 #     git tag v1.0.0 && git push origin v1.0.0
 on:
   push:
     branches:
-      - main
+      - dev
     tags:
       - 'v*'
   # Allow manual runs from the Actions tab as well.
