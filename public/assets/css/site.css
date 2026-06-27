@@ -39,11 +39,30 @@ h1,h2,h3,h4{font-family:var(--d);letter-spacing:-.02em;line-height:1.05}
 .btn--fill:hover{background:var(--emerald);color:#fff;transform:translateY(-2px);box-shadow:0 12px 30px #0a8f6e44}
 .btn--glass{background:var(--glass);border:1px solid var(--glassb);backdrop-filter:blur(10px);color:var(--ink)}
 .btn--glass:hover{border-color:var(--teal);transform:translateY(-2px)}
+/* Nav buy button: concentric with the 33px nav pill.
+   height 44px, vertical gap to nav inner wall = (66-44)/2 = 11px -> radius 33-11 = 22px */
+.navbuy{height:44px;padding:0 22px;border-radius:22px}
 
 /* nav + controls */
 nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;max-width:1140px;padding:0 14px}
-.nav{display:flex;align-items:center;gap:20px;height:66px;padding:0 12px 0 20px;border-radius:22px;
-  background:var(--glass2);backdrop-filter:blur(16px);border:1px solid var(--glassb);box-shadow:0 12px 40px #0c1a1618}
+/* Liquid Glass pill nav. height 66 -> pill radius 33.
+   Concentric corners: .navbuy is 44px tall, centered in 66px -> gap (66-44)/2 = 11px,
+   so .navbuy radius = 33 - 11 = 22px (shares corner centres with the nav pill). */
+.nav{display:flex;align-items:center;gap:20px;height:66px;padding:0 12px 0 20px;border-radius:33px;position:relative;
+  background:var(--glass2);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+  border:1px solid var(--glassb);
+  box-shadow:0 12px 40px #0c1a1622,            /* drop shadow */
+    0 1px 0 #ffffff66,                          /* top outer highlight */
+    inset 0 1px 1px #ffffff80,                  /* inner top glass highlight */
+    inset 0 -1px 1px #0c1a160f,                 /* inner bottom shade */
+    inset 0 0 0 1px #ffffff14}                  /* faint inner edge */
+[data-theme="dark"] .nav{
+  box-shadow:0 12px 40px #00000055,
+    0 1px 0 #ffffff14,
+    inset 0 1px 1px #ffffff26,
+    inset 0 -1px 1px #00000033,
+    inset 0 0 0 1px #ffffff0a}
 .brand{display:flex;align-items:center}
 .brand img{height:40px;width:auto}
 .brand .logo-dk{display:none}

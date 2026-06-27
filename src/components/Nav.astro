@@ -29,8 +29,8 @@ const { links = homeLinks, buyHref = '/typixdeck', buyAdd, showBuy = true } = As
     <span class="selwrap cur"><select id="cursel" aria-label="Currency"><option>USD</option><option>EUR</option><option>GBP</option><option>CNY</option><option>JPY</option></select></span>
     <button class="ctrl cartbtn" aria-label="Cart">🛍<span class="cc">0</span></button>
     {showBuy && (buyAdd
-      ? <button class="btn btn--fill navbuy" data-add={buyAdd} style="padding:11px 22px" data-i18n="nav.buy">Buy now</button>
-      : <a class="btn btn--fill navbuy" href={buyHref} style="padding:11px 22px" data-i18n="nav.buy">Buy now</a>)}
+      ? <button class="btn btn--fill navbuy" data-add={buyAdd} data-i18n="nav.buy">Buy now</button>
+      : <a class="btn btn--fill navbuy" href={buyHref} data-i18n="nav.buy">Buy now</a>)}
     <button class="burger" id="burger">☰</button>
   </div>
 </div></nav>
