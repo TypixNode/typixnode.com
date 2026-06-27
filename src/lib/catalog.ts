@@ -12,23 +12,63 @@ export interface Product {
   img: string;
 }
 
+// Prices are hardcoded for now (a D1-backed admin will replace this later).
+// TypixDeck pricing: $119 bare body (no battery, no compute module). The CM4 /
+// CM5 bundles = bare + the module's street price (no-eMMC "Lite", Wireless,
+// 4GB RAM default) and ship WITH a free battery. Reference street prices
+// (excl. tax/duties, Jun 2026): CM4 4GB Lite ≈ $95 -> 119+95 = 214;
+// CM5 4GB Lite ≈ $105 -> 119+105 = 224. We standardise on no-eMMC modules.
 export const PRODUCTS: Record<string, Product> = {
   typixdeck: {
     id: 'typixdeck',
-    usd: 599,
-    name: { en: 'TypixDeck', zh: 'TypixDeck', ja: 'TypixDeck' },
+    usd: 119,
+    name: {
+      en: 'TypixDeck (body only)',
+      zh: 'TypixDeck（仅机身）',
+      ja: 'TypixDeck（本体のみ）',
+    },
+    img: '/assets/cyberdeck.png',
+  },
+  'typixdeck-cm4': {
+    id: 'typixdeck-cm4',
+    usd: 214,
+    name: {
+      en: 'TypixDeck · CM4 4GB (+ battery)',
+      zh: 'TypixDeck · CM4 4GB（含电池）',
+      ja: 'TypixDeck · CM4 4GB（バッテリー付）',
+    },
+    img: '/assets/cyberdeck.png',
+  },
+  'typixdeck-cm5': {
+    id: 'typixdeck-cm5',
+    usd: 224,
+    name: {
+      en: 'TypixDeck · CM5 4GB (+ battery)',
+      zh: 'TypixDeck · CM5 4GB（含电池）',
+      ja: 'TypixDeck · CM5 4GB（バッテリー付）',
+    },
     img: '/assets/cyberdeck.png',
   },
   keyboard: {
     id: 'keyboard',
-    usd: 129,
+    usd: 39,
     name: { en: 'BLE Keyboard', zh: '蓝牙键盘', ja: 'BLE キーボード' },
+    img: '/assets/keyboard.jpg',
+  },
+  'keyboard-wired': {
+    id: 'keyboard-wired',
+    usd: 29,
+    name: { en: 'Wired Keyboard', zh: '有线键盘', ja: '有線キーボード' },
     img: '/assets/keyboard.jpg',
   },
   diysuite: {
     id: 'diysuite',
-    usd: 59,
-    name: { en: 'DIY Suite', zh: 'DIY 套件', ja: 'DIY スイート' },
+    usd: 9,
+    name: {
+      en: 'Silicone Snap-Dome DIY Kit',
+      zh: '硅胶锅仔片 DIY 套件',
+      ja: 'シリコンドーム DIY キット',
+    },
     img: '/assets/diysuite.jpg',
   },
   picomac: {
