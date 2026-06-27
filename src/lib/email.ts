@@ -65,8 +65,14 @@ export function orderConfirmationHtml(opts: {
         <td style="padding:8px 0;text-align:right"><b>${opts.currency.toUpperCase()} $${total}</b></td>
       </tr>
     </table>
-    <p style="color:#666;font-size:13px;margin-top:16px">
-      We'll email you again when it ships. — TypixNode
+    <div style="margin-top:16px;padding:12px 14px;background:#f4f8f6;border:1px solid #e2ece8;border-radius:10px;color:#2c443c;font-size:13px">
+      <b>This is a pre-order.</b> Every TypixNode device is milled and assembled in small batches.
+      Estimated dispatch is <b>2 weeks – 2 months</b> from your order. We'll email you tracking the
+      moment it ships, and you can request a <b>full refund any time before it ships</b>.
+    </div>
+    <p style="color:#666;font-size:13px;margin-top:14px">
+      Track your order at <a href="https://typixnode.com/orders" style="color:#0a8f6e">typixnode.com/orders</a>.
+      Questions? Email <a href="mailto:support@typixnode.com" style="color:#0a8f6e">support@typixnode.com</a>. — TypixNode
     </p>
   </div>`;
 }

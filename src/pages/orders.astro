@@ -1,0 +1,167 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CartDrawer from '../components/CartDrawer.astro';
+import OrderCard from '../components/OrderCard.astro';
+import { getSessionUserId, githubConfigured } from '../lib/auth';
+import { getUserById, listOrdersForUser, getOrderByIdEmail, type DbUser } from '../lib/users';
+import { SUPPORT_EMAIL } from '../lib/display';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env ?? {};
+const cookies = Astro.cookies;
+const ghOn = githubConfigured(env as Env);
+
+const url = new URL(Astro.request.url);
+const err = url.searchParams.get('error');
+const oid = (url.searchParams.get('oid') || '').trim();
+const lemail = (url.searchParams.get('email') || '').trim();
+
+let userId: string | null = null;
+let user: DbUser | null = null;
+let orders: Record<string, unknown>[] = [];
+let lookupTried = false;
+let lookupOrder: Record<string, unknown> | null = null;
+
+try {
+  userId = await getSessionUserId(env as Env, cookies);
+  if (userId && env.DB) {
+    user = await getUserById(env.DB, userId);
+    orders = await listOrdersForUser(env.DB, userId);
+  }
+  if (oid && lemail && env.DB) {
+    lookupTried = true;
+    lookupOrder = await getOrderByIdEmail(env.DB, oid, lemail);
+  }
+} catch (e) {
+  /* render gracefully even if DB hiccups */
+}
+
+const loginHref = `/api/auth/github/login?return=${encodeURIComponent('/orders')}`;
+---
+<Layout title="My orders — TypixNode" titleKey="doc.orders" noindex={true}>
+  <Nav />
+
+  <header class="ordhdr"><div class="wrap">
+    <span class="mono" data-i18n="order.kicker">Your account</span>
+    <h1 data-i18n="order.title">My orders</h1>
+    <p class="lead" data-i18n="order.sub">Sign in with GitHub to see every order linked to your account — across all the email addresses you've used to check out.</p>
+    {err && <p class="ord-err" data-i18n="order.err.auth">Sign-in failed. Please try again.</p>}
+  </div></header>
+
+  <section class="ordwrap"><div class="wrap">
+
+    {userId ? (
+      <Fragment>
+      <div class="ord-acct">
+        <div class="ord-acct__who">
+          {user?.avatar_url && <img src={user.avatar_url} alt="" width="36" height="36" />}
+          <div>
+            <b>{user?.name || 'Signed in'}</b>
+            {user?.primary_email && <div class="ord-acct__email">{user.primary_email}</div>}
+          </div>
+        </div>
+        <form method="post" action="/api/auth/logout"><button class="btn btn--glass" data-i18n="order.logout">Sign out</button></form>
+      </div>
+
+      {orders.length > 0 ? (
+        <div class="ordgrid">
+          {orders.map((o) => <OrderCard order={o} />)}
+        </div>
+      ) : (
+        <p class="ord-empty" data-i18n="order.none">No orders linked yet. If you checked out with a different email, add it below.</p>
+      )}
+
+      <div class="ord-claim">
+        <h3 data-i18n="order.claim.title">Add an order placed with another email</h3>
+        <p data-i18n="order.claim.sub">Enter the order number and the email you used at checkout to attach it to your account.</p>
+        <div class="ord-claim__row">
+          <input id="claim-oid" type="text" placeholder="ord_..." autocomplete="off" />
+          <input id="claim-email" type="email" placeholder="you@example.com" autocomplete="email" />
+          <button class="btn btn--fill" id="claim-btn" data-i18n="order.claim.btn">Add order</button>
+        </div>
+        <p class="ord-claim__msg" id="claim-msg" hidden></p>
+      </div>
+      </Fragment>
+    ) : (
+      <div class="ord-signin">
+        {ghOn ? (
+          <a class="btn btn--fill ord-gh" href={loginHref}>
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            <span data-i18n="order.signin.github">Sign in with GitHub</span>
+          </a>
+        ) : (
+          <p class="ord-note" data-i18n="order.signin.soon">Account sign-in is coming soon. For now, look up a single order below.</p>
+        )}
+
+        <div class="ord-lookup">
+          <h3 data-i18n="order.lookup.title">Look up an order</h3>
+          <p data-i18n="order.lookup.sub">Enter your order number and the email you used at checkout.</p>
+          <form class="ord-claim__row" method="get" action="/orders">
+            <input type="text" name="oid" value={oid} placeholder="ord_..." autocomplete="off" required />
+            <input type="email" name="email" value={lemail} placeholder="you@example.com" autocomplete="email" required />
+            <button class="btn btn--fill" data-i18n="order.lookup.btn">Find order</button>
+          </form>
+        </div>
+
+        {lookupTried && (
+          lookupOrder
+            ? <div class="ordgrid"><OrderCard order={lookupOrder} canClaim={ghOn} /></div>
+            : <p class="ord-empty" data-i18n="order.lookup.none">No order matches that number and email.</p>
+        )}
+      </div>
+    )}
+
+    <div class="ord-trust qa-wrap">
+      <h3 data-i18n="order.trust.title">Pre-order &amp; buyer protection</h3>
+      <ul class="ord-trustlist">
+        <li><b data-i18n="order.trust.1t">All items are pre-orders.</b> <span data-i18n="order.trust.1p">We mill and assemble in small batches. Estimated dispatch is 2 weeks – 2 months from order.</span></li>
+        <li><b data-i18n="order.trust.2t">Full refund before shipping.</b> <span data-i18n="order.trust.2p">Change your mind any time before your order ships and we'll refund you in full — no questions asked.</span></li>
+        <li><b data-i18n="order.trust.3t">You're always emailed.</b> <span data-i18n="order.trust.3p">Order confirmation now, and another email with tracking the moment it ships.</span></li>
+        <li><b data-i18n="order.trust.4t">Talk to a human.</b> <span data-i18n="order.trust.4p">Questions about your order? Email</span> <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.</li>
+      </ul>
+    </div>
+
+  </div></section>
+
+  <Footer />
+  <CartDrawer />
+
+  <script is:inline>
+    (function () {
+      var btn = document.getElementById('claim-btn');
+      if (!btn) return;
+      var msg = document.getElementById('claim-msg');
+      function show(t, ok) { if (!msg) return; msg.hidden = false; msg.textContent = t; msg.className = 'ord-claim__msg ' + (ok ? 'ok' : 'bad'); }
+      btn.addEventListener('click', function () {
+        var oid = (document.getElementById('claim-oid') || {}).value || '';
+        var email = (document.getElementById('claim-email') || {}).value || '';
+        if (!oid || !email) { show('Order number and email are required.', false); return; }
+        btn.disabled = true;
+        fetch('/api/orders/claim', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderId: oid.trim(), email: email.trim() })
+        }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+          .then(function (res) {
+            if (res.ok) { show('Order added.', true); setTimeout(function () { location.reload(); }, 700); }
+            else { show((res.d && res.d.error) || 'Could not add that order.', false); btn.disabled = false; }
+          })
+          .catch(function () { show('Network error.', false); btn.disabled = false; });
+      });
+      // Per-order "save to my account" buttons (shown on no-login lookup once signed in).
+      document.querySelectorAll('[data-claim]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          b.disabled = true;
+          fetch('/api/orders/claim', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId: b.getAttribute('data-claim'), email: b.getAttribute('data-claim-email') })
+          }).then(function (r) { return r.ok; }).then(function (ok) {
+            if (ok) location.href = '/orders'; else b.disabled = false;
+          }).catch(function () { b.disabled = false; });
+        });
+      });
+    })();
+  </script>
+</Layout>

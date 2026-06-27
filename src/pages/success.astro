@@ -1,33 +1,48 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
+import { getSessionUserId, githubConfigured } from '../lib/auth';
+import { bindOrderById } from '../lib/users';
+import { SUPPORT_EMAIL } from '../lib/display';
 
 export const prerender = false;
 
-// For Stripe, the session_id query param lets us look up + confirm the order.
+const env = (Astro.locals as any).runtime?.env ?? {};
 const url = new URL(Astro.request.url);
 const sessionId = url.searchParams.get('session_id');
 const provider = url.searchParams.get('provider');
 let orderId: string | null = url.searchParams.get('order');
 let paid = provider === 'paypal'; // PayPal capture already confirmed client-side
 
-if (sessionId) {
-  const env = (Astro.locals as any).runtime?.env ?? {};
-  if (env.DB) {
-    try {
-      const row: any = await env.DB
-        .prepare('SELECT id, status FROM orders WHERE provider_ref = ?')
-        .bind(sessionId)
-        .first();
-      if (row) {
-        orderId = String(row.id);
-        paid = row.status === 'paid';
-      }
-    } catch {}
-  }
+if (sessionId && env.DB) {
+  try {
+    const row: any = await env.DB
+      .prepare('SELECT id, status FROM orders WHERE provider_ref = ?')
+      .bind(sessionId)
+      .first();
+    if (row) {
+      orderId = String(row.id);
+      paid = row.status === 'paid';
+    }
+  } catch {}
 }
+
+// If the buyer is already signed in, silently link this order to their account.
+let boundToAccount = false;
+let signedIn = false;
+try {
+  const uid = await getSessionUserId(env as Env, Astro.cookies);
+  signedIn = !!uid;
+  if (uid && orderId && env.DB) {
+    boundToAccount = await bindOrderById(env.DB, uid, orderId);
+  }
+} catch {}
+
+const ghOn = githubConfigured(env as Env);
+const ret = `/success?${url.searchParams.toString()}`;
+const bindHref = `/api/auth/github/login?return=${encodeURIComponent(ret)}${orderId ? `&bind=${encodeURIComponent(orderId)}` : ''}`;
 ---
-<Layout title="Order confirmed — TypixNode" noindex={true}>
+<Layout title="Order confirmed — TypixNode" titleKey="doc.success" noindex={true}>
   <nav><div class="nav">
     <a class="brand" href="/"><img class="logo-lt" src="/assets/typixnode-logo.svg" alt="TypixNode"><img class="logo-dk" src="/assets/typixnode-logo-inverse.svg" alt="TypixNode"></a>
     <span class="sp"></span>
@@ -36,21 +51,41 @@ if (sessionId) {
     </div>
   </div></nav>
 
-  <section style="min-height:64vh;display:grid;place-items:center;text-align:center"><div class="wrap">
+  <section style="min-height:64vh;display:grid;place-items:center;text-align:center"><div class="wrap" style="max-width:620px">
     <div style="font-size:4rem;line-height:1">🎉</div>
-    <h2 style="font-weight:800;font-size:clamp(1.6rem,4vw,2.4rem);margin:12px 0 12px">Thank you for your order!</h2>
-    <p style="color:var(--soft);max-width:48ch;margin:0 auto 8px">
+    <h2 style="font-weight:800;font-size:clamp(1.6rem,4vw,2.4rem);margin:12px 0 12px" data-i18n="success.title">Thank you for your order!</h2>
+    <p style="color:var(--soft);margin:0 auto 8px" data-i18n={paid ? 'success.paid' : 'success.pending'}>
       {paid
         ? 'Your payment was received. A confirmation email is on its way.'
         : 'Your order is being processed. We’ll email you once it’s confirmed.'}
     </p>
-    {orderId && <p style="color:var(--soft2);font-size:.9rem;margin:0 auto 26px">Order <b>{orderId}</b></p>}
-    <a class="btn btn--fill" href="/">Back to home</a>
+
+    <div class="success-presale">
+      <b data-i18n="success.presale.t">This is a pre-order.</b>
+      <span data-i18n="success.presale.p">Estimated dispatch is 2 weeks – 2 months. We'll email you tracking the moment it ships.</span>
+    </div>
+
+    {orderId && <p style="color:var(--soft2);font-size:.9rem;margin:0 auto 18px"><span data-i18n="success.order">Order</span> <b>{orderId}</b></p>}
+
+    {boundToAccount ? (
+      <p class="success-acct" data-i18n="success.bound">✓ Saved to your account.</p>
+    ) : (!signedIn && ghOn && orderId) ? (
+      <a class="btn btn--fill success-gh" href={bindHref}>
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span data-i18n="success.savegh">Save this order to a GitHub account</span>
+      </a>
+    ) : null}
+
+    <div class="success-cta">
+      <a class="btn btn--glass" href="/orders" data-i18n="success.view">View my orders</a>
+      <a class="btn btn--glass" href="/" data-i18n="success.home">Back to home</a>
+    </div>
+
+    <p class="success-help"><span data-i18n="success.help">Need help? Email</span> <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></p>
   </div></section>
 
   <Footer />
   <script is:inline>
-    // Clear the local cart after a successful checkout return.
     try { localStorage.setItem('tnx-cart', '[]'); } catch (e) {}
   </script>
 </Layout>

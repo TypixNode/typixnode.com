@@ -27,6 +27,15 @@ interface Env {
   /** '1' to re-enable Stripe checkout entry (disabled by default). */
   STRIPE_ENABLED: string;
 
+  // --- Accounts (GitHub OAuth) ---
+  /** GitHub OAuth App client id. If unset, GitHub login is hidden/disabled. */
+  GITHUB_CLIENT_ID: string;
+  /** GitHub OAuth App client secret. */
+  GITHUB_CLIENT_SECRET: string;
+  /** HMAC key for signing session + OAuth-state cookies. Falls back to an
+   *  existing server secret if unset, so accounts work before it's provisioned. */
+  SESSION_SECRET: string;
+
   // --- Plain vars ---
   /** From address for transactional email, e.g. "TypixNode <orders@typixnode.com>" */
   FROM_EMAIL: string;

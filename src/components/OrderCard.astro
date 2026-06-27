@@ -1,0 +1,62 @@
+---
+import { currentStep, fmtMoney, fmtDate, parseItems, type Step } from '../lib/display';
+
+interface Props { order: Record<string, unknown>; canClaim?: boolean }
+const { order, canClaim = false } = Astro.props;
+
+const step: Step = currentStep(order);
+const items = parseItems(order.items);
+const canceled = step === 'canceled';
+const flow: Step[] = ['placed', 'paid', 'shipped', 'delivered'];
+const reached = (s: Step) => !canceled && flow.indexOf(s) <= Math.max(flow.indexOf(step), step === 'preparing' ? 1 : -1);
+const tracking = String(order.tracking_number ?? '');
+const trackingUrl = String(order.tracking_url ?? '');
+const carrier = String(order.tracking_carrier ?? '');
+---
+<div class="ordc">
+  <div class="ordc__top">
+    <div>
+      <div class="ordc__id">{String(order.id)}</div>
+      <div class="ordc__date">{fmtDate(order.created_at)}</div>
+    </div>
+    <span class={`ordc__badge ordc__badge--${step}`} data-i18n={'order.step.' + step}>{step}</span>
+  </div>
+
+  {!canceled && (
+    <ol class="ordc__flow">
+      {flow.map((s) => (
+        <li class={reached(s) ? 'on' : ''}>
+          <span class="dot"></span>
+          <span data-i18n={'order.step.' + s}>{s}</span>
+        </li>
+      ))}
+    </ol>
+  )}
+
+  <ul class="ordc__items">
+    {items.map((it) => (
+      <li><span>{it.name} × {it.qty}</span><span>${it.unitPriceUsd * it.qty}</span></li>
+    ))}
+  </ul>
+
+  <div class="ordc__foot">
+    <span data-i18n="order.total">Total</span>
+    <b>{fmtMoney(Number(order.amount_total), String(order.currency || 'usd'))}</b>
+  </div>
+
+  {tracking ? (
+    <div class="ordc__ship">
+      <span data-i18n="order.tracking">Tracking</span>:&nbsp;
+      {carrier && <span>{carrier}&nbsp;</span>}
+      {trackingUrl
+        ? <a href={trackingUrl} target="_blank" rel="noopener">{tracking} ↗</a>
+        : <span>{tracking}</span>}
+    </div>
+  ) : (
+    <div class="ordc__ship ordc__ship--eta" data-i18n="order.presale">Pre-order · ships in 2 weeks – 2 months</div>
+  )}
+
+  {canClaim && (
+    <button class="btn btn--glass ordc__claim" data-claim={String(order.id)} data-claim-email={String(order.email ?? '')} data-i18n="order.savemine">Save to my account</button>
+  )}
+</div>
