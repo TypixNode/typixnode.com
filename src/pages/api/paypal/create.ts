@@ -1,7 +1,7 @@
 // POST /api/paypal/create — create a PayPal order for the cart.
 // Body: { items: [{id, qty}], locale? } -> { id }
 import type { APIRoute } from 'astro';
-import { resolveCart, subtotalCents, newOrderId, type Locale } from '../../../lib/catalog';
+import { resolveCartDb, subtotalCents, newOrderId, type Locale } from '../../../lib/catalog';
 import { createOrder } from '../../../lib/orders';
 import { createPayPalOrder, paypalConfigured } from '../../../lib/paypal';
 
@@ -24,7 +24,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   }
 
   const locale: Locale = ['en', 'zh', 'ja'].includes(body?.locale) ? body.locale : 'en';
-  const lines = resolveCart(body?.items, locale);
+  const lines = await resolveCartDb(env.DB, body?.items, locale);
   if (lines.length === 0) return json({ error: 'Empty cart.' }, 400);
 
   const orderId = newOrderId();

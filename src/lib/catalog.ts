@@ -165,6 +165,79 @@ export function subtotalCents(lines: ResolvedLine[]): number {
 }
 
 // ---------------------------------------------------------------------------
+// D1-backed catalogue. Prices/names live in the `products` table (migration
+// 0005) so the dashboard can edit them without a deploy. The hard-coded
+// PRODUCTS above is the seed + a safety fallback if the DB is empty/unreachable.
+// A short in-process cache avoids a DB hit on every request (workers are
+// short-lived, so this is effectively per-isolate).
+// ---------------------------------------------------------------------------
+let _catalogCache: { at: number; map: Record<string, Product> } | null = null;
+const CATALOG_TTL_MS = 60_000;
+
+export async function loadCatalog(db: D1Database | undefined): Promise<Record<string, Product>> {
+  if (!db) return PRODUCTS;
+  const now = Date.now();
+  if (_catalogCache && now - _catalogCache.at < CATALOG_TTL_MS) return _catalogCache.map;
+  try {
+    const rs = await db
+      .prepare(
+        `SELECT sku, name_en, name_zh, name_ja, usd, img FROM products WHERE active = 1 ORDER BY sort`
+      )
+      .all();
+    const rows = (rs?.results ?? []) as any[];
+    if (!rows.length) return PRODUCTS; // empty table -> fall back to seed
+    const map: Record<string, Product> = {};
+    for (const r of rows) {
+      map[r.sku] = {
+        id: r.sku,
+        usd: Number(r.usd) || 0,
+        name: { en: r.name_en, zh: r.name_zh, ja: r.name_ja },
+        img: r.img ?? '',
+      };
+    }
+    _catalogCache = { at: now, map };
+    return map;
+  } catch {
+    return PRODUCTS; // DB error -> never block checkout, use seed
+  }
+}
+
+/** Like resolveCart but prices from a given catalogue map (DB-backed). */
+export function resolveCartWith(
+  catalog: Record<string, Product>,
+  lines: unknown,
+  locale: Locale = 'en'
+): ResolvedLine[] {
+  if (!Array.isArray(lines)) return [];
+  const out: ResolvedLine[] = [];
+  for (const raw of lines) {
+    if (!raw || typeof raw !== 'object') continue;
+    const id = String((raw as any).id ?? '');
+    const qty = Math.max(1, Math.min(99, Math.floor(Number((raw as any).qty ?? 0))));
+    const p = catalog[id];
+    if (!p || !Number.isFinite(qty) || qty < 1) continue;
+    out.push({
+      id,
+      name: p.name[locale] ?? p.name.en,
+      qty,
+      unitPriceUsd: p.usd,
+      unitAmount: p.usd * 100,
+    });
+  }
+  return out;
+}
+
+/** Convenience: load catalogue from D1 then resolve a client cart against it. */
+export async function resolveCartDb(
+  db: D1Database | undefined,
+  lines: unknown,
+  locale: Locale = 'en'
+): Promise<ResolvedLine[]> {
+  const catalog = await loadCatalog(db);
+  return resolveCartWith(catalog, lines, locale);
+}
+
+// ---------------------------------------------------------------------------
 // Shipping. The marketing copy promises "free worldwide shipping", so the
 // default rule is $0. Kept as a function so per-region rates can be added later
 // without touching the checkout routes.

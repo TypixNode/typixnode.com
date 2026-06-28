@@ -3165,6 +3165,25 @@
     applyI18n();
     applyCurrency();
 
+    // Refresh prices/names from the DB-backed catalogue (/api/products) so
+    // dashboard price edits take effect without a deploy. The hard-coded
+    // PRODUCTS above is the fallback used until this resolves (or if it fails).
+    fetch("/api/products").then(function (r) { return r.ok ? r.json() : null; }).then(function (data) {
+      if (!data || typeof data !== "object") return;
+      Object.keys(data).forEach(function (sku) {
+        var p = data[sku];
+        if (p && typeof p.usd === "number") {
+          PRODUCTS[sku] = { img: p.img, usd: p.usd, name: p.name };
+        }
+      });
+      // Re-apply any price displays bound to known SKUs + re-render the cart.
+      document.querySelectorAll("[data-usd][data-sku]").forEach(function (el) {
+        var sku = el.dataset.sku, prod = PRODUCTS[sku];
+        if (prod) { el.dataset.usd = prod.usd; el.textContent = money(prod.usd, cur); }
+      });
+      renderCart();
+    }).catch(function () {});
+
     var ls = document.getElementById("langsel");
     if (ls) ls.addEventListener("change", function () { lang = ls.value; set("tnx-lang", lang); applyI18n(); applyCurrency(); });
     var cs = document.getElementById("cursel");

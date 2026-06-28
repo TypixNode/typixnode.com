@@ -3,7 +3,7 @@
 // Returns: { url } to redirect the browser to Stripe's hosted checkout.
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
-import { resolveCart, subtotalCents, newOrderId, type Locale } from '../../lib/catalog';
+import { resolveCartDb, subtotalCents, newOrderId, type Locale } from '../../lib/catalog';
 import { createOrder } from '../../lib/orders';
 
 export const prerender = false;
@@ -28,7 +28,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   }
 
   const locale: Locale = ['en', 'zh', 'ja'].includes(body?.locale) ? body.locale : 'en';
-  const lines = resolveCart(body?.items, locale);
+  const lines = await resolveCartDb(env.DB, body?.items, locale);
   if (lines.length === 0) {
     return json({ error: 'Cart is empty or contains no valid items.' }, 400);
   }
