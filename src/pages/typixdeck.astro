@@ -11,22 +11,35 @@ const links = [
   { href: '#specs', key: 'nav.specs', label: 'Specs' },
   { href: '#faq', key: 'nav.faq', label: 'FAQ' },
 ];
+
+// Headline A/B variants switchable via ?h=1..6 (1-3 = aluminum craft, 4-6 = hackable/open).
+// Falls back to v1 when the param is missing or invalid.
+const hRaw = Astro.url.searchParams.get('h');
+const hNum = Number(hRaw);
+const hVariant = Number.isInteger(hNum) && hNum >= 1 && hNum <= 6 ? hNum : 1;
+const h1Key = `deck.h1.v${hVariant}`;
+
+// Hero right-column top-gap fix, switchable via ?fix=fill | ?fix=narrow.
+// Anything else (or missing) = baseline (unchanged current behavior).
+// Coexists with ?h=1..6, e.g. ?h=2&fix=fill.
+const fixRaw = (Astro.url.searchParams.get('fix') || '').toLowerCase();
+const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline';
 ---
 <Layout
   title="TypixDeck — A fanless Linux computer | TypixNode"
   titleKey="doc.deck"
-  description="TypixDeck — a silent, sealed, palm-sized fanless Linux computer milled from a single block of aluminum, built around a Raspberry Pi Compute Module."
+  description="TypixDeck — a thin, palm-sized fanless Linux computer in a CNC-machined aluminum body, built around a Raspberry Pi Compute Module."
   ogTitle="TypixDeck — A fanless Linux computer"
-  ogDescription="A silent, sealed, palm-sized fanless Linux computer milled from a single block of aluminum, built around a Raspberry Pi Compute Module."
+  ogDescription="A thin, palm-sized fanless Linux computer in a CNC-machined aluminum body, built around a Raspberry Pi Compute Module."
 >
   <Nav links={links} buyAdd="typixdeck" />
 
   <header class="prod" id="buy"><div class="wrap">
-    <div class="hero">
+    <div class="hero" data-fix={heroFix}>
       <div class="copy">
         <span class="chip rise d1"><span class="d"></span><span class="mono" data-i18n="hero.badge">Compact open hardware · Est. 2026</span></span>
-        <h1 class="rise d2" data-i18n="deck.h1">A fanless Linux computer,<br/><span class="grad">milled from a single block.</span></h1>
-        <p class="lead rise d3" data-i18n="deck.lead">Meet TypixDeck — a silent, sealed, palm-sized machine carved from aerospace aluminum and built around a Raspberry Pi Compute Module. Open it, hack it, make it yours.</p>
+        <h1 class="rise d2" data-i18n={h1Key}>A thin, <span class="grad">palm-sized Linux computer.</span></h1>
+        <p class="lead rise d3" data-i18n="deck.lead">Meet TypixDeck — a thin, palm-sized machine in a CNC-machined aluminum body, built around a Raspberry Pi Compute Module. Open it, hack it, make it yours.</p>
         <div class="cfg rise d3" data-cfg="typixdeck">
           <div class="cfg__group">
             <div class="cfg__label" data-i18n="cfg.compute">Compute</div>
@@ -47,10 +60,9 @@ const links = [
             <p class="cfg__note" id="cfgNote" style="display:none"></p>
           </div>
           <div class="cfg__bar">
-            <div class="cfg__price"><span class="cfg__pl" data-i18n="cfg.total">Total</span> <b id="cfgPrice">$119</b><span class="cfg__ship" data-i18n="deck.ship">· free worldwide shipping</span></div>
+            <div class="cfg__price"><span class="cfg__pl" data-i18n="cfg.total">Total</span> <b id="cfgPrice">$119</b><span class="cfg__ship" data-i18n="deck.ship">· shipped worldwide</span></div>
             <div class="cta"><button class="btn btn--fill" data-add="typixdeck" data-i18n="deck.add">Add to cart →</button><a class="btn btn--glass" href="#inside" data-i18n="deck.look">Look inside</a></div>
           </div>
-        </div>
         <p class="coolnote rise d3" data-i18n="deck.coolnote">CM0 / CM4 are fanless &amp; silent (0 dB). The CM5 build adds an optional 4-pin PWM fan + dedicated CNC case — in production.</p>
         <div class="trust rise d4"><span class="d"></span> <span data-i18n="deck.trust">In stock · ships in 2–3 days · 2-year warranty · 4,200+ makers</span></div>
       </div>
@@ -75,11 +87,11 @@ const links = [
     <div class="head"><span class="mono" data-i18n="f.kicker">Why it's different</span><h2 data-i18n="f.title">Everything a tiny computer should be</h2><p data-i18n="f.sub">No fan to fail, no plastic to flex, no firmware locked away — just beautifully made machines you fully control.</p></div>
     <div class="bento">
       <div class="tile tall">
-        <div class="ic">▤</div><h3 data-i18n="f.1t">Milled unibody</h3>
+        <div class="ic">▤</div><h3 data-i18n="f.1t">CNC aluminum chassis</h3>
         <p data-i18n="f.1p">Carved from a single block of 6061-T6 aluminum, bead-blasted and anodized. Rigid, cool to the touch, built to last decades.</p>
-        <div class="ph"><img src="/assets/cyberdeck-open.png" alt="Milled unibody"></div>
+        <div class="ph"><img src="/assets/cyberdeck-open.png" alt="CNC aluminum chassis"></div>
       </div>
-      <div class="tile wide"><div class="ic">❄</div><h3 data-i18n="f.2t">Truly silent — 0 dB</h3><p data-i18n="f.2p">The milled chassis is the heatsink — no fan, no vents, no dust. CM0 and CM4 run completely silent at 0 dB. For CM5's extra power, a dedicated CNC case with a 4-pin PWM fan header is in the works.</p></div>
+      <div class="tile wide"><div class="ic">❄</div><h3 data-i18n="f.2t">Truly silent — 0 dB</h3><p data-i18n="f.2p">The CNC aluminum chassis is the heatsink — no fan, no vents, no dust. CM0 and CM4 run completely silent at 0 dB. For CM5's extra power, a dedicated CNC case with a 4-pin PWM fan header is in the works.</p></div>
       <div class="tile"><div class="ic">▢</div><h3 data-i18n="f.3t">Raspberry Pi CM4 / CM5</h3><p data-i18n="f.3p">Drop in the compute module you want, upgrade later.</p></div>
       <div class="tile"><div class="ic">⎘</div><h3 data-i18n="f.4t">Full I/O</h3><p data-i18n="f.4p">HDMI, USB-C, dual USB-A, Ethernet, 40-pin GPIO.</p></div>
       <div class="tile"><div class="ic">⚿</div><h3 data-i18n="f.5t">Open CAD &amp; firmware</h3><p data-i18n="f.5p">Every STEP file, schematic and image on GitHub.</p></div>
@@ -116,7 +128,7 @@ const links = [
   <section id="lineup"><div class="wrap">
     <div class="head"><span class="mono" data-i18n="lu.kicker">The full lineup</span><h2 data-i18n="lu.title">Four machines. Pick your size.</h2><p data-i18n="lu.sub">A small, carefully made catalogue — no filler, every product is something we'd carry ourselves.</p></div>
     <div class="line">
-      <a class="pc" href="/typixdeck"><div class="ph"><img src="/assets/cyberdeck.png" alt="TypixDeck"></div><h3>TypixDeck</h3><p class="ds" data-i18n="p.deck.ds">Fanless milled-aluminum Linux computer with a Raspberry Pi Compute Module.</p><div class="foot"><span class="pr" data-usd="119">$119</span><button class="add" data-add="typixdeck" aria-label="Add">+</button></div></a>
+      <a class="pc" href="/typixdeck"><div class="ph"><img src="/assets/cyberdeck.png" alt="TypixDeck"></div><h3>TypixDeck</h3><p class="ds" data-i18n="p.deck.ds">CNC-aluminum Linux computer with a Raspberry Pi Compute Module.</p><div class="foot"><span class="pr" data-usd="119">$119</span><button class="add" data-add="typixdeck" aria-label="Add">+</button></div></a>
       <a class="pc" href="/keyboard"><div class="ph"><img src="/assets/keyboard.jpg" alt="BLE Keyboard"></div><h3>BLE Keyboard</h3><p class="ds" data-i18n="p.kb.ds">Card-sized full keyboard with gyro air-mouse and backlight. BT 5.2 / USB-C.</p><div class="foot"><span class="pr" data-usd="39">$39</span><button class="add" data-add="keyboard" aria-label="Add">+</button></div></a>
       <a class="pc" href="/diysuite"><div class="ph"><img src="/assets/diysuite.jpg" alt="DIY Suite"></div><h3>DIY Suite</h3><p class="ds" data-i18n="p.diy.ds">Solder your own 48-key keyboard in an afternoon. Open PCB + QMK firmware.</p><div class="foot"><span class="pr" data-usd="9">$9</span><button class="add" data-add="diysuite" aria-label="Add">+</button></div></a>
       <a class="pc" href="/picomac"><div class="ph"><img src="/assets/picomac.jpg" alt="Pico-Mac Nano"></div><h3>Pico-Mac Nano</h3><p class="ds" data-i18n="p.mac.ds">A 1984 Macintosh shrunk to your palm. Boots real classic Mac OS over USB-C.</p><div class="foot"><span class="pr" data-usd="60">$60</span><button class="add" data-add="picomac" aria-label="Add">+</button></div></a>
@@ -141,7 +153,7 @@ const links = [
     <div class="head"><span class="mono" data-i18n="faq.kicker">Good to know</span><h2 data-i18n="faq.title">Frequently asked questions</h2></div>
     <div class="faq">
       <div class="qa"><button><span data-i18n="faq.q1">Does it come with a Raspberry Pi Compute Module?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="faq.a1">The TypixDeck ships as a chassis kit. Add a CM4 or CM5 at checkout, or drop in one you already own — it uses the standard compute-module socket.</p></div></div>
-      <div class="qa"><button><span data-i18n="faq.q2">How does a fanless computer stay cool?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="faq.a2">The aluminum unibody is the heatsink. The compute module is thermally bonded to the chassis, so heat spreads across the whole body and dissipates silently, even under sustained load.</p></div></div>
+      <div class="qa"><button><span data-i18n="faq.q2">How does a fanless computer stay cool?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="faq.a2">The CNC aluminum chassis is the heatsink. The compute module is thermally bonded to the chassis, so heat spreads across the whole body and dissipates silently, even under sustained load.</p></div></div>
       <div class="qa"><button><span data-i18n="faq.q3">Can I really open and repair it myself?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="faq.a3">Yes. Four captive screws, no glue, labeled connectors, and a public teardown guide. Spare parts and CAD files are available so you can repair or modify anything.</p></div></div>
       <div class="qa"><button><span data-i18n="faq.q4">Do you ship worldwide?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="faq.a4">Yes — free worldwide shipping, typically 2–3 business days handling plus carrier transit. Duties may apply depending on your region.</p></div></div>
     </div>
@@ -158,3 +170,43 @@ const links = [
   <Footer />
   <CartDrawer />
 </Layout>
+
+<style is:global>
+  /* ===== Product hero right-column top-gap fix (?fix=fill | ?fix=narrow) =====
+     Baseline (.hero with no/other data-fix) is intentionally left untouched:
+     .hero uses align-items:center, so the short right .stage centers against
+     the tall left .copy and leaves a large gap above it. */
+
+  /* --- fix=fill: top-align the stage and let it grow to fill the column --- */
+  .hero[data-fix="fill"]{align-items:stretch}
+  .hero[data-fix="fill"] .stage{
+    align-self:stretch;           /* match the left column's full height */
+    margin-top:0;                 /* sit flush with the copy's top */
+    min-height:0;                 /* don't force extra height, let it fill */
+  }
+  .hero[data-fix="fill"] .stage img{
+    max-height:none;              /* allow the image to scale up */
+    height:100%;
+    width:100%;
+    object-fit:contain;
+  }
+  @media(max-width:900px){
+    /* single column on mobile — revert to natural sizing, no forced fill */
+    .hero[data-fix="fill"]{align-items:center}
+    .hero[data-fix="fill"] .stage{align-self:auto}
+    .hero[data-fix="fill"] .stage img{height:auto;max-height:440px}
+  }
+
+  /* --- fix=narrow: cap the headline width so the left column is shorter --- */
+  .hero[data-fix="narrow"] .copy h1{
+    max-width:18ch;               /* fewer chars per line keeps it readable... */
+  }
+  /* ...but the shorter column would re-introduce a centered gap, so also
+     top-align the stage to keep both columns balanced from the top. */
+  .hero[data-fix="narrow"]{align-items:start}
+  .hero[data-fix="narrow"] .stage{align-self:start;margin-top:0}
+  @media(max-width:900px){
+    .hero[data-fix="narrow"] .copy h1{max-width:none}
+    .hero[data-fix="narrow"]{align-items:center}
+  }
+</style>
