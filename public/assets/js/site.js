@@ -59,6 +59,12 @@
       "save.title": "PRE-ORDER", "save.sub": "",
       "prod.kicker": "The catalogue", "prod.title": "All products",
       "prod.sub": "Compact open hardware · open-source · shipped worldwide", "prod.scroll": "Scroll",
+      "pg.title": "All products",
+      "pg.kicker": "The catalogue",
+      "pg.sub": "Compact open hardware · open-source · shipped worldwide",
+      "pg.sec.compute": "Computers",
+      "pg.sec.kb": "Keyboards",
+      "pg.sec.mod": "Compute modules & adapters",
       "tag.flagship": "Flagship", "tag.new": "New",
       "p.deck.ds": "Fanless milled-aluminum Linux computer with a Raspberry Pi Compute Module. Silent, sealed, open.",
       "p.kb.ds": "Card-sized full keyboard with gyro air-mouse and white backlight. Bluetooth 5.2 or USB-C.",
@@ -247,6 +253,12 @@
       "save.title": "预售", "save.sub": "",
       "prod.kicker": "产品目录", "prod.title": "全部产品",
       "prod.sub": "紧凑开源硬件 · 开源 · 全球发货", "prod.scroll": "横向滑动",
+      "pg.title": "全部产品",
+      "pg.kicker": "产品目录",
+      "pg.sub": "紧凑开源硬件 · 开源 · 全球发货",
+      "pg.sec.compute": "电脑",
+      "pg.sec.kb": "键盘",
+      "pg.sec.mod": "运算模组与转接板",
       "tag.flagship": "旗舰", "tag.new": "新品",
       "p.deck.ds": "无风扇 CNC 铝合金 Linux 电脑，搭载树莓派计算模块。静音、密封、开源。",
       "p.kb.ds": "卡片大小全键盘，内置陀螺仪空中鼠标与白色背光。蓝牙 5.2 或 USB-C。",
@@ -434,6 +446,12 @@
       "save.title": "予約販売", "save.sub": "",
       "prod.kicker": "カタログ", "prod.title": "製品一覧",
       "prod.sub": "コンパクトなオープンハードウェア · オープンソース · 世界中へ発送", "prod.scroll": "スクロール",
+      "pg.title": "製品一覧",
+      "pg.kicker": "カタログ",
+      "pg.sub": "コンパクトなオープンハードウェア · オープンソース · 世界中へ発送",
+      "pg.sec.compute": "コンピュータ",
+      "pg.sec.kb": "キーボード",
+      "pg.sec.mod": "コンピュートモジュールとアダプタ",
       "tag.flagship": "フラッグシップ", "tag.new": "新着",
       "p.deck.ds": "ラズベリーパイ コンピュートモジュール搭載、ファンレス削り出しアルミの Linux コンピュータ。静音・密閉・オープン。",
       "p.kb.ds": "ジャイロ エアマウスと白色バックライト内蔵のカードサイズ フルキーボード。Bluetooth 5.2 / USB-C。",
@@ -631,6 +649,12 @@
       "prod.title": "全部產品",
       "prod.sub": "精巧的開源硬體 · 開源 · 銷往全球",
       "prod.scroll": "捲動",
+      "pg.title": "全部產品",
+      "pg.kicker": "產品型錄",
+      "pg.sub": "精巧的開源硬體 · 開源 · 銷往全球",
+      "pg.sec.compute": "電腦",
+      "pg.sec.kb": "鍵盤",
+      "pg.sec.mod": "運算模組與轉接板",
       "tag.flagship": "旗艦",
       "tag.new": "新品",
       "p.deck.ds": "搭載 Raspberry Pi Compute Module 的無風扇銑削鋁合金 Linux 電腦。靜音、密封、開源。",
@@ -960,6 +984,12 @@
       "prod.title": "Alle Produkte",
       "prod.sub": "Kompakte Open Hardware · Open Source · weltweit versandt",
       "prod.scroll": "Scrollen",
+      "pg.title": "Alle Produkte",
+      "pg.kicker": "Der Katalog",
+      "pg.sub": "Kompakte Open Hardware · Open Source · weltweiter Versand",
+      "pg.sec.compute": "Computer",
+      "pg.sec.kb": "Tastaturen",
+      "pg.sec.mod": "Compute-Module & Adapter",
       "tag.flagship": "Flaggschiff",
       "tag.new": "Neu",
       "p.deck.ds": "Lüfterloser, aus Aluminium gefräster Linux-Computer mit einem Raspberry Pi Compute Module. Lautlos, versiegelt, offen.",
@@ -1289,6 +1319,12 @@
       "prod.title": "Tous les produits",
       "prod.sub": "Open hardware compact · open-source · expédié dans le monde entier",
       "prod.scroll": "Faire défiler",
+      "pg.title": "Tous les produits",
+      "pg.kicker": "Le catalogue",
+      "pg.sub": "Open hardware compact · open-source · expédié dans le monde entier",
+      "pg.sec.compute": "Ordinateurs",
+      "pg.sec.kb": "Claviers",
+      "pg.sec.mod": "Modules de calcul et adaptateurs",
       "tag.flagship": "Flagship",
       "tag.new": "Nouveau",
       "p.deck.ds": "Ordinateur Linux fanless en aluminium usiné avec un Raspberry Pi Compute Module. Silencieux, scellé, ouvert.",
@@ -1618,6 +1654,12 @@
       "prod.title": "Todos los productos",
       "prod.sub": "Hardware abierto y compacto · open-source · envío a todo el mundo",
       "prod.scroll": "Desliza",
+      "pg.title": "Todos los productos",
+      "pg.kicker": "El catálogo",
+      "pg.sub": "Hardware abierto y compacto · open-source · envío a todo el mundo",
+      "pg.sec.compute": "Computadoras",
+      "pg.sec.kb": "Teclados",
+      "pg.sec.mod": "Módulos de cómputo y adaptadores",
       "tag.flagship": "Insignia",
       "tag.new": "Nuevo",
       "p.deck.ds": "Computadora Linux de aluminio mecanizado y sin ventilador con un Raspberry Pi Compute Module. Silenciosa, sellada, abierta.",
@@ -1947,6 +1989,12 @@
       "prod.title": "Todos os produtos",
       "prod.sub": "Open hardware compacto · open-source · enviado para o mundo todo",
       "prod.scroll": "Rolar",
+      "pg.title": "Todos os produtos",
+      "pg.kicker": "O catálogo",
+      "pg.sub": "Open hardware compacto · open-source · enviado para todo o mundo",
+      "pg.sec.compute": "Computadores",
+      "pg.sec.kb": "Teclados",
+      "pg.sec.mod": "Módulos de computação e adaptadores",
       "tag.flagship": "Carro-chefe",
       "tag.new": "Novo",
       "p.deck.ds": "Computador Linux de alumínio fresado sem ventoinha com um Raspberry Pi Compute Module. Silencioso, vedado, aberto.",
@@ -2276,6 +2324,12 @@
       "prod.title": "전체 제품",
       "prod.sub": "컴팩트 오픈 하드웨어 · 오픈소스 · 전 세계 배송",
       "prod.scroll": "스크롤",
+      "pg.title": "전체 제품",
+      "pg.kicker": "카탈로그",
+      "pg.sub": "컴팩트 오픈 하드웨어 · 오픈소스 · 전 세계 배송",
+      "pg.sec.compute": "컴퓨터",
+      "pg.sec.kb": "키보드",
+      "pg.sec.mod": "컴퓨트 모듈 및 어댑터",
       "tag.flagship": "플래그십",
       "tag.new": "신제품",
       "p.deck.ds": "Raspberry Pi Compute Module을 탑재한 팬리스 가공 알루미늄 Linux 컴퓨터. 무소음, 밀폐형, 오픈소스.",
@@ -2605,6 +2659,12 @@
       "prod.title": "Tutti i prodotti",
       "prod.sub": "Hardware compatto e open · open-source · spedito in tutto il mondo",
       "prod.scroll": "Scorri",
+      "pg.title": "Tutti i prodotti",
+      "pg.kicker": "Il catalogo",
+      "pg.sub": "Hardware compatto e open · open-source · spedito in tutto il mondo",
+      "pg.sec.compute": "Computer",
+      "pg.sec.kb": "Tastiere",
+      "pg.sec.mod": "Moduli di calcolo e adattatori",
       "tag.flagship": "Di punta",
       "tag.new": "Novità",
       "p.deck.ds": "Computer Linux in alluminio fresato senza ventola con un Raspberry Pi Compute Module. Silenzioso, sigillato, open.",
@@ -3106,6 +3166,46 @@
     document.querySelectorAll(".qa button").forEach(function (b) {
       b.addEventListener("click", function () { b.parentElement.classList.toggle("open"); });
     });
+
+    /* ---------- gentle auto-scroll for the home product scroller ----------
+       Slowly drifts the horizontal product strip so the later items (CM0
+       series) get seen. Pauses on hover, touch, focus or manual scroll, and
+       is disabled entirely for users who prefer reduced motion. */
+    (function () {
+      var el = document.querySelector(".scroller");
+      if (!el) return;
+      var reduce = false;
+      try { reduce = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+      if (reduce) return;
+      var SPEED = 0.35;          // px per frame (~21px/s at 60fps) — gentle
+      var dir = 1;               // 1 = forward, -1 = back
+      var paused = false;
+      var resumeAt = 0;          // timestamp to resume after a manual interaction
+      function overflowing() { return el.scrollWidth - el.clientWidth > 4; }
+      function pauseFor(ms) { paused = true; resumeAt = performance.now() + ms; }
+      // Interactions that should pause the drift.
+      el.addEventListener("mouseenter", function () { paused = true; });
+      el.addEventListener("mouseleave", function () { if (!resumeAt) paused = false; });
+      el.addEventListener("touchstart", function () { pauseFor(4000); }, { passive: true });
+      el.addEventListener("pointerdown", function () { pauseFor(4000); });
+      el.addEventListener("focusin", function () { paused = true; });
+      el.addEventListener("wheel", function () { pauseFor(4000); }, { passive: true });
+      var last = performance.now();
+      function tick(now) {
+        // honor a timed resume window
+        if (resumeAt && now >= resumeAt) { resumeAt = 0; paused = false; }
+        var dt = Math.min(50, now - last); last = now;
+        if (!paused && overflowing()) {
+          var step = SPEED * (dt / 16.67);
+          el.scrollLeft += step * dir;
+          var max = el.scrollWidth - el.clientWidth;
+          if (el.scrollLeft >= max - 1) { dir = -1; pauseFor(1500); }
+          else if (el.scrollLeft <= 1) { dir = 1; if (now > 1000) pauseFor(1500); }
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    })();
 
     document.body.addEventListener("click", function (e) {
       var add = e.target.closest("[data-add]");

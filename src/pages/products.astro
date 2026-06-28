@@ -1,0 +1,88 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CartDrawer from '../components/CartDrawer.astro';
+
+// All SKUs grouped by category. id -> data-add (cart), usd -> data-usd (price),
+// href -> detail/anchor, ds -> i18n key for the description (falls back to name).
+const links = [
+  { href: '/typixdeck', key: 'nav.deck', label: 'TypixDeck' },
+  { href: '/products', key: 'nav.all', label: 'All products' },
+  { href: '/#why', key: 'nav.tech', label: 'Technology' },
+  { href: 'https://github.com/TypixNode', key: 'nav.open', label: 'Open' },
+];
+
+interface Card {
+  id: string;        // data-add
+  usd: number;       // data-usd
+  href: string;
+  name: string;      // English default (model/SKU names mostly stay in English)
+  img: string;
+  ds?: string;       // i18n key for a longer description
+  alt: string;
+  tag?: string;      // i18n key for a badge
+}
+
+const computers: Card[] = [
+  { id: 'typixdeck', usd: 119, href: '/typixdeck', name: 'TypixDeck (body only)', img: '/assets/cyberdeck.png', alt: 'TypixDeck', ds: 'p.deck.ds', tag: 'tag.flagship' },
+  { id: 'typixdeck-cm0', usd: 159, href: '/typixdeck#buy', name: 'TypixDeck · CM0', img: '/assets/cm0-adapter.png', alt: 'TypixDeck with CM0 adapter' },
+  { id: 'typixdeck-cm4', usd: 214, href: '/typixdeck#buy', name: 'TypixDeck · CM4 4GB', img: '/assets/cyberdeck.png', alt: 'TypixDeck with CM4' },
+  { id: 'typixdeck-cm5', usd: 224, href: '/typixdeck#buy', name: 'TypixDeck · CM5 4GB', img: '/assets/cyberdeck.png', alt: 'TypixDeck with CM5', tag: 'tag.new' },
+  { id: 'picomac', usd: 60, href: '/picomac', name: 'Pico-Mac Nano', img: '/assets/picomac.jpg', alt: 'Pico-Mac Nano', ds: 'p.mac.ds' },
+];
+
+const keyboards: Card[] = [
+  { id: 'keyboard', usd: 39, href: '/keyboard', name: 'BLE Keyboard', img: '/assets/keyboard.jpg', alt: 'BLE Keyboard', ds: 'p.kb.ds' },
+  { id: 'keyboard-wired', usd: 29, href: '/keyboard', name: 'Wired Keyboard', img: '/assets/keyboard.jpg', alt: 'Wired Keyboard' },
+  { id: 'diysuite', usd: 9, href: '/diysuite', name: 'DIY Suite', img: '/assets/diysuite.jpg', alt: 'DIY Suite', ds: 'p.diy.ds' },
+];
+
+const modules: Card[] = [
+  { id: 'cm0-adapter', usd: 40, href: '/typixdeck#buy', name: 'CM0 Adapter', img: '/assets/cm0-adapter.png', alt: 'CM0→CM4 adapter with CM0 soldered', ds: 'p.cm0adp.ds', tag: 'tag.new' },
+  { id: 'cm0-module', usd: 30, href: '/typixdeck#buy', name: 'CM0 Module', img: '/assets/cm0-module.jpeg', alt: 'CM0 module', ds: 'p.cm0.ds' },
+  { id: 'cm0-adapter-raw', usd: 10, href: '/typixdeck#buy', name: 'CM0 Adapter (bare)', img: '/assets/cm0-adapter-raw.png', alt: 'Bare CM0→CM4 adapter PCB', ds: 'p.cm0raw.ds' },
+];
+
+const sections = [
+  { key: 'pg.sec.compute', label: 'Computers', items: computers },
+  { key: 'pg.sec.kb', label: 'Keyboards', items: keyboards },
+  { key: 'pg.sec.mod', label: 'Compute modules & adapters', items: modules },
+];
+---
+<Layout title="All products — TypixNode" titleKey="pg.title">
+  <Nav links={links} />
+
+  <section class="pg-hero"><div class="wrap">
+    <span class="mono" data-i18n="pg.kicker">The catalogue</span>
+    <h1 data-i18n="pg.title">All products</h1>
+    <p class="lead" data-i18n="pg.sub">Compact open hardware · open-source · shipped worldwide</p>
+  </div></section>
+
+  {sections.map((sec) => (
+    <section class="pg-sec"><div class="wrap">
+      <h2 class="pg-sec__h" data-i18n={sec.key}>{sec.label}</h2>
+      <div class="grid">
+        {sec.items.map((p) => (
+          <a class="pc" href={p.href}>
+            <div class="ph">
+              {p.tag && <span class="tag" data-i18n={p.tag}>{p.tag === 'tag.flagship' ? 'Flagship' : 'New'}</span>}
+              <img src={p.img} alt={p.alt} loading="lazy" />
+            </div>
+            <h3>{p.name}</h3>
+            {p.ds
+              ? <p class="ds" data-i18n={p.ds}>{p.name}</p>
+              : <p class="ds">{p.name}</p>}
+            <div class="foot">
+              <span class="pr" data-usd={p.usd}>${p.usd}</span>
+              <button class="add" data-add={p.id} aria-label="Add">+</button>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div></section>
+  ))}
+
+  <Footer />
+  <CartDrawer />
+</Layout>
