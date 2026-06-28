@@ -157,17 +157,26 @@ export async function claimOrder(
   return true;
 }
 
-/** Bind an order from the success page. The unguessable internal order id in
- *  the post-checkout URL is the proof of ownership (cart was just paid). */
+/** Bind a just-placed order to an account using only the order id, used by the
+ *  success page and the post-checkout "save to my account" flow.
+ *
+ *  Hardened against IDOR (audit HIGH): the order id is a bearer token that
+ *  leaks into URLs/emails, so it is NOT sufficient proof to take over an order
+ *  that already belongs to someone. We therefore:
+ *    - only bind an order that is still UNCLAIMED (user_id IS NULL), enforced
+ *      atomically in the UPDATE so a known order id can never re-home an
+ *      order away from its existing owner; and
+ *    - do NOT mark the order's checkout email as a verified account email
+ *      (that was the cross-account escalation: a verified email auto-links all
+ *      of a victim's other orders). Emails become verified only via OAuth
+ *      (provider-verified) or the id+email-proven claimOrder path.
+ *  Returns true only if THIS call actually bound a previously-unclaimed order. */
 export async function bindOrderById(db: D1Database, userId: string, orderId: string): Promise<boolean> {
-  const order = (await db
-    .prepare('SELECT id, email FROM orders WHERE id = ?')
-    .bind(orderId)
-    .first()) as { id: string; email: string | null } | null;
-  if (!order) return false;
-  await db.prepare('UPDATE orders SET user_id = ? WHERE id = ?').bind(userId, order.id).run();
-  if (order.email) await rememberEmail(db, userId, order.email, 'order');
-  return true;
+  const res = await db
+    .prepare('UPDATE orders SET user_id = ? WHERE id = ? AND user_id IS NULL')
+    .bind(userId, orderId)
+    .run();
+  return ((res as any)?.meta?.changes ?? 0) > 0;
 }
 
 async function rememberEmail(db: D1Database, userId: string, email: string, source: string): Promise<void> {

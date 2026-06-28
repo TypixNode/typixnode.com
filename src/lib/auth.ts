@@ -11,15 +11,29 @@ const STATE_COOKIE = 'tnx_oauth_state';
 const SESSION_TTL_S = 60 * 60 * 24 * 30; // 30 days
 const STATE_TTL_S = 60 * 10; // 10 minutes
 
-/** HMAC key: explicit SESSION_SECRET, else fall back to a server-only secret so
- *  accounts work before SESSION_SECRET is provisioned. */
+/** HMAC key for session + OAuth-state cookies.
+ *
+ *  FAIL CLOSED: a dedicated SESSION_SECRET is REQUIRED. We never fall back to a
+ *  payment secret (different rotation lifecycle + blast radius — reusing it
+ *  would turn a leaked payment key into a session-forgery key) nor to any
+ *  hard-coded default (a committed constant is publicly known → trivial
+ *  account forgery). If SESSION_SECRET is missing/too weak we throw, so signing
+ *  refuses to run and verification treats every token as invalid (logged-out)
+ *  rather than silently signing with a guessable key.
+ *
+ *  Set it per environment with:  wrangler secret put SESSION_SECRET
+ *  (e.g. `openssl rand -base64 32`). Locally, put it in .dev.vars. */
 function signingKey(env: Env): string {
-  return (
-    env.SESSION_SECRET ||
-    env.PAYPAL_SECRET ||
-    env.STRIPE_SECRET_KEY ||
-    'tnx-dev-insecure-key'
-  );
+  const k = env.SESSION_SECRET;
+  if (!k || k.length < 16) {
+    throw new Error('SESSION_SECRET is not configured (or too weak); refusing to sign/verify sessions.');
+  }
+  return k;
+}
+
+/** True when accounts can operate: GitHub OAuth app + a real SESSION_SECRET. */
+function sessionsEnabled(env: Env): boolean {
+  return !!(env.SESSION_SECRET && env.SESSION_SECRET.length >= 16);
 }
 
 function b64urlEncode(bytes: Uint8Array): string {
@@ -62,14 +76,18 @@ export async function signToken(env: Env, payload: Record<string, unknown>, ttlS
   return `${p}.${sig}`;
 }
 
-/** Verify + parse a signed token. Returns the payload or null (bad sig/expired). */
+/** Verify + parse a signed token. Returns the payload or null on ANY problem
+ *  (no/weak key, malformed token, bad signature, expired, bad base64/JSON).
+ *  Never throws — a missing SESSION_SECRET simply means "no valid sessions". */
 export async function verifyToken<T = Record<string, unknown>>(env: Env, token: string | undefined | null): Promise<T | null> {
   if (!token || token.indexOf('.') < 0) return null;
   const [p, sig] = token.split('.');
   if (!p || !sig) return null;
-  const expected = await hmac(signingKey(env), p);
-  if (!timingSafeEqual(b64urlDecode(sig), expected)) return null;
   try {
+    const expected = await hmac(signingKey(env), p); // throws if SESSION_SECRET missing
+    // b64urlDecode(sig) is attacker-controlled — keep it inside the try so a
+    // malformed signature returns null instead of throwing (no 500/DoS).
+    if (!timingSafeEqual(b64urlDecode(sig), expected)) return null;
     const obj = JSON.parse(new TextDecoder().decode(b64urlDecode(p)));
     if (typeof obj.exp === 'number' && obj.exp < Math.floor(Date.now() / 1000)) return null;
     return obj as T;
@@ -118,6 +136,9 @@ export function clearOAuthState(cookies: AstroCookies): void {
   cookies.delete(STATE_COOKIE, { path: '/' });
 }
 
+/** Accounts/login are only offered when GitHub OAuth AND a real SESSION_SECRET
+ *  are configured. Without a strong session secret we must not issue sessions,
+ *  so we hide login entirely (fail closed) instead of signing with a weak key. */
 export function githubConfigured(env: Env): boolean {
-  return !!(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET);
+  return !!(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET && sessionsEnabled(env));
 }

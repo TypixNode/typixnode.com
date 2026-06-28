@@ -9,6 +9,14 @@ STRIPE_WEBHOOK_SECRET="whsec_xxx"
 # Resend (https://resend.com/api-keys)
 RESEND_API_KEY="re_xxx"
 
+# Accounts / GitHub OAuth (https://github.com/settings/developers).
+# Login is hidden unless ALL of these are set. SESSION_SECRET is REQUIRED and
+# must be strong (>=16 chars) — sessions fail closed without it (no insecure
+# fallback). Generate one with: openssl rand -base64 32
+GITHUB_CLIENT_ID="Iv1_xxx"
+GITHUB_CLIENT_SECRET="xxx"
+SESSION_SECRET="replace-with-openssl-rand-base64-32"
+
 # Plain config (these can also go in wrangler.jsonc [vars])
 FROM_EMAIL="TypixNode <orders@typixnode.com>"
 ADMIN_EMAIL="you@typixnode.com"
