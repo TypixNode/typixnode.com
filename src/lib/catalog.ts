@@ -125,9 +125,72 @@ export const PRODUCTS: Record<string, Product> = {
 
 export type Locale = 'en' | 'zh' | 'ja';
 
+// ---------------------------------------------------------------------------
+// TypixDeck configurator (single SKU + options).
+//
+// `typixdeck` is sold as ONE product whose price is the body base ($119) plus
+// the chosen option deltas. The SERVER is the price authority: resolveCart()
+// re-derives every amount from this table and never trusts client prices.
+// The chosen configuration is snapshotted onto the order line (options[]),
+// so historical orders stay reconstructable even if this table changes.
+//
+// Legacy fixed SKUs (typixdeck-cm0/cm4/cm5, cm0-*, etc.) remain in PRODUCTS
+// for backward compatibility with old carts/orders.
+// ---------------------------------------------------------------------------
+export const TYPIXDECK_BASE_USD = 119;
+
+interface OptionValue {
+  delta: number; // USD added to the base
+  label: { en: string; zh: string; ja: string };
+  note?: { en: string; zh: string; ja: string }; // advisory text (not a hard block)
+}
+interface OptionGroup {
+  label: { en: string; zh: string; ja: string };
+  values: Record<string, OptionValue>;
+  default: string;
+}
+
+export const TYPIXDECK_OPTIONS: Record<string, OptionGroup> = {
+  compute: {
+    label: { en: 'Compute', zh: '核心', ja: 'コンピュート' },
+    default: 'body',
+    values: {
+      body: { delta: 0, label: { en: 'Body only', zh: '仅机身', ja: '本体のみ' } },
+      cm0: { delta: 40, label: { en: 'CM0 (soldered CM0→CM4 adapter)', zh: 'CM0（含贴片转接板）', ja: 'CM0（実装済アダプタ）' } },
+      cm4: { delta: 95, label: { en: 'CM4 · 4GB · Wi-Fi · no eMMC', zh: 'CM4 · 4GB · WiFi · 无 eMMC', ja: 'CM4 · 4GB · Wi-Fi · eMMC なし' } },
+      cm5: { delta: 105, label: { en: 'CM5 · 4GB · Wi-Fi · no eMMC', zh: 'CM5 · 4GB · WiFi · 无 eMMC', ja: 'CM5 · 4GB · Wi-Fi · eMMC なし' } },
+    },
+  },
+  storage: {
+    label: { en: 'Storage', zh: '存储', ja: 'ストレージ' },
+    default: 'none',
+    values: {
+      none: { delta: 0, label: { en: 'No TF card', zh: '不含 TF 卡', ja: 'TF カードなし' } },
+      tf64: { delta: 19, label: { en: 'SanDisk 64GB · Raspberry Pi OS preloaded', zh: 'SanDisk 64GB · 预装树莓派 OS', ja: 'SanDisk 64GB · Raspberry Pi OS プリインストール' } },
+      ssd128: {
+        delta: 25,
+        label: { en: 'M.2 SSD 128GB · Toshiba 2230 · OS preloaded', zh: 'M.2 SSD 128GB · 东芝 2230 · 预装系统', ja: 'M.2 SSD 128GB · 東芝 2230 · OS プリインストール' },
+        note: { en: 'CM4 / CM5 only — CM0 uses eMMC or a TF card', zh: '仅 CM4 / CM5 可用 — CM0 只能用 eMMC 或 TF 卡', ja: 'CM4 / CM5 のみ — CM0 は eMMC か TF カード' },
+      },
+    },
+  },
+};
+
+/** A chosen configuration, e.g. { compute: 'cm5', storage: 'ssd128' }. */
+export type ConfigSelection = Record<string, string>;
+
+/** Snapshot of one chosen option, stored on the order line. */
+export interface ResolvedOption {
+  group: string;
+  value: string;
+  label: string;
+  deltaUsd: number;
+}
+
 export interface CartLine {
   id: string;
   qty: number;
+  options?: ConfigSelection;
 }
 
 export interface ResolvedLine {
@@ -136,6 +199,28 @@ export interface ResolvedLine {
   qty: number;
   unitPriceUsd: number; // whole dollars
   unitAmount: number; // cents (minor units) — what Stripe/PayPal expect
+  options?: ResolvedOption[]; // configuration snapshot (configured products only)
+}
+
+/**
+ * Price a configured `typixdeck` line. Validates each option against
+ * TYPIXDECK_OPTIONS (unknown/missing -> the group default), sums the deltas
+ * onto the base, and returns the resolved line with a configuration snapshot.
+ */
+function resolveTypixdeck(raw: ConfigSelection | undefined, qty: number, locale: Locale): ResolvedLine {
+  const sel: ResolvedOption[] = [];
+  let priceUsd = TYPIXDECK_BASE_USD;
+  for (const groupKey of Object.keys(TYPIXDECK_OPTIONS)) {
+    const group = TYPIXDECK_OPTIONS[groupKey];
+    const chosen = raw?.[groupKey];
+    const valueKey = chosen && group.values[chosen] ? chosen : group.default;
+    const v = group.values[valueKey];
+    priceUsd += v.delta;
+    sel.push({ group: groupKey, value: valueKey, label: v.label[locale] ?? v.label.en, deltaUsd: v.delta });
+  }
+  // Name = "TypixDeck · <compute label> · <storage label>"
+  const name = ['TypixDeck', ...sel.map((s) => s.label)].join(' · ');
+  return { id: 'typixdeck', name, qty, unitPriceUsd: priceUsd, unitAmount: priceUsd * 100, options: sel };
 }
 
 /** Validate + price a raw client cart against the server catalogue. */
@@ -146,8 +231,17 @@ export function resolveCart(lines: unknown, locale: Locale = 'en'): ResolvedLine
     if (!raw || typeof raw !== 'object') continue;
     const id = String((raw as any).id ?? '');
     const qty = Math.max(1, Math.min(99, Math.floor(Number((raw as any).qty ?? 0))));
+    if (!Number.isFinite(qty) || qty < 1) continue;
+
+    // Configured single-SKU product: price = base + option deltas (server-authoritative).
+    if (id === 'typixdeck') {
+      const opts = (raw as any).options;
+      out.push(resolveTypixdeck(opts && typeof opts === 'object' ? opts : undefined, qty, locale));
+      continue;
+    }
+
     const p = PRODUCTS[id];
-    if (!p || !Number.isFinite(qty) || qty < 1) continue;
+    if (!p) continue;
     out.push({
       id,
       name: p.name[locale] ?? p.name.en,

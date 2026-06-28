@@ -28,6 +28,107 @@
       name: { en: "Pico-Mac Nano", zh: "Pico-Mac Nano", ja: "Pico-Mac Nano" } }
   };
 
+  /* ---------- TypixDeck configurator options ----------
+     Mirror of TYPIXDECK_OPTIONS in src/lib/catalog.ts. Used ONLY for showing
+     live prices in the UI; the SERVER re-derives the real price on checkout
+     and never trusts these client values. Keep deltas in sync with catalog.ts. */
+  var TYPIXDECK_BASE = 119;
+  var TYPIXDECK_OPTIONS = {
+    compute: {
+      i18n: "cfg.compute", def: "body",
+      values: {
+        body: { delta: 0, i18n: "cfg.compute.body" },
+        cm0: { delta: 40, i18n: "cfg.compute.cm0" },
+        cm4: { delta: 95, i18n: "cfg.compute.cm4" },
+        cm5: { delta: 105, i18n: "cfg.compute.cm5" }
+      }
+    },
+    storage: {
+      i18n: "cfg.storage", def: "none",
+      values: {
+        none: { delta: 0, i18n: "cfg.storage.none" },
+        tf64: { delta: 19, i18n: "cfg.storage.tf64" },
+        ssd128: { delta: 25, i18n: "cfg.storage.ssd128", note: "cfg.storage.ssd128.note" }
+      }
+    }
+  };
+  // Normalize a selection to valid keys (unknown -> group default).
+  function normOptions(opts) {
+    var o = {};
+    Object.keys(TYPIXDECK_OPTIONS).forEach(function (g) {
+      var grp = TYPIXDECK_OPTIONS[g];
+      o[g] = (opts && grp.values[opts[g]]) ? opts[g] : grp.def;
+    });
+    return o;
+  }
+  // Stable fingerprint so identical configs merge in the cart.
+  function lineKey(item) {
+    if (item.id !== "typixdeck") return item.id;
+    var o = normOptions(item.options);
+    return "typixdeck|" + Object.keys(TYPIXDECK_OPTIONS).map(function (g) { return g + ":" + o[g]; }).join("|");
+  }
+  // USD unit price for a cart line (base + deltas for typixdeck).
+  function lineUsd(item) {
+    if (item.id === "typixdeck") {
+      var o = normOptions(item.options), sum = TYPIXDECK_BASE;
+      Object.keys(TYPIXDECK_OPTIONS).forEach(function (g) { sum += TYPIXDECK_OPTIONS[g].values[o[g]].delta; });
+      return sum;
+    }
+    return PRODUCTS[item.id] ? PRODUCTS[item.id].usd : 0;
+  }
+  // Display name for a cart line.
+  function lineName(item) {
+    if (item.id === "typixdeck") {
+      var o = normOptions(item.options);
+      var parts = ["TypixDeck"];
+      Object.keys(TYPIXDECK_OPTIONS).forEach(function (g) { parts.push(L(TYPIXDECK_OPTIONS[g].values[o[g]].i18n, lang)); });
+      return parts.join(" · ");
+    }
+    return PRODUCTS[item.id] ? PRODUCTS[item.id].name[lang] || PRODUCTS[item.id].name.en : item.id;
+  }
+  function lineImg(item) {
+    if (item.id === "typixdeck") {
+      var o = normOptions(item.options);
+      return o.compute === "cm0" ? "/assets/cm0-adapter.png" : "/assets/cyberdeck.png";
+    }
+    return PRODUCTS[item.id] ? PRODUCTS[item.id].img : "";
+  }
+  // Read the configurator's current selection from the DOM (defaults if absent).
+  function readConfig() {
+    var sel = {};
+    Object.keys(TYPIXDECK_OPTIONS).forEach(function (g) {
+      var checked = document.querySelector('input[name="cfg-' + g + '"]:checked');
+      sel[g] = checked ? checked.value : TYPIXDECK_OPTIONS[g].def;
+    });
+    return normOptions(sel);
+  }
+  // Wire up the configurator: live price + advisory notes. No-op if not present.
+  function initConfigurator() {
+    var root = document.querySelector(".cfg[data-cfg=\"typixdeck\"]");
+    if (!root) return;
+    function update() {
+      var o = readConfig();
+      var price = lineUsd({ id: "typixdeck", options: o });
+      var pe = root.querySelector("#cfgPrice"); if (pe) pe.textContent = money(price, cur);
+      // Advisory note: show the ssd128 note whenever that storage is picked.
+      var note = root.querySelector("#cfgNote");
+      if (note) {
+        var sv = TYPIXDECK_OPTIONS.storage.values[o.storage];
+        if (sv && sv.note) { note.textContent = L(sv.note, lang); note.style.display = "block"; }
+        else { note.textContent = ""; note.style.display = "none"; }
+      }
+      // reflect selected state on the option cards
+      root.querySelectorAll(".cfg__opt").forEach(function (lab) {
+        var inp = lab.querySelector("input");
+        lab.classList.toggle("on", !!(inp && inp.checked));
+      });
+    }
+    root.addEventListener("change", function (e) { if (e.target && e.target.name && e.target.name.indexOf("cfg-") === 0) update(); });
+    // expose so applyI18n/applyCurrency can refresh labels & price
+    window.__cfgUpdate = update;
+    update();
+  }
+
   /* ---------- currency ---------- */
   var CUR = {
     USD: { sym: "$", rate: 1, dec: 0 },
@@ -59,6 +160,18 @@
       "save.title": "PRE-ORDER", "save.sub": "",
       "prod.kicker": "The catalogue", "prod.title": "All products",
       "prod.sub": "Compact open hardware · open-source · shipped worldwide", "prod.scroll": "Scroll",
+      "cfg.compute": "Compute",
+      "cfg.storage": "Storage",
+      "cfg.total": "Total",
+      "cfg.delta.0": "Included",
+      "cfg.compute.body": "Body only",
+      "cfg.compute.cm0": "CM0 (soldered CM0→CM4 adapter)",
+      "cfg.compute.cm4": "CM4 · 4GB · Wi-Fi · no eMMC",
+      "cfg.compute.cm5": "CM5 · 4GB · Wi-Fi · no eMMC",
+      "cfg.storage.none": "No TF card",
+      "cfg.storage.tf64": "SanDisk 64GB · Raspberry Pi OS preloaded",
+      "cfg.storage.ssd128": "M.2 SSD 128GB · Toshiba 2230 · OS preloaded",
+      "cfg.storage.ssd128.note": "CM4 / CM5 only — CM0 uses eMMC or a TF card",
       "pg.title": "All products",
       "pg.kicker": "The catalogue",
       "pg.sub": "Compact open hardware · open-source · shipped worldwide",
@@ -257,6 +370,18 @@
       "save.title": "预售", "save.sub": "",
       "prod.kicker": "产品目录", "prod.title": "全部产品",
       "prod.sub": "紧凑开源硬件 · 开源 · 全球发货", "prod.scroll": "横向滑动",
+      "cfg.compute": "核心",
+      "cfg.storage": "存储",
+      "cfg.total": "合计",
+      "cfg.delta.0": "已包含",
+      "cfg.compute.body": "仅机身",
+      "cfg.compute.cm0": "CM0（含贴片 CM0→CM4 转接板）",
+      "cfg.compute.cm4": "CM4 · 4GB · WiFi · 无 eMMC",
+      "cfg.compute.cm5": "CM5 · 4GB · WiFi · 无 eMMC",
+      "cfg.storage.none": "不含 TF 卡",
+      "cfg.storage.tf64": "SanDisk 64GB · 预装树莓派 OS",
+      "cfg.storage.ssd128": "M.2 SSD 128GB · 东芝 2230 · 预装系统",
+      "cfg.storage.ssd128.note": "仅 CM4 / CM5 可用 — CM0 只能用 eMMC 或 TF 卡",
       "pg.title": "全部产品",
       "pg.kicker": "产品目录",
       "pg.sub": "紧凑开源硬件 · 开源 · 全球发货",
@@ -454,6 +579,18 @@
       "save.title": "予約販売", "save.sub": "",
       "prod.kicker": "カタログ", "prod.title": "製品一覧",
       "prod.sub": "コンパクトなオープンハードウェア · オープンソース · 世界中へ発送", "prod.scroll": "スクロール",
+      "cfg.compute": "コンピュート",
+      "cfg.storage": "ストレージ",
+      "cfg.total": "合計",
+      "cfg.delta.0": "込み",
+      "cfg.compute.body": "本体のみ",
+      "cfg.compute.cm0": "CM0（CM0→CM4 アダプタ実装済）",
+      "cfg.compute.cm4": "CM4 · 4GB · Wi-Fi · eMMC なし",
+      "cfg.compute.cm5": "CM5 · 4GB · Wi-Fi · eMMC なし",
+      "cfg.storage.none": "TF カードなし",
+      "cfg.storage.tf64": "SanDisk 64GB · Raspberry Pi OS プリインストール",
+      "cfg.storage.ssd128": "M.2 SSD 128GB · 東芝 2230 · OS プリインストール",
+      "cfg.storage.ssd128.note": "CM4 / CM5 のみ — CM0 は eMMC か TF カード",
       "pg.title": "製品一覧",
       "pg.kicker": "カタログ",
       "pg.sub": "コンパクトなオープンハードウェア · オープンソース · 世界中へ発送",
@@ -661,6 +798,18 @@
       "prod.title": "全部產品",
       "prod.sub": "精巧的開源硬體 · 開源 · 銷往全球",
       "prod.scroll": "捲動",
+      "cfg.compute": "核心",
+      "cfg.storage": "儲存",
+      "cfg.total": "總計",
+      "cfg.delta.0": "已包含",
+      "cfg.compute.body": "僅機身",
+      "cfg.compute.cm0": "CM0（含貼片 CM0→CM4 轉接板）",
+      "cfg.compute.cm4": "CM4 · 4GB · Wi-Fi · 無 eMMC",
+      "cfg.compute.cm5": "CM5 · 4GB · Wi-Fi · 無 eMMC",
+      "cfg.storage.none": "不含 TF 卡",
+      "cfg.storage.tf64": "SanDisk 64GB · 預裝 Raspberry Pi OS",
+      "cfg.storage.ssd128": "M.2 SSD 128GB · 東芝 2230 · 預裝系統",
+      "cfg.storage.ssd128.note": "僅 CM4 / CM5 可用 — CM0 只能用 eMMC 或 TF 卡",
       "pg.title": "全部產品",
       "pg.kicker": "產品型錄",
       "pg.sub": "精巧的開源硬體 · 開源 · 銷往全球",
@@ -996,6 +1145,18 @@
       "prod.title": "Alle Produkte",
       "prod.sub": "Kompakte Open Hardware · Open Source · weltweit versandt",
       "prod.scroll": "Scrollen",
+      "cfg.compute": "Compute",
+      "cfg.storage": "Speicher",
+      "cfg.total": "Gesamt",
+      "cfg.delta.0": "Inklusive",
+      "cfg.compute.body": "Nur Gehäuse",
+      "cfg.compute.cm0": "CM0 (gelöteter CM0→CM4-Adapter)",
+      "cfg.compute.cm4": "CM4 · 4GB · Wi-Fi · kein eMMC",
+      "cfg.compute.cm5": "CM5 · 4GB · Wi-Fi · kein eMMC",
+      "cfg.storage.none": "Keine TF-Karte",
+      "cfg.storage.tf64": "SanDisk 64GB · Raspberry Pi OS vorinstalliert",
+      "cfg.storage.ssd128": "M.2 SSD 128GB · Toshiba 2230 · OS vorinstalliert",
+      "cfg.storage.ssd128.note": "Nur CM4 / CM5 — CM0 nutzt eMMC oder eine TF-Karte",
       "pg.title": "Alle Produkte",
       "pg.kicker": "Der Katalog",
       "pg.sub": "Kompakte Open Hardware · Open Source · weltweiter Versand",
@@ -1331,6 +1492,18 @@
       "prod.title": "Tous les produits",
       "prod.sub": "Open hardware compact · open-source · expédié dans le monde entier",
       "prod.scroll": "Faire défiler",
+      "cfg.compute": "Calcul",
+      "cfg.storage": "Stockage",
+      "cfg.total": "Total",
+      "cfg.delta.0": "Inclus",
+      "cfg.compute.body": "Châssis seul",
+      "cfg.compute.cm0": "CM0 (adaptateur CM0→CM4 soudé)",
+      "cfg.compute.cm4": "CM4 · 4 Go · Wi-Fi · sans eMMC",
+      "cfg.compute.cm5": "CM5 · 4 Go · Wi-Fi · sans eMMC",
+      "cfg.storage.none": "Sans carte TF",
+      "cfg.storage.tf64": "SanDisk 64 Go · Raspberry Pi OS préinstallé",
+      "cfg.storage.ssd128": "SSD M.2 128 Go · Toshiba 2230 · OS préinstallé",
+      "cfg.storage.ssd128.note": "CM4 / CM5 uniquement — le CM0 utilise eMMC ou une carte TF",
       "pg.title": "Tous les produits",
       "pg.kicker": "Le catalogue",
       "pg.sub": "Open hardware compact · open-source · expédié dans le monde entier",
@@ -1666,6 +1839,18 @@
       "prod.title": "Todos los productos",
       "prod.sub": "Hardware abierto y compacto · open-source · envío a todo el mundo",
       "prod.scroll": "Desliza",
+      "cfg.compute": "Cómputo",
+      "cfg.storage": "Almacenamiento",
+      "cfg.total": "Total",
+      "cfg.delta.0": "Incluido",
+      "cfg.compute.body": "Solo chasis",
+      "cfg.compute.cm0": "CM0 (adaptador CM0→CM4 soldado)",
+      "cfg.compute.cm4": "CM4 · 4 GB · Wi-Fi · sin eMMC",
+      "cfg.compute.cm5": "CM5 · 4 GB · Wi-Fi · sin eMMC",
+      "cfg.storage.none": "Sin tarjeta TF",
+      "cfg.storage.tf64": "SanDisk 64 GB · Raspberry Pi OS preinstalado",
+      "cfg.storage.ssd128": "SSD M.2 128 GB · Toshiba 2230 · SO preinstalado",
+      "cfg.storage.ssd128.note": "Solo CM4 / CM5 — el CM0 usa eMMC o una tarjeta TF",
       "pg.title": "Todos los productos",
       "pg.kicker": "El catálogo",
       "pg.sub": "Hardware abierto y compacto · open-source · envío a todo el mundo",
@@ -2001,6 +2186,18 @@
       "prod.title": "Todos os produtos",
       "prod.sub": "Open hardware compacto · open-source · enviado para o mundo todo",
       "prod.scroll": "Rolar",
+      "cfg.compute": "Computação",
+      "cfg.storage": "Armazenamento",
+      "cfg.total": "Total",
+      "cfg.delta.0": "Incluído",
+      "cfg.compute.body": "Somente chassi",
+      "cfg.compute.cm0": "CM0 (adaptador CM0→CM4 soldado)",
+      "cfg.compute.cm4": "CM4 · 4GB · Wi-Fi · sem eMMC",
+      "cfg.compute.cm5": "CM5 · 4GB · Wi-Fi · sem eMMC",
+      "cfg.storage.none": "Sem cartão TF",
+      "cfg.storage.tf64": "SanDisk 64GB · Raspberry Pi OS pré-instalado",
+      "cfg.storage.ssd128": "SSD M.2 128GB · Toshiba 2230 · SO pré-instalado",
+      "cfg.storage.ssd128.note": "Apenas CM4 / CM5 — o CM0 usa eMMC ou cartão TF",
       "pg.title": "Todos os produtos",
       "pg.kicker": "O catálogo",
       "pg.sub": "Open hardware compacto · open-source · enviado para todo o mundo",
@@ -2336,6 +2533,18 @@
       "prod.title": "전체 제품",
       "prod.sub": "컴팩트 오픈 하드웨어 · 오픈소스 · 전 세계 배송",
       "prod.scroll": "스크롤",
+      "cfg.compute": "컴퓨트",
+      "cfg.storage": "스토리지",
+      "cfg.total": "합계",
+      "cfg.delta.0": "포함",
+      "cfg.compute.body": "본체만",
+      "cfg.compute.cm0": "CM0 (CM0→CM4 어댑터 납땜)",
+      "cfg.compute.cm4": "CM4 · 4GB · Wi-Fi · eMMC 없음",
+      "cfg.compute.cm5": "CM5 · 4GB · Wi-Fi · eMMC 없음",
+      "cfg.storage.none": "TF 카드 없음",
+      "cfg.storage.tf64": "SanDisk 64GB · Raspberry Pi OS 사전 설치",
+      "cfg.storage.ssd128": "M.2 SSD 128GB · 도시바 2230 · OS 사전 설치",
+      "cfg.storage.ssd128.note": "CM4 / CM5 전용 — CM0는 eMMC 또는 TF 카드 사용",
       "pg.title": "전체 제품",
       "pg.kicker": "카탈로그",
       "pg.sub": "컴팩트 오픈 하드웨어 · 오픈소스 · 전 세계 배송",
@@ -2671,6 +2880,18 @@
       "prod.title": "Tutti i prodotti",
       "prod.sub": "Hardware compatto e open · open-source · spedito in tutto il mondo",
       "prod.scroll": "Scorri",
+      "cfg.compute": "Calcolo",
+      "cfg.storage": "Archiviazione",
+      "cfg.total": "Totale",
+      "cfg.delta.0": "Incluso",
+      "cfg.compute.body": "Solo chassis",
+      "cfg.compute.cm0": "CM0 (adattatore CM0→CM4 saldato)",
+      "cfg.compute.cm4": "CM4 · 4GB · Wi-Fi · senza eMMC",
+      "cfg.compute.cm5": "CM5 · 4GB · Wi-Fi · senza eMMC",
+      "cfg.storage.none": "Nessuna scheda TF",
+      "cfg.storage.tf64": "SanDisk 64GB · Raspberry Pi OS preinstallato",
+      "cfg.storage.ssd128": "SSD M.2 128GB · Toshiba 2230 · OS preinstallato",
+      "cfg.storage.ssd128.note": "Solo CM4 / CM5 — il CM0 usa eMMC o una scheda TF",
       "pg.title": "Tutti i prodotti",
       "pg.kicker": "Il catalogo",
       "pg.sub": "Hardware compatto e open · open-source · spedito in tutto il mondo",
@@ -3015,6 +3236,7 @@
     });
     var ls = document.getElementById("langsel"); if (ls) ls.value = lang;
     renderCart();
+    if (window.__cfgUpdate) window.__cfgUpdate();
   }
   // Expose for dynamically-rendered content (e.g. the 3D viewer part list)
   window.TNX_APPLY_I18N = applyI18n;
@@ -3026,6 +3248,7 @@
     });
     var cs = document.getElementById("cursel"); if (cs) cs.value = cur;
     renderCart();
+    if (window.__cfgUpdate) window.__cfgUpdate();
   }
 
   /* ---------- theme ---------- */
@@ -3039,18 +3262,21 @@
   function loadCart() { try { return JSON.parse(localStorage.getItem("tnx-cart") || "[]"); } catch (e) { return []; } }
   function saveCart(c) { set("tnx-cart", JSON.stringify(c)); }
   function cartCount() { return loadCart().reduce(function (n, i) { return n + i.qty; }, 0); }
-  function addToCart(id) {
-    if (!PRODUCTS[id]) return;
-    var c = loadCart(), f = c.find(function (i) { return i.id === id; });
-    if (f) f.qty++; else c.push({ id: id, qty: 1 });
+  function addToCart(id, options) {
+    if (id !== "typixdeck" && !PRODUCTS[id]) return;
+    var item = { id: id, qty: 1 };
+    if (id === "typixdeck") item.options = normOptions(options);
+    var c = loadCart(), key = lineKey(item);
+    var f = c.find(function (i) { return lineKey(i) === key; });
+    if (f) f.qty++; else c.push(item);
     saveCart(c); renderCart(); openCart(); renderPayPal();
   }
-  function setQty(id, d) {
-    var c = loadCart(), f = c.find(function (i) { return i.id === id; });
-    if (!f) return; f.qty += d; if (f.qty <= 0) c = c.filter(function (i) { return i.id !== id; });
+  function setQty(key, d) {
+    var c = loadCart(), f = c.find(function (i) { return lineKey(i) === key; });
+    if (!f) return; f.qty += d; if (f.qty <= 0) c = c.filter(function (i) { return lineKey(i) !== key; });
     saveCart(c); renderCart();
   }
-  function removeItem(id) { saveCart(loadCart().filter(function (i) { return i.id !== id; })); renderCart(); }
+  function removeItem(key) { saveCart(loadCart().filter(function (i) { return lineKey(i) !== key; })); renderCart(); }
 
   function renderCart() {
     var c = loadCart();
@@ -3059,14 +3285,24 @@
     if (!c.length) { box.innerHTML = '<div class="empty">' + L("cart.empty", lang) + "</div>"; }
     else {
       box.innerHTML = c.map(function (i) {
-        var p = PRODUCTS[i.id]; if (!p) return "";
-        return '<div class="ci"><div class="cimg"><img src="' + p.img + '" alt=""></div>' +
-          '<div><div class="nm">' + p.name[lang] + '</div><div class="pr">' + money(p.usd, cur) + '</div>' +
-          '<button class="rm" data-rm="' + i.id + '">' + (lang === "zh" ? "移除" : lang === "ja" ? "削除" : "Remove") + '</button></div>' +
-          '<div class="qty"><button data-dec="' + i.id + '">−</button><span>' + i.qty + '</span><button data-inc="' + i.id + '">+</button></div></div>';
+        if (i.id !== "typixdeck" && !PRODUCTS[i.id]) return "";
+        var key = lineKey(i), esc = key.replace(/"/g, "&quot;");
+        // Config summary line for configured products.
+        var sub = "";
+        if (i.id === "typixdeck") {
+          var o = normOptions(i.options);
+          sub = '<div class="ci-cfg">' + Object.keys(TYPIXDECK_OPTIONS).map(function (g) {
+            return L(TYPIXDECK_OPTIONS[g].values[o[g]].i18n, lang);
+          }).join(" · ") + '</div>';
+        }
+        return '<div class="ci"><div class="cimg"><img src="' + lineImg(i) + '" alt=""></div>' +
+          '<div><div class="nm">' + (i.id === "typixdeck" ? "TypixDeck" : lineName(i)) + '</div>' + sub +
+          '<div class="pr">' + money(lineUsd(i), cur) + '</div>' +
+          '<button class="rm" data-rm="' + esc + '">' + (lang === "zh" || lang === "zh-Hant" ? "移除" : lang === "ja" ? "削除" : "Remove") + '</button></div>' +
+          '<div class="qty"><button data-dec="' + esc + '">−</button><span>' + i.qty + '</span><button data-inc="' + esc + '">+</button></div></div>';
       }).join("");
     }
-    var sub = c.reduce(function (n, i) { var p = PRODUCTS[i.id]; return n + (p ? p.usd * i.qty : 0); }, 0);
+    var sub = c.reduce(function (n, i) { return n + lineUsd(i) * i.qty; }, 0);
     var st = document.getElementById("cartSub"); if (st) st.textContent = money(sub, cur);
     // toggle checkout controls by cart emptiness + which providers are enabled
     var empty = !c.length;
@@ -3092,7 +3328,14 @@
 
   /* ---------- checkout ---------- */
   function cartPayload() {
-    return { items: loadCart().map(function (i) { return { id: i.id, qty: i.qty }; }), locale: lang };
+    return {
+      items: loadCart().map(function (i) {
+        var line = { id: i.id, qty: i.qty };
+        if (i.id === "typixdeck") line.options = normOptions(i.options);
+        return line;
+      }),
+      locale: lang
+    };
   }
   function showCartErr(msg) {
     var e = document.getElementById("cartErr");
@@ -3240,9 +3483,18 @@
       requestAnimationFrame(tick);
     })();
 
+    /* ---------- TypixDeck configurator (single SKU + options) ---------- */
+    initConfigurator();
+
     document.body.addEventListener("click", function (e) {
       var add = e.target.closest("[data-add]");
-      if (add) { e.preventDefault(); addToCart(add.dataset.add); return; }
+      if (add) {
+        e.preventDefault();
+        var aid = add.dataset.add;
+        // For the TypixDeck configurator, read the currently-selected options.
+        addToCart(aid, aid === "typixdeck" ? readConfig() : null);
+        return;
+      }
       if (e.target.closest(".cartbtn")) { e.preventDefault(); openCart(); renderPayPal(); return; }
       if (e.target.closest("#checkoutBtn")) { e.preventDefault(); stripeCheckout(); return; }
       if (e.target.id === "cartOv" || e.target.closest("[data-cart-close]")) { closeCart(); return; }

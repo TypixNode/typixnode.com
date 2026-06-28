@@ -188,6 +188,27 @@ a.shead .hint,.shead a.hint{text-decoration:none}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:18px}
 .grid .pc{height:100%}
 
+/* ---------- TypixDeck configurator ---------- */
+.cfg{margin:22px 0 8px;max-width:560px}
+.cfg__group{margin-bottom:18px}
+.cfg__label{font-family:var(--d);font-weight:700;font-size:.95rem;margin-bottom:10px}
+.cfg__opts{display:flex;flex-direction:column;gap:8px}
+.cfg__opt{position:relative;display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px solid var(--glassb);border-radius:14px;background:var(--glass);backdrop-filter:blur(8px);cursor:pointer;transition:border-color .16s,background .16s}
+.cfg__opt:hover{border-color:var(--aqua)}
+.cfg__opt input{appearance:none;-webkit-appearance:none;width:18px;height:18px;flex:none;border:2px solid var(--soft2);border-radius:50%;cursor:pointer;transition:.16s;position:relative}
+.cfg__opt input:checked{border-color:var(--teal)}
+.cfg__opt input:checked::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--teal)}
+.cfg__opt.on{border-color:var(--teal);background:#0fb88f12}
+.cfg__opt .cfg__t{flex:1;font-size:.9rem;font-weight:600;color:var(--ink)}
+.cfg__opt .cfg__d{font-family:var(--d);font-weight:700;font-size:.86rem;color:var(--soft);white-space:nowrap}
+.cfg__note{margin-top:9px;font-size:.8rem;color:var(--amber);background:#ffb34715;border:1px solid #ffb34733;border-radius:10px;padding:8px 11px;line-height:1.4}
+.cfg__bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-top:20px;padding-top:18px;border-top:1px solid var(--glassb)}
+.cfg__price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.cfg__price .cfg__pl{color:var(--soft);font-size:.9rem}
+.cfg__price b{font-family:var(--d);font-weight:800;font-size:1.7rem}
+.cfg__price .cfg__ship{color:var(--soft2);font-size:.8rem;width:100%}
+@media(max-width:520px){.cfg__bar .cta{width:100%}.cfg__bar .cta .btn{flex:1}}
+
 /* product cards */
 .pc{background:var(--glass);border:1px solid var(--glassb);border-radius:24px;padding:16px;backdrop-filter:blur(12px);display:flex;flex-direction:column;transition:.3s}
 .pc:hover{transform:translateY(-6px);box-shadow:0 24px 60px #0a8f6e2b}
