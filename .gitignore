@@ -5,3 +5,4 @@ dist/
 .env.*
 .dev.vars
 .wrangler/
+tools/**/.venv/

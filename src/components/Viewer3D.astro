@@ -1,0 +1,324 @@
+---
+interface Props {
+  src?: string;
+  height?: string;
+}
+const { src = '/assets/models/typixdeck.glb', height = '62vh' } = Astro.props;
+---
+<figure class="viewer3d" data-src={src} style={`--v3d-h:${height}`}>
+  <div class="v3d-stage"></div>
+
+  <div class="v3d-loading">
+    <span class="v3d-spin"></span>
+    <span data-i18n="v3d.loading">Loading 3D model…</span>
+  </div>
+
+  <div class="v3d-info">
+    <div class="v3d-dims mono"></div>
+    <ul class="v3d-parts"></ul>
+  </div>
+
+  <div class="v3d-ui">
+    <div class="v3d-explode">
+      <span class="v3d-lab" data-i18n="v3d.explode">Exploded view</span>
+      <input class="v3d-range" type="range" min="0" max="1" step="0.001" value="0"
+             aria-label="Exploded view" />
+    </div>
+    <div class="v3d-actions">
+      <button class="v3d-btn" data-act="reset" data-i18n="v3d.reset">Reset</button>
+      <button class="v3d-btn v3d-on" data-act="spin" aria-pressed="true" data-i18n="v3d.spin">Auto-rotate</button>
+    </div>
+  </div>
+
+  <div class="v3d-hint" data-i18n="v3d.hint">Drag to rotate · scroll the page to disassemble</div>
+</figure>
+
+<script>
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+  type Group = { node: THREE.Object3D; base: THREE.Vector3; dir: THREE.Vector3; key: string };
+
+  function initViewer(fig: HTMLElement) {
+    const stage = fig.querySelector('.v3d-stage') as HTMLElement;
+    const loadingEl = fig.querySelector('.v3d-loading') as HTMLElement;
+    const range = fig.querySelector('.v3d-range') as HTMLInputElement;
+    const dimsEl = fig.querySelector('.v3d-dims') as HTMLElement;
+    const partsEl = fig.querySelector('.v3d-parts') as HTMLElement;
+    const src = fig.dataset.src!;
+    if (!stage) return;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    stage.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    try {
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    } catch (e) {
+      console.warn('[Viewer3D] environment unavailable', e);
+    }
+
+    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+
+    const key = new THREE.DirectionalLight(0xffffff, 2.4);
+    key.position.set(0.6, 1.0, 0.8);
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xbcd2ff, 1.0);
+    fill.position.set(-0.8, 0.3, -0.6);
+    scene.add(fill);
+    const rim = new THREE.DirectionalLight(0xffffff, 0.8);
+    rim.position.set(0.2, -0.6, -0.9);
+    scene.add(rim);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x202830, 0.9));
+    scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.enablePan = false;
+    controls.minDistance = 0;
+    controls.maxDistance = Infinity;
+
+    const pivot = new THREE.Group();
+    scene.add(pivot);
+
+    let groups: Group[] = [];
+    let fitRadius = 1;
+    let spinning = true;
+    let scrollLinked = true; // page-scroll drives explode until user grabs the slider
+    let targetExplode = 0;
+    let curExplode = 0;
+    let userInteracting = false;
+
+    controls.addEventListener('start', () => { userInteracting = true; });
+    controls.addEventListener('end', () => { userInteracting = false; });
+
+    function sizeToStage() {
+      const w = stage.clientWidth || 1;
+      const h = stage.clientHeight || 1;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+
+    function frame(radius: number) {
+      const dist = (radius / Math.sin((camera.fov * Math.PI) / 360)) * 1.18;
+      camera.position.set(dist * 0.55, dist * 0.42, dist * 0.85);
+      controls.target.set(0, 0, 0);
+      controls.minDistance = dist * 0.45;
+      controls.maxDistance = dist * 2.4;
+      camera.near = dist / 100;
+      camera.far = dist * 12;
+      camera.updateProjectionMatrix();
+      controls.update();
+    }
+
+    function classify(name: string): string {
+      const n = (name || '').toLowerCase();
+      if (n.includes('top_shell') || n.includes('topshell')) return 'top_shell';
+      if (n.includes('back_cover') || n.includes('backcover')) return 'back_cover';
+      if (n.includes('screen') || n.includes('display')) return 'screen';
+      if (n.includes('cm4') || n.includes('cm5')) return 'cm4';
+      if (n.includes('pcb') || n.includes('board')) return 'pcb';
+      return '';
+    }
+
+    // Layered explode order, top of the stack first.
+    const ORDER = ['screen', 'top_shell', 'pcb', 'cm4', 'back_cover'];
+
+    const PART_LABELS: Record<string, { key: string; en: string }> = {
+      screen: { key: 'v3d.part.screen', en: 'Display' },
+      top_shell: { key: 'v3d.part.top', en: 'Top shell' },
+      pcb: { key: 'v3d.part.pcb', en: 'Mainboard' },
+      cm4: { key: 'v3d.part.cm4', en: 'CM4 / CM5 module' },
+      back_cover: { key: 'v3d.part.back', en: 'Back cover' },
+    };
+
+    function buildGroups(root: THREE.Object3D, modelBox: THREE.Box3) {
+      const size = modelBox.getSize(new THREE.Vector3());
+      // explode along the thinnest axis (parts stack along device thickness)
+      const axisIdx = size.x <= size.y && size.x <= size.z ? 0 : size.y <= size.z ? 1 : 2;
+      const axis = new THREE.Vector3(axisIdx === 0 ? 1 : 0, axisIdx === 1 ? 1 : 0, axisIdx === 2 ? 1 : 0);
+
+      const found: Record<string, THREE.Object3D[]> = {};
+      root.traverse((o) => {
+        if (!(o as THREE.Mesh).isMesh) return;
+        let key = '';
+        let p: THREE.Object3D | null = o;
+        while (p && !key) { key = classify(p.name); p = p.parent; }
+        if (!key) key = 'pcb';
+        (found[key] = found[key] || []).push(o);
+      });
+
+      const present = ORDER.filter((k) => found[k] && found[k].length);
+      // Fan the layers out in stack order: first layer rises most, last drops most.
+      const mid = (present.length - 1) / 2;
+      present.forEach((k, i) => {
+        const g = new THREE.Group();
+        g.name = k;
+        pivot.add(g);
+        for (const m of found[k]) g.attach(m);
+        const dir = axis.clone().multiplyScalar(mid - i);
+        groups.push({ node: g, base: g.position.clone(), dir, key: k });
+      });
+      return { present, axisLen: size.getComponent(axisIdx) };
+    }
+
+    function applyExplode(t: number) {
+      const spread = fitRadius * 0.5;
+      for (const g of groups) {
+        const off = g.dir.clone().multiplyScalar(t * spread);
+        g.node.position.copy(g.base).add(off);
+      }
+    }
+
+    function fillInfo(dims: THREE.Vector3, present: string[]) {
+      const mm = (v: number) => v.toFixed(0);
+      dimsEl.textContent = `${mm(dims.x)} × ${mm(dims.y)} × ${mm(dims.z)} mm`;
+      partsEl.innerHTML = '';
+      for (const k of present) {
+        const li = document.createElement('li');
+        const lab = PART_LABELS[k];
+        li.dataset.i18n = lab.key;
+        li.textContent = lab.en;
+        partsEl.appendChild(li);
+      }
+      // re-run site i18n if available
+      try { (window as any).TNX_APPLY_I18N?.(); } catch (e) {}
+    }
+
+    const loader = new GLTFLoader();
+    loader.load(
+      src,
+      (gltf) => {
+        const model = gltf.scene;
+        model.traverse((o) => {
+          const m = o as THREE.Mesh;
+          if (!m.isMesh) return;
+          if (!m.geometry.getAttribute('normal')) m.geometry.computeVertexNormals();
+          // Keep each part's STEP colour; just tune the PBR response per layer.
+          const mat = m.material as THREE.MeshStandardMaterial;
+          if (mat && mat.isMeshStandardMaterial) {
+            mat.side = THREE.DoubleSide;
+            mat.envMapIntensity = 1.1;
+            const k = classify(m.name);
+            if (k === 'top_shell' || k === 'back_cover') {
+              mat.metalness = 0.9; mat.roughness = 0.38;  // brushed CNC aluminium
+            } else {
+              mat.metalness = 0.35; mat.roughness = 0.58;
+            }
+          }
+        });
+        // Recenter + uniform scale into a ~2-unit cube for stable framing.
+        const box0 = new THREE.Box3().setFromObject(model);
+        const size0 = box0.getSize(new THREE.Vector3());
+        const center0 = box0.getCenter(new THREE.Vector3());
+        const maxDim = Math.max(size0.x, size0.y, size0.z) || 1;
+        const scale = 2 / maxDim;
+        // Center the geometry around the model's local origin (in mm)...
+        model.position.sub(center0);
+        // ...then scale the HOLDER so the (centered) model stays centered.
+        // (Scaling the model itself doesn't scale its position offset -> off-screen.)
+        const holder = new THREE.Group();
+        holder.add(model);
+        holder.scale.setScalar(scale);
+        pivot.add(holder);
+        holder.updateMatrixWorld(true);
+
+        // Reorient so the thinnest axis (the cover-stacking axis) points up (+Y),
+        // so the exploded view reads as a lid lifting off.
+        const b0 = new THREE.Box3().setFromObject(holder);
+        const s0 = b0.getSize(new THREE.Vector3());
+        const thin = s0.x <= s0.y && s0.x <= s0.z ? 'x' : s0.y <= s0.z ? 'y' : 'z';
+        if (thin !== 'y') {
+          const from = new THREE.Vector3(thin === 'x' ? 1 : 0, thin === 'y' ? 1 : 0, thin === 'z' ? 1 : 0);
+          holder.quaternion.setFromUnitVectors(from, new THREE.Vector3(0, 1, 0));
+          holder.updateMatrixWorld(true);
+        }
+
+        const box = new THREE.Box3().setFromObject(holder);
+        fitRadius = box.getBoundingSphere(new THREE.Sphere()).radius;
+
+        const { present } = buildGroups(holder, box);
+        fillInfo(size0, present); // show REAL mm dimensions
+
+        sizeToStage();
+        frame(fitRadius);
+        loadingEl.style.display = 'none';
+        fig.classList.add('is-ready');
+      },
+      undefined,
+      (err) => {
+        console.error('[Viewer3D] load error', err);
+        loadingEl.innerHTML = '<span>3D preview unavailable</span>';
+      }
+    );
+
+    // ---- scroll-driven explode ----
+    function onScroll() {
+      if (!scrollLinked) return;
+      const r = fig.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      // progress: 0 when the figure first fully enters, 1 when it is centered/leaving
+      const start = vh * 0.85;
+      const end = vh * 0.25;
+      let p = (start - r.top) / (start - end);
+      p = Math.max(0, Math.min(1, p));
+      targetExplode = p;
+      range.value = String(p);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // ---- manual controls ----
+    range.addEventListener('input', () => {
+      scrollLinked = false;
+      targetExplode = parseFloat(range.value);
+    });
+    fig.querySelector('[data-act="reset"]')?.addEventListener('click', () => {
+      scrollLinked = true;
+      onScroll();
+    });
+    const spinBtn = fig.querySelector('[data-act="spin"]') as HTMLButtonElement;
+    spinBtn?.addEventListener('click', () => {
+      spinning = !spinning;
+      spinBtn.classList.toggle('v3d-on', spinning);
+      spinBtn.setAttribute('aria-pressed', String(spinning));
+    });
+
+    const ro = new ResizeObserver(() => { sizeToStage(); });
+    ro.observe(stage);
+
+    const clock = new THREE.Clock();
+    function loop() {
+      requestAnimationFrame(loop);
+      const dt = clock.getDelta();
+      curExplode += (targetExplode - curExplode) * Math.min(1, dt * 6);
+      applyExplode(curExplode);
+      if (spinning && !userInteracting) pivot.rotation.y += dt * 0.35;
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    loop();
+    onScroll();
+  }
+
+  function boot() {
+    document.querySelectorAll<HTMLElement>('.viewer3d').forEach((fig) => {
+      if (fig.dataset.v3dInit) return;
+      fig.dataset.v3dInit = '1';
+      initViewer(fig);
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+</script>

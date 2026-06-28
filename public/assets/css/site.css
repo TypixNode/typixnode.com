@@ -398,3 +398,53 @@ footer{padding:24px 0 60px}
 .success-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px}
 .success-help{color:var(--soft2);font-size:.86rem;margin-top:18px}
 .success-help a{color:var(--emerald)}
+
+/* ---- 3D model viewer ---- */
+.viewer3d{position:relative;margin:0;border-radius:28px;overflow:hidden;
+  background:radial-gradient(120% 120% at 30% 20%, #0e1c2a14, transparent 60%),var(--glass);
+  border:1px solid var(--glassb);box-shadow:0 24px 60px #0a8f6e1f;backdrop-filter:blur(14px);
+  min-height:var(--v3d-h,62vh);touch-action:pan-y}
+.viewer3d .v3d-stage{position:absolute;inset:0;cursor:grab}
+.viewer3d.is-ready .v3d-stage:active{cursor:grabbing}
+.viewer3d .v3d-stage canvas{display:block;width:100%;height:100%;outline:none}
+
+.v3d-loading{position:absolute;inset:0;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;
+  color:var(--soft);font-size:.92rem;z-index:3}
+.v3d-spin{width:30px;height:30px;border-radius:50%;border:3px solid var(--glassb);border-top-color:var(--emerald);animation:v3dspin .9s linear infinite}
+@keyframes v3dspin{to{transform:rotate(360deg)}}
+
+.v3d-info{position:absolute;top:14px;left:14px;z-index:2;pointer-events:none;
+  display:flex;flex-direction:column;gap:8px;opacity:0;transform:translateY(-4px);transition:.4s}
+.viewer3d.is-ready .v3d-info{opacity:1;transform:none}
+.v3d-dims{font-size:.74rem;letter-spacing:.04em;color:var(--soft2);background:var(--glass);
+  border:1px solid var(--glassb);border-radius:999px;padding:4px 11px;backdrop-filter:blur(8px);align-self:flex-start}
+.v3d-parts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.v3d-parts li{font-size:.78rem;color:var(--soft);display:flex;align-items:center;gap:7px;
+  background:var(--glass);border:1px solid var(--glassb);border-radius:9px;padding:3px 9px;backdrop-filter:blur(8px);align-self:flex-start}
+.v3d-parts li::before{content:"";width:9px;height:9px;border-radius:3px;background:linear-gradient(135deg,var(--teal),var(--emerald))}
+.v3d-parts li:nth-child(2)::before{background:linear-gradient(135deg,#7aa2ff,#5b7cff)}
+.v3d-parts li:nth-child(3)::before{background:linear-gradient(135deg,#ffb86b,#ff8f5b)}
+
+.v3d-ui{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:16px 18px 18px;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  background:linear-gradient(to top,#0009,transparent)}
+[data-theme="light"] .v3d-ui{background:linear-gradient(to top,#fffc,transparent)}
+.v3d-explode{flex:1;min-width:180px;display:flex;flex-direction:column;gap:6px}
+.v3d-lab{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--soft2)}
+.v3d-range{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:999px;
+  background:var(--glassb);outline:none;cursor:pointer}
+.v3d-range::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;
+  background:linear-gradient(135deg,var(--teal),var(--emerald));border:2px solid #fff3;box-shadow:0 2px 8px #0006}
+.v3d-range::-moz-range-thumb{width:17px;height:17px;border:2px solid #fff3;border-radius:50%;
+  background:linear-gradient(135deg,var(--teal),var(--emerald))}
+.v3d-actions{display:flex;gap:8px}
+.v3d-btn{font:inherit;font-size:.78rem;font-weight:600;color:var(--soft);cursor:pointer;
+  background:var(--glass);border:1px solid var(--glassb);border-radius:10px;padding:7px 13px;backdrop-filter:blur(8px);transition:.2s}
+.v3d-btn:hover{color:var(--ink);border-color:var(--emerald)}
+.v3d-btn.v3d-on{color:#fff;background:linear-gradient(135deg,var(--teal),var(--emerald));border-color:transparent}
+
+.v3d-hint{position:absolute;top:14px;right:14px;z-index:2;pointer-events:none;
+  font-size:.72rem;color:var(--soft2);background:var(--glass);border:1px solid var(--glassb);
+  border-radius:999px;padding:5px 12px;backdrop-filter:blur(8px);max-width:46%;text-align:right;opacity:0;transition:.5s}
+.viewer3d.is-ready .v3d-hint{opacity:1}
+@media(max-width:560px){.v3d-hint{display:none}.v3d-info{top:10px;left:10px}}

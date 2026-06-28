@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import CartDrawer from '../components/CartDrawer.astro';
+import Viewer3D from '../components/Viewer3D.astro';
 const links = [
   { href: '#features', key: 'nav.features', label: 'Features' },
   { href: '#inside', key: 'nav.inside', label: 'Inside' },
@@ -70,7 +71,7 @@ const links = [
   </div></section>
 
   <section class="exploded" id="inside"><div class="wrap in">
-    <div class="img"><img src="/assets/cyberdeck-internals.png" alt="TypixDeck internals"></div>
+    <Viewer3D src="/assets/models/typixdeck.glb" />
     <div>
       <span class="mono" data-i18n="in.kicker">Made to be opened</span>
       <h2 data-i18n="in.title">Four screws and you're inside.</h2>

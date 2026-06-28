@@ -237,7 +237,11 @@
       "success.presale.t": "This is a pre-order.", "success.presale.p": "Estimated dispatch is 2 weeks – 2 months. We'll email you tracking the moment it ships.",
       "success.order": "Order", "success.bound": "✓ Saved to your account.",
       "success.savegh": "Save this order to a GitHub account",
-      "success.view": "View my orders", "success.home": "Back to home", "success.help": "Need help? Email"
+      "success.view": "View my orders", "success.home": "Back to home", "success.help": "Need help? Email",
+      "v3d.loading": "Loading 3D model…", "v3d.explode": "Exploded view", "v3d.reset": "Reset", "v3d.spin": "Auto-rotate",
+      "v3d.hint": "Drag to rotate · scroll the page to disassemble",
+      "v3d.part.top": "Top shell", "v3d.part.back": "Back cover", "v3d.part.inside": "Internals",
+      "v3d.part.screen": "Display", "v3d.part.pcb": "Mainboard", "v3d.part.cm4": "CM4 / CM5 module"
     },
     zh: {
       "doc.home": "TypixNode — 紧凑开源硬件",
@@ -429,7 +433,11 @@
       "success.presale.t": "这是一笔预售订单。", "success.presale.p": "预计 2 周–2 个月内发货。发货时会立即邮件通知物流单号。",
       "success.order": "订单", "success.bound": "✓ 已保存到你的账户。",
       "success.savegh": "用 GitHub 账户保存此订单",
-      "success.view": "查看我的订单", "success.home": "返回首页", "success.help": "需要帮助?发邮件至"
+      "success.view": "查看我的订单", "success.home": "返回首页", "success.help": "需要帮助?发邮件至",
+      "v3d.loading": "正在加载 3D 模型…", "v3d.explode": "爆炸拆解", "v3d.reset": "复位", "v3d.spin": "自动旋转",
+      "v3d.hint": "拖动旋转 · 滚动页面拆解前后盖",
+      "v3d.part.top": "上壳", "v3d.part.back": "后盖", "v3d.part.inside": "内部结构",
+      "v3d.part.screen": "屏幕", "v3d.part.pcb": "主板", "v3d.part.cm4": "CM4 / CM5 模块"
     },
     ja: {
       "doc.home": "TypixNode — コンパクトなオープンハードウェア",
@@ -621,7 +629,11 @@
       "success.presale.t": "これは予約販売です。", "success.presale.p": "発送目安は 2週間〜2か月です。発送時に追跡番号をすぐメールでお知らせします。",
       "success.order": "注文", "success.bound": "✓ アカウントに保存しました。",
       "success.savegh": "この注文を GitHub アカウントに保存",
-      "success.view": "注文履歴を見る", "success.home": "ホームへ戻る", "success.help": "お困りですか？メールは"
+      "success.view": "注文履歴を見る", "success.home": "ホームへ戻る", "success.help": "お困りですか？メールは",
+      "v3d.loading": "3Dモデルを読み込み中…", "v3d.explode": "分解表示", "v3d.reset": "リセット", "v3d.spin": "自動回転",
+      "v3d.hint": "ドラッグで回転 · スクロールで分解",
+      "v3d.part.top": "上カバー", "v3d.part.back": "背面カバー", "v3d.part.inside": "内部",
+      "v3d.part.screen": "ディスプレイ", "v3d.part.pcb": "メイン基板", "v3d.part.cm4": "CM4 / CM5 モジュール"
     },
     "zh-Hant": {
       "doc.home": "TypixNode — 精巧的開源硬體",
@@ -3004,6 +3016,8 @@
     var ls = document.getElementById("langsel"); if (ls) ls.value = lang;
     renderCart();
   }
+  // Expose for dynamically-rendered content (e.g. the 3D viewer part list)
+  window.TNX_APPLY_I18N = applyI18n;
 
   /* ---------- apply currency ---------- */
   function applyCurrency() {
