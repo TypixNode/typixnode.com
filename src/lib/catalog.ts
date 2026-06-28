@@ -137,8 +137,6 @@ export type Locale = 'en' | 'zh' | 'ja';
 // Legacy fixed SKUs (typixdeck-cm0/cm4/cm5, cm0-*, etc.) remain in PRODUCTS
 // for backward compatibility with old carts/orders.
 // ---------------------------------------------------------------------------
-export const TYPIXDECK_BASE_USD = 119;
-
 interface OptionValue {
   delta: number; // USD added to the base
   label: { en: string; zh: string; ja: string };
@@ -146,31 +144,42 @@ interface OptionValue {
 }
 interface OptionGroup {
   label: { en: string; zh: string; ja: string };
+  required: boolean;
   values: Record<string, OptionValue>;
   default: string;
 }
+/** sku -> groupKey -> OptionGroup. Drives configurable products like typixdeck. */
+export type OptionsMap = Record<string, Record<string, OptionGroup>>;
 
-export const TYPIXDECK_OPTIONS: Record<string, OptionGroup> = {
-  compute: {
-    label: { en: 'Compute', zh: '核心', ja: 'コンピュート' },
-    default: 'body',
-    values: {
-      body: { delta: 0, label: { en: 'Body only', zh: '仅机身', ja: '本体のみ' } },
-      cm0: { delta: 40, label: { en: 'CM0 (soldered CM0→CM4 adapter)', zh: 'CM0（含贴片转接板）', ja: 'CM0（実装済アダプタ）' } },
-      cm4: { delta: 95, label: { en: 'CM4 · 4GB · Wi-Fi · no eMMC', zh: 'CM4 · 4GB · WiFi · 无 eMMC', ja: 'CM4 · 4GB · Wi-Fi · eMMC なし' } },
-      cm5: { delta: 105, label: { en: 'CM5 · 4GB · Wi-Fi · no eMMC', zh: 'CM5 · 4GB · WiFi · 无 eMMC', ja: 'CM5 · 4GB · Wi-Fi · eMMC なし' } },
+// Hard-coded SEED + safety fallback. The live values live in D1
+// (product_option_values, migration 0006) so the dashboard can edit deltas
+// without a deploy. loadOptions() reads the DB; this is used only when the DB
+// is empty/unreachable. Keep in sync with the migration seed.
+export const OPTIONS_SEED: OptionsMap = {
+  typixdeck: {
+    compute: {
+      label: { en: 'Compute', zh: '核心', ja: 'コンピュート' },
+      required: true,
+      default: 'body',
+      values: {
+        body: { delta: 0, label: { en: 'Body only', zh: '仅机身', ja: '本体のみ' } },
+        cm0: { delta: 40, label: { en: 'CM0 (soldered CM0→CM4 adapter)', zh: 'CM0（含贴片转接板）', ja: 'CM0（実装済アダプタ）' } },
+        cm4: { delta: 95, label: { en: 'CM4 · 4GB · Wi-Fi · no eMMC', zh: 'CM4 · 4GB · WiFi · 无 eMMC', ja: 'CM4 · 4GB · Wi-Fi · eMMC なし' } },
+        cm5: { delta: 105, label: { en: 'CM5 · 4GB · Wi-Fi · no eMMC', zh: 'CM5 · 4GB · WiFi · 无 eMMC', ja: 'CM5 · 4GB · Wi-Fi · eMMC なし' } },
+      },
     },
-  },
-  storage: {
-    label: { en: 'Storage', zh: '存储', ja: 'ストレージ' },
-    default: 'none',
-    values: {
-      none: { delta: 0, label: { en: 'No TF card', zh: '不含 TF 卡', ja: 'TF カードなし' } },
-      tf64: { delta: 19, label: { en: 'SanDisk 64GB · Raspberry Pi OS preloaded', zh: 'SanDisk 64GB · 预装树莓派 OS', ja: 'SanDisk 64GB · Raspberry Pi OS プリインストール' } },
-      ssd128: {
-        delta: 25,
-        label: { en: 'M.2 SSD 128GB · Toshiba 2230 · OS preloaded', zh: 'M.2 SSD 128GB · 东芝 2230 · 预装系统', ja: 'M.2 SSD 128GB · 東芝 2230 · OS プリインストール' },
-        note: { en: 'CM4 / CM5 only — CM0 uses eMMC or a TF card', zh: '仅 CM4 / CM5 可用 — CM0 只能用 eMMC 或 TF 卡', ja: 'CM4 / CM5 のみ — CM0 は eMMC か TF カード' },
+    storage: {
+      label: { en: 'Storage', zh: '存储', ja: 'ストレージ' },
+      required: false,
+      default: 'none',
+      values: {
+        none: { delta: 0, label: { en: 'No TF card', zh: '不含 TF 卡', ja: 'TF カードなし' } },
+        tf64: { delta: 19, label: { en: 'SanDisk 64GB · Raspberry Pi OS preloaded', zh: 'SanDisk 64GB · 预装树莓派 OS', ja: 'SanDisk 64GB · Raspberry Pi OS プリインストール' } },
+        ssd128: {
+          delta: 25,
+          label: { en: 'M.2 SSD 128GB · Toshiba 2230 · OS preloaded', zh: 'M.2 SSD 128GB · 东芝 2230 · 预装系统', ja: 'M.2 SSD 128GB · 東芝 2230 · OS プリインストール' },
+          note: { en: 'CM4 / CM5 only — CM0 uses eMMC or a TF card', zh: '仅 CM4 / CM5 可用 — CM0 只能用 eMMC 或 TF 卡', ja: 'CM4 / CM5 のみ — CM0 は eMMC か TF カード' },
+        },
       },
     },
   },
@@ -203,54 +212,40 @@ export interface ResolvedLine {
 }
 
 /**
- * Price a configured `typixdeck` line. Validates each option against
- * TYPIXDECK_OPTIONS (unknown/missing -> the group default), sums the deltas
- * onto the base, and returns the resolved line with a configuration snapshot.
+ * Price a configured product line against a given options table.
+ * Validates each option (unknown/missing -> the group default), sums the deltas
+ * onto the base, and returns the line with a configuration snapshot. The price
+ * comes entirely from `base` (products.usd) + `groups` (DB deltas) — nothing
+ * is hard-coded in the hot path.
  */
-function resolveTypixdeck(raw: ConfigSelection | undefined, qty: number, locale: Locale): ResolvedLine {
+function resolveConfigured(
+  id: string,
+  baseName: string,
+  baseUsd: number,
+  groups: Record<string, OptionGroup>,
+  raw: ConfigSelection | undefined,
+  qty: number,
+  locale: Locale
+): ResolvedLine {
   const sel: ResolvedOption[] = [];
-  let priceUsd = TYPIXDECK_BASE_USD;
-  for (const groupKey of Object.keys(TYPIXDECK_OPTIONS)) {
-    const group = TYPIXDECK_OPTIONS[groupKey];
+  let priceUsd = baseUsd;
+  for (const groupKey of Object.keys(groups)) {
+    const group = groups[groupKey];
     const chosen = raw?.[groupKey];
     const valueKey = chosen && group.values[chosen] ? chosen : group.default;
     const v = group.values[valueKey];
+    if (!v) continue;
     priceUsd += v.delta;
     sel.push({ group: groupKey, value: valueKey, label: v.label[locale] ?? v.label.en, deltaUsd: v.delta });
   }
-  // Name = "TypixDeck · <compute label> · <storage label>"
-  const name = ['TypixDeck', ...sel.map((s) => s.label)].join(' · ');
-  return { id: 'typixdeck', name, qty, unitPriceUsd: priceUsd, unitAmount: priceUsd * 100, options: sel };
+  const name = [baseName, ...sel.map((s) => s.label)].join(' · ');
+  return { id, name, qty, unitPriceUsd: priceUsd, unitAmount: priceUsd * 100, options: sel };
 }
 
-/** Validate + price a raw client cart against the server catalogue. */
+/** Validate + price a raw client cart against the seed catalogue + seed options.
+ *  Synchronous, hard-coded fallback path. DB-backed callers use resolveCartDb. */
 export function resolveCart(lines: unknown, locale: Locale = 'en'): ResolvedLine[] {
-  if (!Array.isArray(lines)) return [];
-  const out: ResolvedLine[] = [];
-  for (const raw of lines) {
-    if (!raw || typeof raw !== 'object') continue;
-    const id = String((raw as any).id ?? '');
-    const qty = Math.max(1, Math.min(99, Math.floor(Number((raw as any).qty ?? 0))));
-    if (!Number.isFinite(qty) || qty < 1) continue;
-
-    // Configured single-SKU product: price = base + option deltas (server-authoritative).
-    if (id === 'typixdeck') {
-      const opts = (raw as any).options;
-      out.push(resolveTypixdeck(opts && typeof opts === 'object' ? opts : undefined, qty, locale));
-      continue;
-    }
-
-    const p = PRODUCTS[id];
-    if (!p) continue;
-    out.push({
-      id,
-      name: p.name[locale] ?? p.name.en,
-      qty,
-      unitPriceUsd: p.usd,
-      unitAmount: p.usd * 100,
-    });
-  }
-  return out;
+  return resolveCartWith(PRODUCTS, lines, locale, OPTIONS_SEED);
 }
 
 /** Subtotal in cents. */
@@ -296,11 +291,71 @@ export async function loadCatalog(db: D1Database | undefined): Promise<Record<st
   }
 }
 
-/** Like resolveCart but prices from a given catalogue map (DB-backed). */
+// Options cache (same TTL/fallback rationale as the catalogue cache).
+let _optionsCache: { at: number; map: OptionsMap } | null = null;
+
+/** Load the configurable-option table from D1 (product_option_values, 0006).
+ *  Falls back to OPTIONS_SEED when the DB is empty/unreachable. */
+export async function loadOptions(db: D1Database | undefined): Promise<OptionsMap> {
+  if (!db) return OPTIONS_SEED;
+  const now = Date.now();
+  if (_optionsCache && now - _optionsCache.at < CATALOG_TTL_MS) return _optionsCache.map;
+  try {
+    const rs = await db
+      .prepare(
+        `SELECT product_sku, group_key, value_key,
+                group_label_en, group_label_zh, group_label_ja,
+                label_en, label_zh, label_ja, delta_usd,
+                note_en, note_zh, note_ja, required, is_default, sort
+           FROM product_option_values
+          WHERE active = 1
+          ORDER BY product_sku, group_key, sort`
+      )
+      .all();
+    const rows = (rs?.results ?? []) as any[];
+    if (!rows.length) return OPTIONS_SEED; // empty -> seed
+    const map: OptionsMap = {};
+    for (const r of rows) {
+      const sku = r.product_sku as string;
+      const gk = r.group_key as string;
+      const vk = r.value_key as string;
+      const bySku = (map[sku] ||= {});
+      const grp = (bySku[gk] ||= {
+        label: { en: r.group_label_en || gk, zh: r.group_label_zh || gk, ja: r.group_label_ja || gk },
+        required: !!r.required,
+        default: vk, // tentative; overwritten by the is_default row below
+        values: {},
+      });
+      grp.values[vk] = {
+        delta: Number(r.delta_usd) || 0,
+        label: { en: r.label_en, zh: r.label_zh, ja: r.label_ja },
+        note: r.note_en || r.note_zh || r.note_ja
+          ? { en: r.note_en ?? '', zh: r.note_zh ?? '', ja: r.note_ja ?? '' }
+          : undefined,
+      };
+      if (r.is_default) grp.default = vk;
+    }
+    // Guard: ensure each group's default points at an existing value.
+    for (const sku of Object.keys(map))
+      for (const gk of Object.keys(map[sku])) {
+        const g = map[sku][gk];
+        if (!g.values[g.default]) g.default = Object.keys(g.values)[0];
+      }
+    _optionsCache = { at: now, map };
+    return map;
+  } catch {
+    return OPTIONS_SEED;
+  }
+}
+
+/** Like resolveCart but prices from a given catalogue map + options map (DB-backed).
+ *  A line whose `id` has an options definition AND a base product is priced as
+ *  base + option deltas; everything else uses the flat product price. */
 export function resolveCartWith(
   catalog: Record<string, Product>,
   lines: unknown,
-  locale: Locale = 'en'
+  locale: Locale = 'en',
+  options: OptionsMap = OPTIONS_SEED
 ): ResolvedLine[] {
   if (!Array.isArray(lines)) return [];
   const out: ResolvedLine[] = [];
@@ -308,8 +363,32 @@ export function resolveCartWith(
     if (!raw || typeof raw !== 'object') continue;
     const id = String((raw as any).id ?? '');
     const qty = Math.max(1, Math.min(99, Math.floor(Number((raw as any).qty ?? 0))));
+    if (!Number.isFinite(qty) || qty < 1) continue;
     const p = catalog[id];
-    if (!p || !Number.isFinite(qty) || qty < 1) continue;
+    if (!p) continue;
+
+    const groups = options[id];
+    if (groups) {
+      // Configured product: base (products.usd) + option deltas (DB-driven).
+      // Use a clean base name (strip a "(body only)"-style suffix) so the
+      // composed name reads "TypixDeck · CM5 · … · M.2 SSD …".
+      const fullName = p.name[locale] ?? p.name.en;
+      const baseName = fullName.replace(/\s*[（(].*?[)）]\s*$/, '').trim();
+      const opts = (raw as any).options;
+      out.push(
+        resolveConfigured(
+          id,
+          baseName,
+          p.usd,
+          groups,
+          opts && typeof opts === 'object' ? opts : undefined,
+          qty,
+          locale
+        )
+      );
+      continue;
+    }
+
     out.push({
       id,
       name: p.name[locale] ?? p.name.en,
@@ -321,14 +400,14 @@ export function resolveCartWith(
   return out;
 }
 
-/** Convenience: load catalogue from D1 then resolve a client cart against it. */
+/** Convenience: load catalogue + options from D1 then resolve a client cart. */
 export async function resolveCartDb(
   db: D1Database | undefined,
   lines: unknown,
   locale: Locale = 'en'
 ): Promise<ResolvedLine[]> {
-  const catalog = await loadCatalog(db);
-  return resolveCartWith(catalog, lines, locale);
+  const [catalog, options] = await Promise.all([loadCatalog(db), loadOptions(db)]);
+  return resolveCartWith(catalog, lines, locale, options);
 }
 
 // ---------------------------------------------------------------------------

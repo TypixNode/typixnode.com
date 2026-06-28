@@ -52,6 +52,20 @@
       }
     }
   };
+  // Base price for typixdeck comes from the catalogue (DB-driven via /api/products),
+  // falling back to the seed PRODUCTS price.
+  function typixdeckBase() {
+    return (PRODUCTS.typixdeck && typeof PRODUCTS.typixdeck.usd === "number") ? PRODUCTS.typixdeck.usd : 119;
+  }
+  // Localized label for an option value: prefer a DB-provided label map, else the i18n key.
+  function optLabel(val) {
+    if (val && val.labels) return val.labels[lang] || val.labels.en || "";
+    return val && val.i18n ? L(val.i18n, lang) : "";
+  }
+  function optNote(val) {
+    if (val && val.notes) return val.notes[lang] || val.notes.en || "";
+    return val && val.note ? L(val.note, lang) : "";
+  }
   // Normalize a selection to valid keys (unknown -> group default).
   function normOptions(opts) {
     var o = {};
@@ -70,7 +84,7 @@
   // USD unit price for a cart line (base + deltas for typixdeck).
   function lineUsd(item) {
     if (item.id === "typixdeck") {
-      var o = normOptions(item.options), sum = TYPIXDECK_BASE;
+      var o = normOptions(item.options), sum = typixdeckBase();
       Object.keys(TYPIXDECK_OPTIONS).forEach(function (g) { sum += TYPIXDECK_OPTIONS[g].values[o[g]].delta; });
       return sum;
     }
@@ -81,7 +95,7 @@
     if (item.id === "typixdeck") {
       var o = normOptions(item.options);
       var parts = ["TypixDeck"];
-      Object.keys(TYPIXDECK_OPTIONS).forEach(function (g) { parts.push(L(TYPIXDECK_OPTIONS[g].values[o[g]].i18n, lang)); });
+      Object.keys(TYPIXDECK_OPTIONS).forEach(function (g) { parts.push(optLabel(TYPIXDECK_OPTIONS[g].values[o[g]])); });
       return parts.join(" · ");
     }
     return PRODUCTS[item.id] ? PRODUCTS[item.id].name[lang] || PRODUCTS[item.id].name.en : item.id;
@@ -110,11 +124,16 @@
       var o = readConfig();
       var price = lineUsd({ id: "typixdeck", options: o });
       var pe = root.querySelector("#cfgPrice"); if (pe) pe.textContent = money(price, cur);
-      // Advisory note: show the ssd128 note whenever that storage is picked.
+      // Advisory note: show the note of any selected option value that has one.
       var note = root.querySelector("#cfgNote");
       if (note) {
-        var sv = TYPIXDECK_OPTIONS.storage.values[o.storage];
-        if (sv && sv.note) { note.textContent = L(sv.note, lang); note.style.display = "block"; }
+        var msgs = [];
+        Object.keys(TYPIXDECK_OPTIONS).forEach(function (g) {
+          var v = TYPIXDECK_OPTIONS[g].values[o[g]];
+          var n = optNote(v);
+          if (n) msgs.push(n);
+        });
+        if (msgs.length) { note.textContent = msgs.join(" "); note.style.display = "block"; }
         else { note.textContent = ""; note.style.display = "none"; }
       }
       // reflect selected state on the option cards
@@ -3292,7 +3311,7 @@
         if (i.id === "typixdeck") {
           var o = normOptions(i.options);
           sub = '<div class="ci-cfg">' + Object.keys(TYPIXDECK_OPTIONS).map(function (g) {
-            return L(TYPIXDECK_OPTIONS[g].values[o[g]].i18n, lang);
+            return optLabel(TYPIXDECK_OPTIONS[g].values[o[g]]);
           }).join(" · ") + '</div>';
         }
         return '<div class="ci"><div class="cimg"><img src="' + lineImg(i) + '" alt=""></div>' +
@@ -3413,18 +3432,40 @@
     // PRODUCTS above is the fallback used until this resolves (or if it fails).
     fetch("/api/products").then(function (r) { return r.ok ? r.json() : null; }).then(function (data) {
       if (!data || typeof data !== "object") return;
-      Object.keys(data).forEach(function (sku) {
-        var p = data[sku];
+      // products: { sku: { img, usd, name } }
+      var prods = data.products || {};
+      Object.keys(prods).forEach(function (sku) {
+        var p = prods[sku];
         if (p && typeof p.usd === "number") {
           PRODUCTS[sku] = { img: p.img, usd: p.usd, name: p.name };
         }
       });
-      // Re-apply any price displays bound to known SKUs + re-render the cart.
+      // options: override TYPIXDECK_OPTIONS with DB-driven deltas/labels/notes so
+      // option surcharges are NOT hard-coded — dashboard edits propagate here.
+      if (data.options) {
+        Object.keys(data.options).forEach(function (sku) {
+          if (sku !== "typixdeck") return; // only typixdeck is configured today
+          var groups = data.options[sku], built = {};
+          Object.keys(groups).forEach(function (gk) {
+            var g = groups[gk], vals = {};
+            (g.values || []).forEach(function (v) {
+              vals[v.key] = { delta: Number(v.delta) || 0, labels: v.label || null, notes: v.note || null };
+            });
+            // keep at least one value; fall back silently if malformed
+            if (Object.keys(vals).length) {
+              built[gk] = { def: g.default && vals[g.default] ? g.default : Object.keys(vals)[0], values: vals };
+            }
+          });
+          if (Object.keys(built).length) TYPIXDECK_OPTIONS = built;
+        });
+      }
+      // Re-apply any price displays bound to known SKUs + refresh cart & configurator.
       document.querySelectorAll("[data-usd][data-sku]").forEach(function (el) {
         var sku = el.dataset.sku, prod = PRODUCTS[sku];
         if (prod) { el.dataset.usd = prod.usd; el.textContent = money(prod.usd, cur); }
       });
       renderCart();
+      if (window.__cfgUpdate) window.__cfgUpdate();
     }).catch(function () {});
 
     var ls = document.getElementById("langsel");
