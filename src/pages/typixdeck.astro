@@ -40,37 +40,40 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
         <span class="chip rise d1"><span class="d"></span><span class="mono" data-i18n="hero.badge">Compact open hardware · Est. 2026</span></span>
         <h1 class="rise d2" data-i18n={h1Key}>A thin, <span class="grad">palm-sized Linux computer.</span></h1>
         <p class="lead rise d3" data-i18n="deck.lead">Meet TypixDeck — a thin, palm-sized machine in a CNC-machined aluminum body, built around a Raspberry Pi Compute Module. Open it, hack it, make it yours.</p>
-        <div class="cfg rise d3" data-cfg="typixdeck">
-          <div class="cfg__group">
-            <div class="cfg__label" data-i18n="cfg.compute">Compute</div>
-            <div class="cfg__opts">
-              <label class="cfg__opt"><input type="radio" name="cfg-compute" value="body" checked><span class="cfg__t" data-i18n="cfg.compute.body">Body only</span><span class="cfg__d" data-i18n="cfg.delta.0">Included</span></label>
-              <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm0"><span class="cfg__t" data-i18n="cfg.compute.cm0">CM0 (soldered CM0→CM4 adapter)</span><span class="cfg__d">+<span data-usd="40">$40</span></span></label>
-              <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm4"><span class="cfg__t" data-i18n="cfg.compute.cm4">CM4 · 4GB · Wi-Fi · no eMMC</span><span class="cfg__d">+<span data-usd="95">$95</span></span></label>
-              <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm5"><span class="cfg__t" data-i18n="cfg.compute.cm5">CM5 · 4GB · Wi-Fi · no eMMC</span><span class="cfg__d">+<span data-usd="105">$105</span></span></label>
-            </div>
-          </div>
-          <div class="cfg__group">
-            <div class="cfg__label" data-i18n="cfg.storage">Storage</div>
-            <div class="cfg__opts">
-              <label class="cfg__opt"><input type="radio" name="cfg-storage" value="none" checked><span class="cfg__t" data-i18n="cfg.storage.none">No TF card</span><span class="cfg__d" data-i18n="cfg.delta.0">Included</span></label>
-              <label class="cfg__opt"><input type="radio" name="cfg-storage" value="tf64"><span class="cfg__t" data-i18n="cfg.storage.tf64">SanDisk 64GB · Raspberry Pi OS preloaded</span><span class="cfg__d">+<span data-usd="19">$19</span></span></label>
-              <label class="cfg__opt"><input type="radio" name="cfg-storage" value="ssd128"><span class="cfg__t" data-i18n="cfg.storage.ssd128">M.2 SSD 128GB · Toshiba 2230 · OS preloaded</span><span class="cfg__d">+<span data-usd="25">$25</span></span></label>
-            </div>
-            <p class="cfg__note" id="cfgNote" style="display:none"></p>
-          </div>
-          <div class="cfg__bar">
-            <div class="cfg__price"><span class="cfg__pl" data-i18n="cfg.total">Total</span> <b id="cfgPrice">$119</b><span class="cfg__ship" data-i18n="deck.ship">· shipped worldwide</span></div>
-            <div class="cta"><button class="btn btn--fill" data-add="typixdeck" data-i18n="deck.add">Add to cart →</button><a class="btn btn--glass" href="#inside" data-i18n="deck.look">Look inside</a></div>
-          </div>
-        <p class="coolnote rise d3" data-i18n="deck.coolnote">CM0 / CM4 are fanless &amp; silent (0 dB). The CM5 build adds an optional 4-pin PWM fan + dedicated CNC case — in production.</p>
-        <div class="trust rise d4"><span class="d"></span> <span data-i18n="deck.trust">In stock · ships in 2–3 days · 2-year warranty · 4,200+ makers</span></div>
       </div>
+
       <div class="stage rise d4">
         <span class="savebadge r"><span data-i18n="save.title">PRE-ORDER</span><small data-i18n="save.sub"></small></span>
         <span class="pin p1"><div class="k">TypixDeck</div><div class="v" data-i18n="pin.fanless">Raspberry Pi CM0/CM4/CM5</div></span>
         <img src="/assets/cyberdeck.png" alt="TypixDeck — fanless Linux computer">
         <span class="pin p2"><div class="k">0 dB</div><div class="v" data-i18n="pin.silent">Truly silent</div></span>
+      </div>
+
+      <div class="cfg rise d3" data-cfg="typixdeck">
+        <div class="cfg__group">
+          <div class="cfg__label" data-i18n="cfg.compute">Compute</div>
+          <div class="cfg__opts">
+            <label class="cfg__opt"><input type="radio" name="cfg-compute" value="body" checked><span class="cfg__t" data-i18n="cfg.compute.body">Body only</span><span class="cfg__d" data-i18n="cfg.delta.0">Included</span></label>
+            <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm0"><span class="cfg__t" data-i18n="cfg.compute.cm0">CM0 (soldered CM0→CM4 adapter)</span><span class="cfg__d">+<span data-usd="40">$40</span></span></label>
+            <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm4"><span class="cfg__t" data-i18n="cfg.compute.cm4">CM4 · 4GB · Wi-Fi · no eMMC</span><span class="cfg__d">+<span data-usd="95">$95</span></span></label>
+            <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm5"><span class="cfg__t" data-i18n="cfg.compute.cm5">CM5 · 4GB · Wi-Fi · no eMMC</span><span class="cfg__d">+<span data-usd="105">$105</span></span></label>
+          </div>
+        </div>
+        <div class="cfg__group">
+          <div class="cfg__label" data-i18n="cfg.storage">Storage</div>
+          <div class="cfg__opts">
+            <label class="cfg__opt"><input type="radio" name="cfg-storage" value="none" checked><span class="cfg__t" data-i18n="cfg.storage.none">No TF card</span><span class="cfg__d" data-i18n="cfg.delta.0">Included</span></label>
+            <label class="cfg__opt"><input type="radio" name="cfg-storage" value="tf64"><span class="cfg__t" data-i18n="cfg.storage.tf64">SanDisk 64GB · Raspberry Pi OS preloaded</span><span class="cfg__d">+<span data-usd="19">$19</span></span></label>
+            <label class="cfg__opt"><input type="radio" name="cfg-storage" value="ssd128"><span class="cfg__t" data-i18n="cfg.storage.ssd128">M.2 SSD 128GB · Toshiba 2230 · OS preloaded</span><span class="cfg__d">+<span data-usd="25">$25</span></span></label>
+          </div>
+          <p class="cfg__note" id="cfgNote" style="display:none"></p>
+        </div>
+        <div class="cfg__bar">
+          <div class="cfg__price"><span class="cfg__pl" data-i18n="cfg.total">Total</span> <b id="cfgPrice">$119</b><span class="cfg__ship" data-i18n="deck.ship">· shipped worldwide</span></div>
+          <div class="cta"><button class="btn btn--fill" data-add="typixdeck" data-i18n="deck.add">Add to cart →</button><a class="btn btn--glass" href="#inside" data-i18n="deck.look">Look inside</a></div>
+        </div>
+        <p class="coolnote rise d3" data-i18n="deck.coolnote">CM0 / CM4 are fanless &amp; silent (0 dB). The CM5 build adds an optional 4-pin PWM fan + dedicated CNC case — in production.</p>
+        <div class="trust rise d4"><span class="d"></span> <span data-i18n="deck.trust">In stock · ships in 2–3 days · 2-year warranty · 4,200+ makers</span></div>
       </div>
     </div>
 
@@ -208,5 +211,70 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
   @media(max-width:900px){
     .hero[data-fix="narrow"] .copy h1{max-width:none}
     .hero[data-fix="narrow"]{align-items:center}
+  }
+
+  /* ===========================================================================
+     CONFIGURATOR LAYOUT — "top image / bottom configurator" (the only layout)
+     ---------------------------------------------------------------------------
+     The hero has THREE direct children: .copy (chip+h1+lead), .stage (product
+     image) and .cfg (grouped option cards + total bar + notes). They stack as a
+     centered column: copy → big product image → configurator (two option groups
+     side-by-side). The .strip stats bar sits below as a spec bar. Reuses
+     --emerald / --teal / --glass / --glassb so it tracks light & dark themes.
+     Coexists with ?h (headline) and ?fix (legacy gap fix).
+     =========================================================================== */
+
+  /* ---- Configurator card polish ----------------------------------------- */
+  .hero .cfg{max-width:none;margin:0}
+  .hero .cfg__opt{
+    border-radius:14px;
+    transition:border-color .16s, background .16s, box-shadow .16s, transform .16s;
+  }
+  .hero .cfg__opt:hover{border-color:var(--teal);transform:translateY(-1px)}
+  .hero .cfg__opt.on{
+    border-color:var(--teal);
+    background:#0fb88f12;
+    box-shadow:0 6px 18px #0a8f6e22;
+  }
+  /* keep the +price delta hard right-aligned inside each card */
+  .hero .cfg__opt .cfg__d{margin-left:auto}
+  /* the configurator reads as a soft glass panel around the groups */
+  .hero .cfg{
+    border:1px solid var(--glassb);
+    border-radius:22px;
+    background:var(--glass);
+    backdrop-filter:blur(14px);
+    box-shadow:0 18px 50px #0c1a1614;
+    padding:22px 22px 20px;
+  }
+  .hero .cfg__bar{margin-top:18px}
+  .hero .cfg .coolnote{margin:16px 0 0}
+  .hero .cfg .trust{margin-top:12px}
+
+  /* ---- Top image / bottom configurator stack ---------------------------- */
+  .hero{
+    display:flex;
+    flex-direction:column;
+    gap:26px;
+    align-items:stretch;
+  }
+  .hero .copy{max-width:64ch;margin:0 auto;text-align:center}
+  .hero .copy .lead{max-width:none}
+  .hero .stage{width:100%}
+  .hero .stage img{max-height:460px}
+  /* the two option groups sit side-by-side; bar/notes span the full width */
+  .hero .cfg{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px 26px;
+    align-items:start;
+  }
+  .hero .cfg__bar,
+  .hero .cfg .coolnote,
+  .hero .cfg .trust{grid-column:1 / -1}
+  /* stats strip below as a spec bar */
+  .strip{margin-top:0}
+  @media(max-width:720px){
+    .hero .cfg{grid-template-columns:1fr}
   }
 </style>
