@@ -90,6 +90,7 @@ nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;max-width:1140px;padd
 .selwrap{position:relative;display:inline-flex;align-items:center}
 .selwrap select{appearance:none;-webkit-appearance:none;height:38px;padding:0 26px 0 12px;border-radius:30px;background:var(--glass);border:1px solid var(--glassb);backdrop-filter:blur(10px);color:var(--ink);font-family:var(--b);font-size:.84rem;font-weight:600;cursor:pointer;transition:.18s}
 .selwrap select:hover{border-color:var(--teal)}
+.selwrap.lang select{min-width:96px}
 .selwrap::after{content:"▾";position:absolute;right:11px;color:var(--soft);font-size:.7rem;pointer-events:none}
 .themebtn{width:38px;justify-content:center;font-size:1rem;padding:0}
 .cartbtn{position:relative}
