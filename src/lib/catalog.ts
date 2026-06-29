@@ -12,12 +12,11 @@ export interface Product {
   img: string;
 }
 
-// Prices are hardcoded for now (a D1-backed admin will replace this later).
-// TypixDeck pricing: $119 bare body (no battery, no compute module). The CM4 /
-// CM5 bundles = bare + the module's street price (no-eMMC "Lite", Wireless,
-// 4GB RAM default) and ship WITH a free battery. Reference street prices
-// (excl. tax/duties, Jun 2026): CM4 4GB Lite ≈ $95 -> 119+95 = 214;
-// CM5 4GB Lite ≈ $105 -> 119+105 = 224. We standardise on no-eMMC modules.
+// This object is the SEED + safety fallback; the live catalogue is in D1
+// (products table, migration 0005). TypixDeck is a single configurable SKU:
+// $119 bare body + the chosen `compute` option delta (cm0 +$40, cm4 +$95,
+// cm5 +$105; reference no-eMMC "Lite" 4GB street prices, Jun 2026) plus an
+// optional `storage` delta. The deltas live in OPTIONS_SEED / product_option_values.
 export const PRODUCTS: Record<string, Product> = {
   typixdeck: {
     id: 'typixdeck',
@@ -29,37 +28,9 @@ export const PRODUCTS: Record<string, Product> = {
     },
     img: '/assets/cyberdeck.png',
   },
-  'typixdeck-cm4': {
-    id: 'typixdeck-cm4',
-    usd: 214,
-    name: {
-      en: 'TypixDeck · CM4 4GB (+ battery)',
-      zh: 'TypixDeck · CM4 4GB（含电池）',
-      ja: 'TypixDeck · CM4 4GB（バッテリー付）',
-    },
-    img: '/assets/cyberdeck.png',
-  },
-  'typixdeck-cm5': {
-    id: 'typixdeck-cm5',
-    usd: 224,
-    name: {
-      en: 'TypixDeck · CM5 4GB (+ battery)',
-      zh: 'TypixDeck · CM5 4GB（含电池）',
-      ja: 'TypixDeck · CM5 4GB（バッテリー付）',
-    },
-    img: '/assets/cyberdeck.png',
-  },
-  // CM0 version: bare body ($119) + the pre-soldered CM0→CM4 adapter ($40) = $159.
-  'typixdeck-cm0': {
-    id: 'typixdeck-cm0',
-    usd: 159,
-    name: {
-      en: 'TypixDeck · CM0 (soldered adapter)',
-      zh: 'TypixDeck · CM0（含贴片转接板）',
-      ja: 'TypixDeck · CM0（実装済アダプタ付）',
-    },
-    img: '/assets/cm0-adapter.png',
-  },
+  // CM4 / CM5 / CM0 are NOT separate SKUs. TypixDeck is one configurable product:
+  // base $119 + the chosen `compute` option delta (cm0 +$40, cm4 +$95, cm5 +$105)
+  // — see OPTIONS_SEED below and product_option_values (migration 0006).
   keyboard: {
     id: 'keyboard',
     usd: 39,
@@ -134,8 +105,9 @@ export type Locale = 'en' | 'zh' | 'ja';
 // The chosen configuration is snapshotted onto the order line (options[]),
 // so historical orders stay reconstructable even if this table changes.
 //
-// Legacy fixed SKUs (typixdeck-cm0/cm4/cm5, cm0-*, etc.) remain in PRODUCTS
-// for backward compatibility with old carts/orders.
+// The former fixed bundle SKUs (typixdeck-cm0/cm4/cm5) have been removed —
+// they only duplicated the `compute` option deltas. Standalone parts
+// (cm0-adapter, cm0-module, cm0-adapter-raw) are genuine separate products.
 // ---------------------------------------------------------------------------
 interface OptionValue {
   delta: number; // USD added to the base

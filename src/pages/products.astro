@@ -22,13 +22,14 @@ interface Card {
   ds?: string;       // i18n key for a longer description
   alt: string;
   tag?: string;      // i18n key for a badge
+  fromPrice?: boolean; // show "from $X" (configurable product) instead of a flat price
 }
 
+// TypixDeck is one configurable product (base $119 + compute/storage option
+// deltas), so it's a single "from $119" card that opens the configurator on
+// /typixdeck — not separate CM0/CM4/CM5 SKUs.
 const computers: Card[] = [
-  { id: 'typixdeck', usd: 119, href: '/typixdeck', name: 'TypixDeck (body only)', img: '/assets/cyberdeck.png', alt: 'TypixDeck', ds: 'p.deck.ds', tag: 'tag.flagship' },
-  { id: 'typixdeck-cm0', usd: 159, href: '/typixdeck#buy', name: 'TypixDeck · CM0', img: '/assets/cm0-adapter.png', alt: 'TypixDeck with CM0 adapter' },
-  { id: 'typixdeck-cm4', usd: 214, href: '/typixdeck#buy', name: 'TypixDeck · CM4 4GB', img: '/assets/cyberdeck.png', alt: 'TypixDeck with CM4' },
-  { id: 'typixdeck-cm5', usd: 224, href: '/typixdeck#buy', name: 'TypixDeck · CM5 4GB', img: '/assets/cyberdeck.png', alt: 'TypixDeck with CM5', tag: 'tag.new' },
+  { id: 'typixdeck', usd: 119, href: '/typixdeck#buy', name: 'TypixDeck', img: '/assets/cyberdeck.png', alt: 'TypixDeck', ds: 'p.deck.ds', tag: 'tag.flagship', fromPrice: true },
   { id: 'picomac', usd: 60, href: '/picomac', name: 'Pico-Mac Nano', img: '/assets/picomac.jpg', alt: 'Pico-Mac Nano', ds: 'p.mac.ds' },
 ];
 
@@ -74,8 +75,12 @@ const sections = [
               ? <p class="ds" data-i18n={p.ds}>{p.name}</p>
               : <p class="ds">{p.name}</p>}
             <div class="foot">
-              <span class="pr" data-usd={p.usd}>${p.usd}</span>
-              <button class="add" data-add={p.id} aria-label="Add">+</button>
+              <span class="pr" data-usd={p.usd}>
+                {p.fromPrice && <span class="from" data-i18n="pg.from">from </span>}${p.usd}
+              </span>
+              {p.fromPrice
+                ? <span class="add cfg" aria-hidden="true" data-i18n="pg.configure">Configure ›</span>
+                : <button class="add" data-add={p.id} aria-label="Add">+</button>}
             </div>
           </a>
         ))}
@@ -86,3 +91,15 @@ const sections = [
   <Footer />
   <CartDrawer />
 </Layout>
+
+<style>
+  .pr .from { font-size: 0.7em; opacity: 0.7; font-weight: 400; }
+  /* Configurable products show a "Configure ›" affordance instead of a + add button. */
+  .add.cfg {
+    width: auto;
+    padding: 0 0.6em;
+    font-size: 0.8rem;
+    line-height: 1.9;
+    white-space: nowrap;
+  }
+</style>
