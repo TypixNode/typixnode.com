@@ -117,6 +117,27 @@ export function welcomeHtml(opts: { unsubscribeUrl: string; name?: string | null
   });
 }
 
+/** Sent when an ALREADY-subscribed address submits the form again — gives the
+ *  owner their unsubscribe link (which we can't safely show on a public page). */
+export function alreadySubscribedHtml(opts: { unsubscribeUrl: string; name?: string | null }): string {
+  const hi = opts.name ? `Hi ${opts.name}, ` : '';
+  return shell({
+    preheader: "You're already subscribed to TypixNode.",
+    unsubscribeUrl: opts.unsubscribeUrl,
+    body: `
+      <h2 style="margin:0 0 8px;font-size:20px">You're already subscribed ✅</h2>
+      <p style="color:#4a5f58;margin:0 0 18px;font-size:14px">
+        ${hi}good news — your email is already on the TypixNode mailing list, so there's
+        nothing more to do. If you'd rather not receive our emails, you can unsubscribe below.
+      </p>
+      <div style="text-align:center;margin:22px 0">${btn(opts.unsubscribeUrl, 'Unsubscribe')}</div>
+      <p style="color:#9aa8a2;font-size:12px;margin:0">
+        Or copy this link:<br/>
+        <a href="${opts.unsubscribeUrl}" style="color:#0a8f6e;word-break:break-all">${opts.unsubscribeUrl}</a>
+      </p>`,
+  });
+}
+
 /** Admin heads-up when someone joins (or confirms) the mailing list. */
 export function adminSubscriberHtml(opts: {
   email: string;
