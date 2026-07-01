@@ -1,0 +1,151 @@
+---
+import { L } from "../lib/i18n";
+const lang = (Astro.locals as any).lang ?? "en";
+
+// Grayscale brand marks live in /public/assets/compat as monochrome PNGs,
+// generated from official logos so the wall reads like one cohesive set.
+const compatGroups = [
+  {
+    items: [
+      { slug: 'raspberry-pi-os', name: 'Raspberry Pi OS' },
+      { slug: 'debian', name: 'Debian' },
+      { slug: 'ubuntu', name: 'Ubuntu' },
+      { slug: 'arch-linux', name: 'Arch Linux ARM' },
+      { slug: 'kali-linux', name: 'Kali Linux' },
+      { slug: 'freebsd', name: 'FreeBSD' },
+    ],
+  },
+  {
+    items: [
+      { slug: 'retroarch', name: 'RetroArch' },
+      { slug: 'dosbox', name: 'DOSBox' },
+      { slug: 'ppsspp', name: 'PPSSPP · PSP' },
+      { slug: 'nestopia', name: 'Nestopia · FC/NES' },
+      { slug: 'mgba', name: 'mGBA · GBA' },
+      { slug: 'dolphin', name: 'Dolphin · GC/Wii' },
+      { slug: 'arduboy', name: 'Arduboy' },
+      { slug: 'scummvm', name: 'ScummVM' },
+      { slug: 'tic80', name: 'TIC-80' },
+    ],
+  },
+  {
+    items: [
+      { slug: 'godot', name: 'Godot' },
+      { slug: 'love2d', name: 'LÖVE2D' },
+      { slug: 'raylib', name: 'Raylib' },
+      { slug: 'processing', name: 'Processing' },
+    ],
+  },
+  {
+    items: [
+      { slug: 'claude-code', name: 'Claude Code' },
+      { slug: 'c', name: 'C' },
+      { slug: 'cpp', name: 'C++' },
+      { slug: 'python', name: 'Python' },
+      { slug: 'lua', name: 'Lua' },
+      { slug: 'go', name: 'Go' },
+      { slug: 'nodejs', name: 'Node.js' },
+      { slug: 'rust', name: 'Rust' },
+      { slug: 'openjdk', name: 'OpenJDK' },
+      { slug: 'dotnet', name: '.NET' },
+      { slug: 'arduino', name: 'Arduino' },
+      { slug: 'neovim', name: 'Neovim' },
+      { slug: 'vim', name: 'Vim' },
+      { slug: 'git', name: 'git' },
+      { slug: 'chromium', name: 'Chromium' },
+    ],
+  },
+  {
+    items: [
+      { slug: 'vlc', name: 'VLC' },
+      { slug: 'mpv', name: 'mpv' },
+      { slug: 'obs', name: 'OBS' },
+      { slug: 'libreoffice', name: 'LibreOffice' },
+      { slug: 'latex', name: 'LaTeX' },
+    ],
+  },
+];
+
+// One unified flat "wall" of all logos (no per-group boxes). Chromium is a
+// browser, not a dev tool, so it's pulled out of the languages/dev run and
+// placed with the media/office marks at the end.
+type CItem = { slug: string; name: string };
+const _os = compatGroups[0].items as CItem[];
+const _emu = compatGroups[1].items as CItem[];
+const _engines = compatGroups[2].items as CItem[];
+const _devAll = compatGroups[3].items as CItem[];
+const _media = compatGroups[4].items as CItem[];
+
+const _langSlugs = ['c', 'cpp', 'python', 'lua', 'go', 'nodejs', 'rust', 'openjdk', 'dotnet'];
+const _langs = _devAll.filter((i) => _langSlugs.includes(i.slug));
+const _tools = _devAll.filter((i) => !_langSlugs.includes(i.slug) && i.slug !== 'chromium');
+const _chromium = _devAll.find((i) => i.slug === 'chromium');
+const _web: CItem[] = [...(_chromium ? [_chromium] : []), ..._media];
+
+const compatItems: CItem[] = [..._os, ..._emu, ..._engines, ..._langs, ..._tools, ..._web];
+---
+<section id="compat"><div class="wrap">
+  <div class="head">
+    <span class="mono" data-i18n="compat.kicker" set:html={L('compat.kicker', lang)}></span>
+    <h2 data-i18n="compat.title" set:html={L('compat.title', lang)}></h2>
+    <p class="compat-sub" data-i18n="compat.sub" set:html={L('compat.sub', lang)}></p>
+  </div>
+
+  <ul class="compat-items compat-items--flat">
+    {compatItems.map((item) => (
+      <li title={item.name}>
+        <span class="cwi"><img src={`/assets/compat/${item.slug}.png`} alt={item.name} loading="lazy" decoding="async" width="40" height="40" /></span>
+        <span>{item.name}</span>
+      </li>
+    ))}
+  </ul>
+
+  <p class="compat-disclaimer" data-i18n="compat.disc" set:html={L('compat.disc', lang)}></p>
+</div></section>
+
+<style is:global>
+  /* ===== Software & compatibility wall — grayscale brand-mark grid ===== */
+  #compat .compat-sub{max-width:62ch;margin:10px auto 0;opacity:.78}
+  #compat .head{margin-bottom:32px}
+  /* One unified flat wall of all logos, in a single glass panel. */
+  .compat-items{list-style:none;margin:0;padding:0}
+  .compat-items--flat{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));
+    gap:26px 14px;
+    border:1px solid var(--line2);border-radius:18px;padding:28px 22px;
+    background:linear-gradient(180deg,color-mix(in srgb,var(--glass) 84%,transparent),color-mix(in srgb,var(--glass) 58%,transparent));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.045)}
+  /* Fixed-height cell with the icon+label unit centered both ways, so every
+     tile reads as a tidy centered pair (no top-hugging dead space). */
+  .compat-items li{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    min-height:104px;text-align:center;
+    font-size:.76rem;line-height:1.2;color:var(--soft);
+    overflow-wrap:anywhere}
+  .compat-items li>span:last-child{
+    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+    overflow:hidden;width:100%;text-align:center}
+  /* Own class (not `.ci`, which is the cart-item grid in site.css) so the
+     global 3-column grid can't leak in and skew the icon. */
+  .compat-items .cwi{
+    flex:0 0 auto;width:44px;height:44px;margin-inline:auto;
+    display:grid;place-items:center;grid-template-columns:none;gap:0}
+  /* Marks are light-gray silhouettes → darken in light mode, keep light in
+     dark mode (which already looks right). */
+  .compat-items .cwi img{
+    width:40px;height:40px;object-fit:contain;
+    filter:brightness(0);opacity:.6;
+    transition:opacity .15s ease,transform .15s ease}
+  .compat-items li:hover .cwi img{opacity:.95;transform:translateY(-1px)}
+  .compat-items li:hover{color:var(--ink)}
+  [data-theme="dark"] .compat-items .cwi img{filter:none;opacity:.85}
+  [data-theme="dark"] .compat-items li:hover .cwi img{opacity:1}
+
+  .compat-disclaimer{
+    margin-top:26px;text-align:center;
+    font-size:.74rem;color:var(--soft2);line-height:1.5}
+
+  @media(max-width:520px){
+    .compat-items--flat{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 10px}
+  }
+</style>
