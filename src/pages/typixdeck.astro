@@ -123,8 +123,6 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
     <div class="rows">
       <div class="row"><div class="rimg"><img src="/assets/cyberdeck-open.png" alt="Silent desktop"></div>
         <div class="rtxt"><div class="ic" data-i18n="r.1k" set:html={L('r.1k', lang)}></div><h3 data-i18n="r.1t" set:html={L('r.1t', lang)}></h3><p data-i18n="r.1p" set:html={L('r.1p', lang)}></p></div></div>
-      <div class="row"><div class="rimg"><img src="/assets/keyboard.jpg" alt="Pocket input"></div>
-        <div class="rtxt"><div class="ic" data-i18n="r.2k" set:html={L('r.2k', lang)}></div><h3 data-i18n="r.2t" set:html={L('r.2t', lang)}></h3><p data-i18n="r.2p" set:html={L('r.2p', lang)}></p></div></div>
       <div class="row"><div class="rimg"><img src="/assets/picomac.jpg" alt="For tinkerers"></div>
         <div class="rtxt"><div class="ic" data-i18n="r.3k" set:html={L('r.3k', lang)}></div><h3 data-i18n="r.3t" set:html={L('r.3t', lang)}></h3><p data-i18n="r.3p" set:html={L('r.3p', lang)}></p></div></div>
     </div>
@@ -274,8 +272,8 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
   .hero .cfg__bar,
   .hero .cfg .coolnote,
   .hero .cfg .trust{grid-column:1 / -1}
-  /* stats strip below as a spec bar */
-  .strip{margin-top:0}
+  /* stats strip below as a spec bar — needs breathing room from the card above */
+  .strip{margin-top:36px}
   @media(max-width:720px){
     .hero .cfg{grid-template-columns:1fr}
   }
