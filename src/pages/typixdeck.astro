@@ -132,12 +132,29 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
   </div></section>
 
   <section id="lineup"><div class="wrap">
-    <div class="head"><span class="mono" data-i18n="lu.kicker" set:html={L('lu.kicker', lang)}></span><h2 data-i18n="lu.title" set:html={L('lu.title', lang)}></h2><p data-i18n="lu.sub" set:html={L('lu.sub', lang)}></p></div>
-    <div class="line">
-      <a class="pc" href="/typixdeck"><div class="ph"><img src="/assets/cyberdeck.png" alt="TypixDeck"></div><h3>TypixDeck</h3><p class="ds" data-i18n="p.deck.ds" set:html={L('p.deck.ds', lang)}></p><div class="foot"><span class="pr" data-usd="119">$119</span><button class="add" data-add="typixdeck" aria-label="Add">+</button></div></a>
+    <div class="shead">
+      <div class="ttl"><span class="mono" data-i18n="rec.kicker" set:html={L('rec.kicker', lang)}></span><h2 data-i18n="rec.title" set:html={L('rec.title', lang)}></h2><p data-i18n="rec.sub" set:html={L('rec.sub', lang)}></p></div>
+      <div class="shead__aside">
+        <a class="hint" href="/products"><span data-i18n="see.all" set:html={L('see.all', lang)}></span> <span class="ar">→</span></a>
+        <div class="snav">
+          <button class="snav__btn snav__btn--prev" type="button" aria-label="Previous">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <button class="snav__btn snav__btn--next" type="button" aria-label="Next">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="scroller">
       <a class="pc" href="/keyboard"><div class="ph"><img src="/assets/keyboard.jpg" alt="BLE Keyboard"></div><h3>BLE Keyboard</h3><p class="ds" data-i18n="p.kb.ds" set:html={L('p.kb.ds', lang)}></p><div class="foot"><span class="pr" data-usd="39">$39</span><button class="add" data-add="keyboard" aria-label="Add">+</button></div></a>
       <a class="pc" href="/diysuite"><div class="ph"><img src="/assets/diysuite.jpg" alt="DIY Suite"></div><h3>DIY Suite</h3><p class="ds" data-i18n="p.diy.ds" set:html={L('p.diy.ds', lang)}></p><div class="foot"><span class="pr" data-usd="9">$9</span><button class="add" data-add="diysuite" aria-label="Add">+</button></div></a>
       <a class="pc" href="/picomac"><div class="ph"><img src="/assets/picomac.jpg" alt="Pico-Mac Nano"></div><h3>Pico-Mac Nano</h3><p class="ds" data-i18n="p.mac.ds" set:html={L('p.mac.ds', lang)}></p><div class="foot"><span class="pr" data-usd="60">$60</span><button class="add" data-add="picomac" aria-label="Add">+</button></div></a>
+      <a class="pc" href="/typixdeck#buy"><div class="ph"><span class="tag" data-i18n="tag.new" set:html={L('tag.new', lang)}></span><img src="/assets/cm0-adapter.png" alt="CM0→CM4 adapter (CM0 soldered)"></div><h3>CM0 Adapter</h3><p class="ds" data-i18n="p.cm0adp.ds" set:html={L('p.cm0adp.ds', lang)}></p><div class="foot"><span class="pr" data-usd="40">$40</span><button class="add" data-add="cm0-adapter" aria-label="Add">+</button></div></a>
+      <a class="pc" href="/typixdeck#buy"><div class="ph"><img src="/assets/cm0-module.jpeg" alt="CM0 module"></div><h3>CM0 Module</h3><p class="ds" data-i18n="p.cm0.ds" set:html={L('p.cm0.ds', lang)}></p><div class="foot"><span class="pr" data-usd="30">$30</span><button class="add" data-add="cm0-module" aria-label="Add">+</button></div></a>
+      <a class="pc" href="/typixdeck#buy"><div class="ph"><img src="/assets/cm0-adapter-raw.png" alt="CM0→CM4 adapter bare board"></div><h3>CM0 Adapter (bare)</h3><p class="ds" data-i18n="p.cm0raw.ds" set:html={L('p.cm0raw.ds', lang)}></p><div class="foot"><span class="pr" data-usd="10">$10</span><button class="add" data-add="cm0-adapter-raw" aria-label="Add">+</button></div></a>
     </div>
   </div></section>
 
