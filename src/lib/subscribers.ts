@@ -105,6 +105,15 @@ export async function upsertSubscriber(
   return { kind: 'created', subscriber: sub };
 }
 
+export async function getByEmail(db: D1Database, email: string): Promise<Subscriber | null> {
+  const e = normalizeEmail(email);
+  if (!e) return null;
+  return (await db
+    .prepare(`SELECT * FROM subscribers WHERE email = ?`)
+    .bind(e)
+    .first()) as Subscriber | null;
+}
+
 export async function getByToken(db: D1Database, token: string): Promise<Subscriber | null> {
   if (!token) return null;
   return (await db

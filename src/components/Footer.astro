@@ -25,5 +25,5 @@ const lang = (Astro.locals as any).lang ?? "en";
     <div class="col"><h4 data-i18n="ft.company" set:html={L('ft.company', lang)}></h4><a href="/orders" data-i18n="nav.orders" set:html={L('nav.orders', lang)}></a><a href="/about" data-i18n="ft.about" set:html={L('ft.about', lang)}></a><a href="/support" data-i18n="ft.support" set:html={L('ft.support', lang)}></a><a href="/support" data-i18n="ft.shipping" set:html={L('ft.shipping', lang)}></a><a href="/support" data-i18n="ft.warranty" set:html={L('ft.warranty', lang)}></a></div>
     <div class="col"><h4 data-i18n="ft.open" set:html={L('ft.open', lang)}></h4><a href="https://github.com/TypixNode">GitHub ↗</a><a href="#" data-i18n="ft.cad" set:html={L('ft.cad', lang)}></a><a href="#" data-i18n="ft.fw" set:html={L('ft.fw', lang)}></a><a href="#" data-i18n="ft.docs" set:html={L('ft.docs', lang)}></a></div>
   </div>
-  <div class="bot"><span data-i18n="ft.copy" set:html={L('ft.copy', lang)}></span><a href="mailto:support@typixnode.com">support@typixnode.com</a></div>
+  <div class="bot"><span data-i18n="ft.copy" set:html={L('ft.copy', lang)}></span><span class="botlinks"><a href="/unsubscribe" data-i18n="nl.unsub" set:html={L('nl.unsub', lang)}></a><a href="mailto:support@typixnode.com">support@typixnode.com</a></span></div>
 </div></div></footer>

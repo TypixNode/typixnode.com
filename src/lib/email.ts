@@ -138,6 +138,29 @@ export function alreadySubscribedHtml(opts: { unsubscribeUrl: string; name?: str
   });
 }
 
+/** Sent when someone requests an unsubscribe link from the website form. */
+export function unsubscribeLinkHtml(opts: { unsubscribeUrl: string; name?: string | null }): string {
+  const hi = opts.name ? `Hi ${opts.name}, ` : '';
+  return shell({
+    preheader: 'Your TypixNode unsubscribe link.',
+    unsubscribeUrl: opts.unsubscribeUrl,
+    body: `
+      <h2 style="margin:0 0 8px;font-size:20px">Unsubscribe from TypixNode</h2>
+      <p style="color:#4a5f58;margin:0 0 18px;font-size:14px">
+        ${hi}you asked to stop receiving our emails. Click the button below to confirm and
+        we'll remove you from the mailing list right away.
+      </p>
+      <div style="text-align:center;margin:22px 0">${btn(opts.unsubscribeUrl, 'Confirm unsubscribe')}</div>
+      <p style="color:#9aa8a2;font-size:12px;margin:0">
+        Or copy this link:<br/>
+        <a href="${opts.unsubscribeUrl}" style="color:#0a8f6e;word-break:break-all">${opts.unsubscribeUrl}</a>
+      </p>
+      <p style="color:#9aa8a2;font-size:12px;margin:14px 0 0">
+        Didn't request this? You can safely ignore this email — nothing changes unless you click.
+      </p>`,
+  });
+}
+
 /** Admin heads-up when someone joins (or confirms) the mailing list. */
 export function adminSubscriberHtml(opts: {
   email: string;

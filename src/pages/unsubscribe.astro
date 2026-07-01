@@ -1,36 +1,32 @@
 ---
-// GET /unsubscribe?token=... — one-click unsubscribe landing (idempotent).
-// The token is the subscriber's capability secret embedded in every email.
+// GET /unsubscribe            → email form (we email the capability link)
+// GET /unsubscribe?token=...   → one-click unsubscribe landing (idempotent)
 import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
+import { L } from '../lib/i18n';
 import { unsubscribeByToken, getByToken } from '../lib/subscribers';
 
 export const prerender = false;
 
+const lang = (Astro.locals as any).lang ?? 'en';
 const env = (Astro.locals as any).runtime?.env as Env;
 const token = Astro.url.searchParams.get('token') || '';
 
-let state: 'ok' | 'invalid' = 'invalid';
+let state: 'ok' | 'invalid' | 'form' = token ? 'invalid' : 'form';
 let email = '';
 
-if (env?.DB && token) {
-  const sub = await unsubscribeByToken(env.DB, token);
+if (token && env?.DB) {
+  const sub = (await unsubscribeByToken(env.DB, token)) || (await getByToken(env.DB, token));
   if (sub) {
     state = 'ok';
     email = sub.email;
-  } else {
-    const existing = await getByToken(env.DB, token);
-    if (existing) {
-      state = 'ok';
-      email = existing.email;
-    }
   }
 }
 
-const copy = {
+const done = {
   ok: { emoji: '👋', title: "You've been unsubscribed", body: email ? `${email} won't receive any more mailing-list emails. Changed your mind? You can re-subscribe from our site anytime.` : "You won't receive any more mailing-list emails." },
-  invalid: { emoji: '⚠️', title: 'Link invalid', body: "We couldn't find that subscription. It may already be removed." },
-}[state];
+  invalid: { emoji: '⚠️', title: 'Link invalid', body: "We couldn't find that subscription. It may already be removed — or use the form below to request a fresh unsubscribe link." },
+};
 ---
 <Layout title="Unsubscribe — TypixNode" noindex={true}>
   <nav><div class="nav">
@@ -41,12 +37,70 @@ const copy = {
     </div>
   </div></nav>
 
-  <section style="min-height:64vh;display:grid;place-items:center;text-align:center"><div class="wrap">
-    <div style="font-size:3rem;line-height:1;margin-bottom:8px">{copy.emoji}</div>
-    <h2 style="font-weight:800;font-size:clamp(1.6rem,4vw,2.4rem);margin:6px 0 12px">{copy.title}</h2>
-    <p style="color:var(--soft);max-width:48ch;margin:0 auto 26px">{copy.body}</p>
-    <a class="btn btn--fill" href="/">Back to home</a>
+  <section style="min-height:64vh;display:grid;place-items:center;text-align:center"><div class="wrap" style="max-width:520px">
+    {state === 'ok' && (
+      <>
+        <div style="font-size:3rem;line-height:1;margin-bottom:8px">{done.ok.emoji}</div>
+        <h2 style="font-weight:800;font-size:clamp(1.6rem,4vw,2.4rem);margin:6px 0 12px">{done.ok.title}</h2>
+        <p style="color:var(--soft);max-width:48ch;margin:0 auto 26px">{done.ok.body}</p>
+        <a class="btn btn--fill" href="/">Back to home</a>
+      </>
+    )}
+
+    {state !== 'ok' && (
+      <>
+        {state === 'invalid' && (
+          <p style="color:var(--soft);max-width:46ch;margin:0 auto 22px;font-size:.94rem">{done.invalid.body}</p>
+        )}
+        <h2 data-i18n="unsub.title" set:html={L('unsub.title', lang)} style="font-weight:800;font-size:clamp(1.6rem,4vw,2.4rem);margin:6px 0 10px"></h2>
+        <p data-i18n="unsub.sub" set:html={L('unsub.sub', lang)} style="color:var(--soft);max-width:44ch;margin:0 auto 22px"></p>
+        <form id="unsubform" novalidate style="max-width:420px;margin:0 auto;text-align:left"
+          data-msg-sent={L('unsub.sent', lang)} data-msg-invalid={L('nl.invalid', lang)}
+          data-msg-err={L('nl.err', lang)} data-msg-sending={L('nl.sending', lang)}>
+          <div class="nlrow">
+            <input class="nlinput" type="email" name="email" autocomplete="email" required placeholder={L('nl.email', lang)} data-i18n-ph="nl.email" />
+            <button class="nlbtn" type="submit" data-i18n="unsub.btn" set:html={L('unsub.btn', lang)}></button>
+          </div>
+          <p class="nlmsg" id="unsubmsg" role="status" aria-live="polite"></p>
+        </form>
+      </>
+    )}
   </div></section>
 
   <Footer />
 </Layout>
+
+<script is:inline>
+  (function () {
+    var form = document.getElementById('unsubform');
+    if (!form) return;
+    var msg = document.getElementById('unsubmsg');
+    var btn = form.querySelector('.nlbtn');
+    var emailEl = form.querySelector('input[name="email"]');
+    var btnLabel = btn ? btn.textContent : '';
+    function setMsg(t, cls) { if (msg) { msg.textContent = t; msg.className = 'nlmsg' + (cls ? ' ' + cls : ''); } }
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = (emailEl && emailEl.value || '').trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        if (emailEl) emailEl.setAttribute('aria-invalid', 'true');
+        setMsg(form.dataset.msgInvalid, 'err');
+        return;
+      }
+      if (emailEl) emailEl.removeAttribute('aria-invalid');
+      if (btn) { btn.disabled = true; btn.textContent = form.dataset.msgSending; }
+      setMsg('', '');
+      fetch('/api/unsubscribe', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email }),
+      }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (res) {
+          if (res.ok && res.d && res.d.status === 'sent') { setMsg(form.dataset.msgSent, 'ok'); if (form.reset) form.reset(); }
+          else if (res.d && res.d.status === 'invalid') { setMsg(form.dataset.msgInvalid, 'err'); }
+          else { setMsg(form.dataset.msgErr, 'err'); }
+        })
+        .catch(function () { setMsg(form.dataset.msgErr, 'err'); })
+        .then(function () { if (btn) { btn.disabled = false; btn.textContent = btnLabel; } });
+    });
+  })();
+</script>
