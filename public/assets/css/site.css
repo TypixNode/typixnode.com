@@ -313,6 +313,33 @@ footer{padding:24px 0 60px}
 .ft .col a{display:block;color:var(--soft);font-size:.92rem;margin-bottom:8px}.ft .col a:hover{color:var(--ink)}
 .ft .bot{border-top:1px solid var(--line);margin-top:26px;padding-top:18px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;color:var(--soft2);font-size:.84rem}
 
+/* footer newsletter */
+.nlcard{display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap;
+  background:linear-gradient(120deg,#0fb88f14,#5fd0c00f 40%,#ffb34710);
+  border:1px solid var(--glassb);border-radius:22px;padding:24px 28px;margin-bottom:30px;position:relative;overflow:hidden}
+.nlcard::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(70% 120% at 100% 0%, #0fb88f22 0%, transparent 60%);}
+.nlcopy{position:relative;z-index:1;min-width:230px}
+.nlcopy h3{font-family:var(--d);font-weight:800;font-size:1.34rem;line-height:1.15;letter-spacing:-.01em;margin-bottom:6px}
+.nlcopy p{color:var(--soft);font-size:.94rem;max-width:34ch}
+.nlform{position:relative;z-index:1;flex:1;min-width:300px;max-width:460px}
+.nlrow{display:flex;gap:10px;flex-wrap:wrap}
+.nlinput{flex:1;min-width:180px;height:46px;padding:0 16px;border-radius:12px;
+  background:var(--glass2);border:1px solid var(--glassb);backdrop-filter:blur(8px);
+  color:var(--ink);font-family:var(--b);font-size:.94rem;transition:border-color .16s,box-shadow .16s}
+.nlinput::placeholder{color:var(--soft2)}
+.nlinput:focus{outline:0;border-color:var(--teal);box-shadow:0 0 0 3px #0fb88f2e}
+.nlinput[aria-invalid="true"]{border-color:var(--coral);box-shadow:0 0 0 3px #ff7a5930}
+.nlbtn{flex:none;height:46px;padding:0 26px;border:0;border-radius:12px;cursor:pointer;
+  background:var(--ink);color:var(--bg);font-family:var(--b);font-weight:600;font-size:.96rem;
+  transition:transform .18s,background .18s,box-shadow .18s}
+.nlbtn:hover{background:var(--emerald);color:#fff;transform:translateY(-2px);box-shadow:0 12px 30px #0a8f6e44}
+.nlbtn:disabled{opacity:.6;cursor:default;transform:none;box-shadow:none}
+.nlmsg{min-height:1.2em;margin-top:10px;font-size:.86rem;color:var(--soft);transition:color .2s}
+.nlmsg.ok{color:var(--emerald)}
+.nlmsg.err{color:var(--coral)}
+@media(max-width:560px){.nlcard{padding:22px 20px}.nlinput{min-width:100%}.nlbtn{width:100%}}
+
 /* cart drawer */
 .cart-ov{position:fixed;inset:0;background:#04140f6b;backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.3s;z-index:90}
 .cart-ov.on{opacity:1;pointer-events:auto}

@@ -3,6 +3,19 @@ import { L } from "../lib/i18n";
 const lang = (Astro.locals as any).lang ?? "en";
 ---
 <footer><div class="wrap"><div class="ft">
+  <div class="nlcard" id="newsletter">
+    <div class="nlcopy">
+      <h3 data-i18n="nl.title" set:html={L('nl.title', lang)}></h3>
+      <p data-i18n="nl.sub" set:html={L('nl.sub', lang)}></p>
+    </div>
+    <form class="nlform" id="nlform" novalidate>
+      <div class="nlrow">
+        <input class="nlinput" type="email" name="email" autocomplete="email" required placeholder={L('nl.email', lang)} data-i18n-ph="nl.email" />
+        <button class="nlbtn" type="submit" data-i18n="nl.btn" set:html={L('nl.btn', lang)}></button>
+      </div>
+      <p class="nlmsg" id="nlmsg" role="status" aria-live="polite"></p>
+    </form>
+  </div>
   <div class="top">
     <div class="brandcol">
       <img class="logo-lt" src="/assets/typixnode-logo.svg" alt="TypixNode"><img class="logo-dk" src="/assets/typixnode-logo-inverse.svg" alt="TypixNode">
