@@ -148,8 +148,8 @@ export const OPTIONS_SEED: OptionsMap = {
         none: { delta: 0, label: { en: 'No TF card', zh: '不含 TF 卡', ja: 'TF カードなし' } },
         tf64: { delta: 19, label: { en: 'SanDisk 64GB · Raspberry Pi OS preloaded', zh: 'SanDisk 64GB · 预装树莓派 OS', ja: 'SanDisk 64GB · Raspberry Pi OS プリインストール' } },
         ssd128: {
-          delta: 25,
-          label: { en: 'M.2 SSD 128GB · Toshiba 2230 · OS preloaded', zh: 'M.2 SSD 128GB · 东芝 2230 · 预装系统', ja: 'M.2 SSD 128GB · 東芝 2230 · OS プリインストール' },
+          delta: 40,
+          label: { en: 'M.2 SSD 128GB · 2230 · OS preloaded', zh: 'M.2 SSD 128GB · 2230 · 预装系统', ja: 'M.2 SSD 128GB · 2230 · OS プリインストール' },
           note: { en: 'CM4 / CM5 only — CM0 uses eMMC or a TF card', zh: '仅 CM4 / CM5 可用 — CM0 只能用 eMMC 或 TF 卡', ja: 'CM4 / CM5 のみ — CM0 は eMMC か TF カード' },
         },
       },
