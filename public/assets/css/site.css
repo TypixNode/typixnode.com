@@ -321,6 +321,8 @@ footer{padding:24px 0 60px}
 .ft .col h4{font-family:var(--b);font-weight:600;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--soft2);margin-bottom:12px}
 .ft .col a{display:block;color:var(--soft);font-size:.92rem;margin-bottom:8px}.ft .col a:hover{color:var(--ink)}
 .ft .bot{border-top:1px solid var(--line);margin-top:26px;padding-top:18px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;color:var(--soft2);font-size:.84rem}
+.ft .bot .botlinks{display:flex;gap:18px;flex-wrap:wrap}
+.ft .bot .botlinks a:hover{color:var(--ink)}
 
 /* footer newsletter */
 .nlcard{display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap;
