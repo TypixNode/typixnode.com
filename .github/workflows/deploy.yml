@@ -1,88 +1,48 @@
 name: Deploy to Cloudflare
 
 # Triggers:
-# - Push to `staging`        -> deploy STAGING preview  (https://staging.typixnode.com)
-# - Push a version tag `v*`  -> deploy PRODUCTION        (https://typixnode.com)
-# - Manual run (Actions tab):
-#     * environment = staging     -> deploy staging
-#     * environment = production  -> auto-create a new version tag on the
-#                                    selected branch (run it on `main`), then
-#                                    deploy production — all in one run.
+# - Push / merge to `main`   -> deploy PRODUCTION (https://typixnode.com)
+# - Push to `staging`        -> deploy STAGING preview (https://staging.typixnode.com)
+# - Manual run (Actions tab): pick environment = production | staging
 on:
   push:
     branches:
+      - main
       - staging
-    tags:
-      - 'v*'
   workflow_dispatch:
     inputs:
       environment:
         description: 'Which environment to deploy'
         type: choice
-        default: staging
+        default: production
         options:
-          - staging
           - production
-      version:
-        description: 'Production only — tag to create (blank = auto-bump patch, e.g. v1.2.3 -> v1.2.4)'
-        required: false
-        type: string
+          - staging
+
+# Serialize deploys per environment so rapid merges don't race each other;
+# a newer run supersedes an in-progress one for the same environment.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # allow pushing the auto-generated version tag
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # full history + tags for version bump
 
-      # tag push -> production; staging push -> staging; manual -> input.
+      # main push -> production; staging push -> staging; manual -> input.
       - name: Resolve environment
         id: env
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "name=${{ github.event.inputs.environment }}" >> "$GITHUB_OUTPUT"
-          elif [ "${{ startsWith(github.ref, 'refs/tags/v') }}" = "true" ]; then
+          elif [ "${{ github.ref }}" = "refs/heads/main" ]; then
             echo "name=production" >> "$GITHUB_OUTPUT"
           else
             echo "name=staging" >> "$GITHUB_OUTPUT"
           fi
-
-      # Manual production run: cut + push a new version tag on this ref.
-      # (Done in-run and we deploy below — GITHUB_TOKEN tag pushes don't
-      #  re-trigger workflows, so this avoids a double production deploy.)
-      - name: Create version tag
-        if: github.event_name == 'workflow_dispatch' && steps.env.outputs.name == 'production'
-        env:
-          # Pass via env so the shell treats the value as data, never as code
-          # (prevents expression/command injection from the workflow input).
-          VERSION_INPUT: ${{ github.event.inputs.version }}
-        run: |
-          set -e
-          IN="$VERSION_INPUT"
-          if [ -n "$IN" ]; then
-            NEW="$IN"
-            case "$NEW" in v*) ;; *) NEW="v$NEW" ;; esac
-          else
-            LATEST=$(git tag -l 'v*' --sort=-v:refname | head -n1)
-            if [ -z "$LATEST" ]; then
-              NEW="v0.1.0"
-            else
-              VER=${LATEST#v}
-              MAJ=$(echo "$VER" | cut -d. -f1)
-              MIN=$(echo "$VER" | cut -d. -f2)
-              PAT=$(echo "$VER" | cut -d. -f3)
-              NEW="v${MAJ}.${MIN}.$((PAT + 1))"
-            fi
-          fi
-          echo "Releasing $NEW"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -a "$NEW" -m "Release $NEW"
-          git push origin "$NEW"
 
       - name: Setup Node
         uses: actions/setup-node@v4
