@@ -5,7 +5,7 @@
 // beyond the coarse `status` (privacy + anti-enumeration).
 import type { APIRoute } from 'astro';
 import { upsertSubscriber, isValidEmail, normalizeEmail, logEmail } from '../../lib/subscribers';
-import { sendEmail, subscribeConfirmHtml, adminSubscriberHtml } from '../../lib/email';
+import { sendEmail, subscribeConfirmHtml, adminSubscriberHtml, alreadySubscribedHtml } from '../../lib/email';
 
 export const prerender = false;
 
@@ -46,7 +46,25 @@ export const POST: APIRoute = async ({ request, locals }) => {
     });
 
     if (result.kind === 'already_active') {
-      return json({ ok: true, status: 'already', message: "You're already subscribed — thanks!" });
+      // Already on the list → email them their unsubscribe link (can't be shown
+      // on a public page: the token would let anyone unsubscribe anyone).
+      const sub = result.subscriber;
+      const unsubUrl = `${site}/unsubscribe?token=${sub.token}`;
+      const subject = "You're already subscribed to TypixNode";
+      const sent = await sendEmail({
+        apiKey: env.RESEND_API_KEY,
+        from,
+        to: sub.email,
+        replyTo: 'support@typixnode.com',
+        subject,
+        html: alreadySubscribedHtml({ unsubscribeUrl: unsubUrl, name: sub.name }),
+      });
+      await logEmail(env.DB, 'already_subscribed', sub.email, subject, sent ? 'sent' : 'skipped');
+      return json({
+        ok: true,
+        status: 'already',
+        message: "You're already subscribed. We've emailed you a link to unsubscribe.",
+      });
     }
 
     // Send the double opt-in confirmation email.
