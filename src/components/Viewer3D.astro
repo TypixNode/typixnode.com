@@ -1,4 +1,6 @@
 ---
+import { L } from "../lib/i18n";
+const lang = (Astro.locals as any).lang ?? "en";
 interface Props {
   src?: string;
   height?: string;
@@ -10,7 +12,7 @@ const { src = '/assets/models/typixdeck.glb', height = '62vh' } = Astro.props;
 
   <div class="v3d-loading">
     <span class="v3d-spin"></span>
-    <span data-i18n="v3d.loading">Loading 3D model…</span>
+    <span data-i18n="v3d.loading" set:html={L('v3d.loading', lang)}></span>
   </div>
 
   <div class="v3d-info">
@@ -20,17 +22,17 @@ const { src = '/assets/models/typixdeck.glb', height = '62vh' } = Astro.props;
 
   <div class="v3d-ui">
     <div class="v3d-explode">
-      <span class="v3d-lab" data-i18n="v3d.explode">Exploded view</span>
+      <span class="v3d-lab" data-i18n="v3d.explode" set:html={L('v3d.explode', lang)}></span>
       <input class="v3d-range" type="range" min="0" max="1" step="0.001" value="0"
              aria-label="Exploded view" />
     </div>
     <div class="v3d-actions">
-      <button class="v3d-btn" data-act="reset" data-i18n="v3d.reset">Reset</button>
-      <button class="v3d-btn v3d-on" data-act="spin" aria-pressed="true" data-i18n="v3d.spin">Auto-rotate</button>
+      <button class="v3d-btn" data-act="reset" data-i18n="v3d.reset" set:html={L('v3d.reset', lang)}></button>
+      <button class="v3d-btn v3d-on" data-act="spin" aria-pressed="true" data-i18n="v3d.spin" set:html={L('v3d.spin', lang)}></button>
     </div>
   </div>
 
-  <div class="v3d-hint" data-i18n="v3d.hint">Drag to rotate · scroll the page to disassemble</div>
+  <div class="v3d-hint" data-i18n="v3d.hint" set:html={L('v3d.hint', lang)}></div>
 </figure>
 
 <script>

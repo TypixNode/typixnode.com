@@ -1,4 +1,6 @@
 ---
+import { L } from "../lib/i18n";
+const lang = (Astro.locals as any).lang ?? "en";
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -55,31 +57,31 @@ const sections = [
   <Nav links={links} />
 
   <section class="pg-hero"><div class="wrap">
-    <span class="mono" data-i18n="pg.kicker">The catalogue</span>
-    <h1 data-i18n="pg.title">All products</h1>
-    <p class="lead" data-i18n="pg.sub">Compact open hardware · open-source · shipped worldwide</p>
+    <span class="mono" data-i18n="pg.kicker" set:html={L('pg.kicker', lang)}></span>
+    <h1 data-i18n="pg.title" set:html={L('pg.title', lang)}></h1>
+    <p class="lead" data-i18n="pg.sub" set:html={L('pg.sub', lang)}></p>
   </div></section>
 
   {sections.map((sec) => (
     <section class="pg-sec"><div class="wrap">
-      <h2 class="pg-sec__h" data-i18n={sec.key}>{sec.label}</h2>
+      <h2 class="pg-sec__h" data-i18n={sec.key} set:html={L(sec.key, lang)}></h2>
       <div class="grid">
         {sec.items.map((p) => (
           <a class="pc" href={p.href}>
             <div class="ph">
-              {p.tag && <span class="tag" data-i18n={p.tag}>{p.tag === 'tag.flagship' ? 'Flagship' : 'New'}</span>}
+              {p.tag && <span class="tag" data-i18n={p.tag} set:html={L(p.tag, lang)}></span>}
               <img src={p.img} alt={p.alt} loading="lazy" />
             </div>
             <h3>{p.name}</h3>
             {p.ds
-              ? <p class="ds" data-i18n={p.ds}>{p.name}</p>
+              ? <p class="ds" data-i18n={p.ds} set:html={L(p.ds, lang)}></p>
               : <p class="ds">{p.name}</p>}
             <div class="foot">
               <span class="pr" data-usd={p.usd}>
-                {p.fromPrice && <span class="from" data-i18n="pg.from">from </span>}${p.usd}
+                {p.fromPrice && <span class="from" data-i18n="pg.from" set:html={L('pg.from', lang)}></span>}${p.usd}
               </span>
               {p.fromPrice
-                ? <span class="add cfg" aria-hidden="true" data-i18n="pg.configure">Configure ›</span>
+                ? <span class="add cfg" aria-hidden="true" data-i18n="pg.configure" set:html={L('pg.configure', lang)}></span>
                 : <button class="add" data-add={p.id} aria-label="Add">+</button>}
             </div>
           </a>

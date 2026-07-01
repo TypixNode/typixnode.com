@@ -1,4 +1,6 @@
 ---
+import { L } from "../lib/i18n";
+const lang = (Astro.locals as any).lang ?? "en";
 import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
 import { getSessionUserId, githubConfigured } from '../lib/auth';
@@ -53,35 +55,31 @@ const bindHref = `/api/auth/github/login?return=${encodeURIComponent(ret)}${orde
 
   <section style="min-height:64vh;display:grid;place-items:center;text-align:center"><div class="wrap" style="max-width:620px">
     <div style="font-size:4rem;line-height:1">🎉</div>
-    <h2 style="font-weight:800;font-size:clamp(1.6rem,4vw,2.4rem);margin:12px 0 12px" data-i18n="success.title">Thank you for your order!</h2>
-    <p style="color:var(--soft);margin:0 auto 8px" data-i18n={paid ? 'success.paid' : 'success.pending'}>
-      {paid
-        ? 'Your payment was received. A confirmation email is on its way.'
-        : 'Your order is being processed. We’ll email you once it’s confirmed.'}
-    </p>
+    <h2 style="font-weight:800;font-size:clamp(1.6rem,4vw,2.4rem);margin:12px 0 12px" data-i18n="success.title" set:html={L('success.title', lang)}></h2>
+    <p style="color:var(--soft);margin:0 auto 8px" data-i18n={paid ? 'success.paid' : 'success.pending'} set:html={L(paid ? 'success.paid' : 'success.pending', lang)}></p>
 
     <div class="success-presale">
-      <b data-i18n="success.presale.t">This is a pre-order.</b>
-      <span data-i18n="success.presale.p">Estimated dispatch is 2 weeks – 2 months. We'll email you tracking the moment it ships.</span>
+      <b data-i18n="success.presale.t" set:html={L('success.presale.t', lang)}></b>
+      <span data-i18n="success.presale.p" set:html={L('success.presale.p', lang)}></span>
     </div>
 
-    {orderId && <p style="color:var(--soft2);font-size:.9rem;margin:0 auto 18px"><span data-i18n="success.order">Order</span> <b>{orderId}</b></p>}
+    {orderId && <p style="color:var(--soft2);font-size:.9rem;margin:0 auto 18px"><span data-i18n="success.order" set:html={L('success.order', lang)}></span> <b>{orderId}</b></p>}
 
     {boundToAccount ? (
-      <p class="success-acct" data-i18n="success.bound">✓ Saved to your account.</p>
+      <p class="success-acct" data-i18n="success.bound" set:html={L('success.bound', lang)}></p>
     ) : (!signedIn && ghOn && orderId) ? (
       <a class="btn btn--fill success-gh" href={bindHref}>
         <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-        <span data-i18n="success.savegh">Save this order to a GitHub account</span>
+        <span data-i18n="success.savegh" set:html={L('success.savegh', lang)}></span>
       </a>
     ) : null}
 
     <div class="success-cta">
-      <a class="btn btn--glass" href="/orders" data-i18n="success.view">View my orders</a>
-      <a class="btn btn--glass" href="/" data-i18n="success.home">Back to home</a>
+      <a class="btn btn--glass" href="/orders" data-i18n="success.view" set:html={L('success.view', lang)}></a>
+      <a class="btn btn--glass" href="/" data-i18n="success.home" set:html={L('success.home', lang)}></a>
     </div>
 
-    <p class="success-help"><span data-i18n="success.help">Need help? Email</span> <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></p>
+    <p class="success-help"><span data-i18n="success.help" set:html={L('success.help', lang)}></span> <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></p>
   </div></section>
 
   <Footer />

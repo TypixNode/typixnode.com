@@ -1,14 +1,16 @@
 ---
+import { L } from "../lib/i18n";
+const lang = (Astro.locals as any).lang ?? "en";
 ---
 <div class="cart-ov" id="cartOv"></div>
 <aside class="cart" id="cartDrawer" aria-label="Cart">
-  <div class="ch"><h3 data-i18n="cart.title">Your cart</h3><button class="x" data-cart-close aria-label="Close">✕</button></div>
+  <div class="ch"><h3 data-i18n="cart.title" set:html={L('cart.title', lang)}></h3><button class="x" data-cart-close aria-label="Close">✕</button></div>
   <div class="items" id="cartItems"></div>
   <div class="cf">
-    <div class="sub"><span data-i18n="cart.sub">Subtotal</span><b id="cartSub">$0</b></div>
-    <button class="checkout-btn" id="checkoutBtn" type="button" data-i18n="cart.checkout">Checkout</button>
+    <div class="sub"><span data-i18n="cart.sub" set:html={L('cart.sub', lang)}></span><b id="cartSub">$0</b></div>
+    <button class="checkout-btn" id="checkoutBtn" type="button" data-i18n="cart.checkout" set:html={L('cart.checkout', lang)}></button>
     <div class="paypal-wrap" id="paypalWrap"></div>
-    <div class="cart-note" id="cartNote" data-i18n="cart.note">Taxes &amp; shipping calculated at checkout.</div>
+    <div class="cart-note" id="cartNote" data-i18n="cart.note" set:html={L('cart.note', lang)}></div>
     <div class="cart-err" id="cartErr"></div>
   </div>
 </aside>
