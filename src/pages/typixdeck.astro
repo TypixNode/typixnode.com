@@ -14,12 +14,16 @@ const links = [
   { href: '#faq', key: 'nav.faq', label: 'FAQ' },
 ];
 
-// Headline A/B variants switchable via ?h=1..6 (1-3 = aluminum craft, 4-6 = hackable/open).
-// Falls back to v1 when the param is missing or invalid.
+// Hero headline: auto-rotating carousel by default — several copies fly in/out
+// on a loop. A manual ?h=1..10 pins a single static variant (handy for previews).
 const hRaw = Astro.url.searchParams.get('h');
 const hNum = Number(hRaw);
-const hVariant = Number.isInteger(hNum) && hNum >= 1 && hNum <= 6 ? hNum : 1;
+const hOverride = Number.isInteger(hNum) && hNum >= 1 && hNum <= 10;
+const hVariant = hOverride ? hNum : 1;
 const h1Key = `deck.h1.v${hVariant}`;
+const rotateH1 = !hOverride;
+const rotKeys = ['deck.h1.v9', 'deck.h1.v7', 'deck.h1.v8', 'deck.h1.v1', 'deck.h1.v10'];
+const firstKey = rotateH1 ? rotKeys[0] : h1Key;
 
 // Hero right-column top-gap fix, switchable via ?fix=fill | ?fix=narrow.
 // Anything else (or missing) = baseline (unchanged current behavior).
@@ -40,7 +44,7 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
     <div class="hero" data-fix={heroFix}>
       <div class="copy">
         <span class="chip rise d1"><span class="d"></span><span class="mono" data-i18n="hero.badge" set:html={L('hero.badge', lang)}></span></span>
-        <h1 class="rise d2" data-i18n={h1Key} set:html={L(h1Key, lang)}></h1>
+        <h1 class:list={["rise", "d2", rotateH1 && "h1rot"]} data-h1rot={rotateH1 ? rotKeys.join(',') : undefined}><span class="h1rot__slot" data-i18n={firstKey} set:html={L(firstKey, lang)}></span></h1>
         <p class="lead rise d3" data-i18n="deck.lead" set:html={L('deck.lead', lang)}></p>
       </div>
 
@@ -100,7 +104,7 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
       <div class="tile"><div class="ic">▢</div><h3 data-i18n="f.3t" set:html={L('f.3t', lang)}></h3><p data-i18n="f.3p" set:html={L('f.3p', lang)}></p></div>
       <div class="tile"><div class="ic">⎘</div><h3 data-i18n="f.4t" set:html={L('f.4t', lang)}></h3><p data-i18n="f.4p" set:html={L('f.4p', lang)}></p></div>
       <div class="tile"><div class="ic">⚿</div><h3 data-i18n="f.5t" set:html={L('f.5t', lang)}></h3><p data-i18n="f.5p" set:html={L('f.5p', lang)}></p></div>
-      <div class="tile wide"><div class="ic">▭</div><h3 data-i18n="f.6t" set:html={L('f.6t', lang)}></h3><p data-i18n="f.6p" set:html={L('f.6p', lang)}></p></div>
+      <div class="tile"><div class="ic">▭</div><h3 data-i18n="f.6t" set:html={L('f.6t', lang)}></h3><p data-i18n="f.6p" set:html={L('f.6p', lang)}></p></div>
     </div>
   </div></section>
 

@@ -120,7 +120,16 @@ header.home .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 header.prod{padding:54px 0 24px}
 .hero{display:grid;grid-template-columns:1.04fr 1fr;gap:36px;align-items:center}
 @media(max-width:900px){.hero{grid-template-columns:1fr;gap:26px}}
-.hero h1{font-weight:800;font-size:clamp(2.4rem,5.6vw,4.4rem)}
+.hero h1{font-weight:800;font-size:clamp(2.4rem,5.6vw,4.4rem);line-height:1.1}
+/* auto-rotating hero headline: fixed 2-line height so swaps never shift layout;
+   copies fly in from the right and out to the left */
+.h1rot{display:block;min-height:2.2em}
+.h1rot__slot{display:inline-block;will-change:transform,opacity;backface-visibility:hidden}
+.h1rot__slot--in{animation:h1rotIn .62s cubic-bezier(.22,1,.36,1) both}
+.h1rot__slot--out{animation:h1rotOut .42s cubic-bezier(.55,0,1,.45) both}
+@keyframes h1rotIn{from{opacity:0;transform:translate3d(70px,0,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes h1rotOut{from{opacity:1;transform:translate3d(0,0,0)}to{opacity:0;transform:translate3d(-70px,0,0)}}
+@media(prefers-reduced-motion:reduce){.h1rot__slot--in,.h1rot__slot--out{animation:none}}
 .hero .lead{color:var(--soft);font-size:1.12rem;max-width:46ch;margin:22px 0 26px}
 .price{display:flex;align-items:baseline;gap:12px;margin-bottom:24px}
 .price b{font-family:var(--d);font-weight:800;font-size:2rem;color:var(--ink)}
