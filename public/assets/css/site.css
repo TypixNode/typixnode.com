@@ -152,7 +152,7 @@ header.prod{padding:54px 0 24px}
 .strip .in{display:grid;grid-template-columns:repeat(4,1fr) 1.3fr;gap:18px;align-items:center;padding:24px 28px}
 @media(max-width:900px){.strip .in{grid-template-columns:repeat(2,1fr)}}
 .stat .n{font-family:var(--d);font-weight:800;font-size:1.6rem}
-.stat .l{font-size:.78rem;color:var(--soft);text-transform:uppercase;letter-spacing:.05em}
+.stat .l{font-size:.95rem;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
 .social{color:var(--soft);font-size:.92rem}.social b{color:var(--ink);font-family:var(--d);font-weight:800}
 @media(max-width:900px){.social{grid-column:1/-1}}
 
