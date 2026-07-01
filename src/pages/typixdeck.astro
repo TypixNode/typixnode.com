@@ -6,6 +6,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import CartDrawer from '../components/CartDrawer.astro';
 import Viewer3D from '../components/Viewer3D.astro';
+import CompatWall from '../components/CompatWall.astro';
 const links = [
   { href: '#features', key: 'nav.features', label: 'Features' },
   { href: '#inside', key: 'nav.inside', label: 'Inside' },
@@ -118,6 +119,8 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
       <a class="btn btn--glass" href="https://github.com/TypixNode" style="margin-top:24px" data-i18n="in.git" set:html={L('in.git', lang)}></a>
     </div>
   </div></section>
+
+  <CompatWall />
 
   <section><div class="wrap">
     <div class="rows">
