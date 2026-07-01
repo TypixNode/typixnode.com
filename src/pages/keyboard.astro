@@ -1,4 +1,6 @@
 ---
+import { L } from "../lib/i18n";
+const lang = (Astro.locals as any).lang ?? "en";
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -23,61 +25,61 @@ const links = [
   <header class="prod"><div class="wrap">
     <div class="hero">
       <div class="copy">
-        <span class="chip rise d1"><span class="d"></span><span class="mono" data-i18n="hero.badge">Compact open hardware · Est. 2026</span></span>
-        <h1 class="rise d2" data-i18n="kb.h1">A full keyboard,<br/><span class="grad">the size of a card.</span></h1>
-        <p class="lead rise d3" data-i18n="kb.lead">Pocket-sized but full-featured — a complete QWERTY layout with a built-in gyro air-mouse and a crisp white backlight.</p>
-        <div class="price rise d3"><b data-usd="39">$39</b><span class="ship" data-i18n="kb.pricenote">· Bluetooth · wired version $29 · free worldwide shipping</span></div>
-        <div class="cta rise d3"><button class="btn btn--fill" data-add="keyboard" data-i18n="cart.add">Add to cart (BLE)</button><button class="btn btn--glass" data-add="keyboard-wired"><span data-i18n="kb.wired">Wired</span> · <b data-usd="29">$29</b></button></div>
-        <div class="trust rise d4"><span class="d"></span> <span data-i18n="deck.trust">In stock · ships in 2–3 days · 2-year warranty · runs the open Raspberry Pi ecosystem</span></div>
+        <span class="chip rise d1"><span class="d"></span><span class="mono" data-i18n="hero.badge" set:html={L('hero.badge', lang)}></span></span>
+        <h1 class="rise d2" data-i18n="kb.h1" set:html={L('kb.h1', lang)}></h1>
+        <p class="lead rise d3" data-i18n="kb.lead" set:html={L('kb.lead', lang)}></p>
+        <div class="price rise d3"><b data-usd="39">$39</b><span class="ship" data-i18n="kb.pricenote" set:html={L('kb.pricenote', lang)}></span></div>
+        <div class="cta rise d3"><button class="btn btn--fill" data-add="keyboard" data-i18n="cart.add" set:html={L('cart.add', lang)}></button><button class="btn btn--glass" data-add="keyboard-wired"><span data-i18n="kb.wired" set:html={L('kb.wired', lang)}></span> · <b data-usd="29">$29</b></button></div>
+        <div class="trust rise d4"><span class="d"></span> <span data-i18n="deck.trust" set:html={L('deck.trust', lang)}></span></div>
       </div>
       <div class="stage rise d4">
-        <span class="pin p1"><div class="k">BLE Keyboard</div><div class="v" data-i18n="kb.s2l">Air mouse</div></span>
+        <span class="pin p1"><div class="k">BLE Keyboard</div><div class="v" data-i18n="kb.s2l" set:html={L('kb.s2l', lang)}></div></span>
         <img src="/assets/keyboard.jpg" alt="TypixNode BLE Keyboard" style="border-radius:18px">
-        <span class="pin p2"><div class="k"><span data-usd="39">$39</span></div><div class="v" data-i18n="pin.stock">In stock</div></span>
+        <span class="pin p2"><div class="k"><span data-usd="39">$39</span></div><div class="v" data-i18n="pin.stock" set:html={L('pin.stock', lang)}></div></span>
       </div>
     </div>
     <div class="strip rise d4"><div class="in">
-      <div class="stat"><div class="n grad">BT 5.2</div><div class="l" data-i18n="kb.s1l">Wireless</div></div>
-      <div class="stat"><div class="n grad">6-axis</div><div class="l" data-i18n="kb.s2l">Air mouse</div></div>
-      <div class="stat"><div class="n grad">120 g</div><div class="l" data-i18n="kb.s3l">Weight</div></div>
-      <div class="stat"><div class="n grad">USB-C</div><div class="l" data-i18n="kb.s4l">Charging</div></div>
-      <div class="social" data-i18n="st.social">Built on the Raspberry Pi platform — an open ecosystem shared by <b>millions</b> of developers worldwide.</div>
+      <div class="stat"><div class="n grad">BT 5.2</div><div class="l" data-i18n="kb.s1l" set:html={L('kb.s1l', lang)}></div></div>
+      <div class="stat"><div class="n grad">6-axis</div><div class="l" data-i18n="kb.s2l" set:html={L('kb.s2l', lang)}></div></div>
+      <div class="stat"><div class="n grad">120 g</div><div class="l" data-i18n="kb.s3l" set:html={L('kb.s3l', lang)}></div></div>
+      <div class="stat"><div class="n grad">USB-C</div><div class="l" data-i18n="kb.s4l" set:html={L('kb.s4l', lang)}></div></div>
+      <div class="social" data-i18n="st.social" set:html={L('st.social', lang)}></div>
     </div></div>
   </div></header>
 
   <section><div class="wrap">
     <div class="rows"><div class="row">
       <div class="rimg"><img src="/assets/keyboard-front.jpg" alt="BLE Keyboard in hand"></div>
-      <div class="rtxt"><div class="ic">BLE Keyboard</div><h3 data-i18n="kb.row.t">Point without a mouse</h3><p data-i18n="kb.row.p">A 6-axis gyroscope turns the whole keyboard into a pointer.</p></div>
+      <div class="rtxt"><div class="ic">BLE Keyboard</div><h3 data-i18n="kb.row.t" set:html={L('kb.row.t', lang)}></h3><p data-i18n="kb.row.p" set:html={L('kb.row.p', lang)}></p></div>
     </div></div>
   </div></section>
 
   <section id="features"><div class="wrap">
-    <div class="head"><span class="mono" data-i18n="f.kicker">Why it's different</span><h2 data-i18n="kb.feat">Small, but it does everything</h2></div>
+    <div class="head"><span class="mono" data-i18n="f.kicker" set:html={L('f.kicker', lang)}></span><h2 data-i18n="kb.feat" set:html={L('kb.feat', lang)}></h2></div>
     <div class="feat">
-      <div class="c"><div class="ic">⊹</div><h4 data-i18n="kb.f1t">Air-mouse built in</h4><p data-i18n="kb.f1p">Tilt-to-point gyro pointer plus dedicated mouse keys.</p></div>
-      <div class="c"><div class="ic">☀</div><h4 data-i18n="kb.f2t">Backlit &amp; rechargeable</h4><p data-i18n="kb.f2p">Crisp white backlight and a USB-C rechargeable battery.</p></div>
-      <div class="c"><div class="ic">⇄</div><h4 data-i18n="kb.f3t">Works with everything</h4><p data-i18n="kb.f3p">Bluetooth 5.2 or wired USB-C, with instant pairing.</p></div>
+      <div class="c"><div class="ic">⊹</div><h4 data-i18n="kb.f1t" set:html={L('kb.f1t', lang)}></h4><p data-i18n="kb.f1p" set:html={L('kb.f1p', lang)}></p></div>
+      <div class="c"><div class="ic">☀</div><h4 data-i18n="kb.f2t" set:html={L('kb.f2t', lang)}></h4><p data-i18n="kb.f2p" set:html={L('kb.f2p', lang)}></p></div>
+      <div class="c"><div class="ic">⇄</div><h4 data-i18n="kb.f3t" set:html={L('kb.f3t', lang)}></h4><p data-i18n="kb.f3p" set:html={L('kb.f3p', lang)}></p></div>
     </div>
   </div></section>
 
   <section id="specs"><div class="wrap">
-    <div class="head"><span class="mono">BLE Keyboard</span><h2 data-i18n="sp.title">Technical specifications</h2></div>
+    <div class="head"><span class="mono">BLE Keyboard</span><h2 data-i18n="sp.title" set:html={L('sp.title', lang)}></h2></div>
     <div class="spectbl">
-      <div class="r"><div class="k" data-i18n="kb.spk1">Layout</div><div class="v" data-i18n="kb.spv1">64-key QWERTY with function row</div></div>
-      <div class="r"><div class="k" data-i18n="kb.spk2">Pointing</div><div class="v" data-i18n="kb.spv2">6-axis gyroscope air-mouse + mouse keys</div></div>
-      <div class="r"><div class="k" data-i18n="kb.spk3">Wireless</div><div class="v" data-i18n="kb.spv3">Bluetooth 5.2 + USB-C wired</div></div>
-      <div class="r"><div class="k" data-i18n="kb.spk4">Backlight</div><div class="v" data-i18n="kb.spv4">Adjustable white LED</div></div>
-      <div class="r"><div class="k" data-i18n="kb.spk5">Battery</div><div class="v" data-i18n="kb.spv5">Rechargeable Li-Po, USB-C</div></div>
-      <div class="r"><div class="k" data-i18n="kb.spk6">Dimensions</div><div class="v" data-i18n="kb.spv6">139 × 78 × 13 mm · 120 g</div></div>
+      <div class="r"><div class="k" data-i18n="kb.spk1" set:html={L('kb.spk1', lang)}></div><div class="v" data-i18n="kb.spv1" set:html={L('kb.spv1', lang)}></div></div>
+      <div class="r"><div class="k" data-i18n="kb.spk2" set:html={L('kb.spk2', lang)}></div><div class="v" data-i18n="kb.spv2" set:html={L('kb.spv2', lang)}></div></div>
+      <div class="r"><div class="k" data-i18n="kb.spk3" set:html={L('kb.spk3', lang)}></div><div class="v" data-i18n="kb.spv3" set:html={L('kb.spv3', lang)}></div></div>
+      <div class="r"><div class="k" data-i18n="kb.spk4" set:html={L('kb.spk4', lang)}></div><div class="v" data-i18n="kb.spv4" set:html={L('kb.spv4', lang)}></div></div>
+      <div class="r"><div class="k" data-i18n="kb.spk5" set:html={L('kb.spk5', lang)}></div><div class="v" data-i18n="kb.spv5" set:html={L('kb.spv5', lang)}></div></div>
+      <div class="r"><div class="k" data-i18n="kb.spk6" set:html={L('kb.spk6', lang)}></div><div class="v" data-i18n="kb.spv6" set:html={L('kb.spv6', lang)}></div></div>
     </div>
   </div></section>
 
   <section id="faq"><div class="wrap">
-    <div class="head"><span class="mono" data-i18n="faq.kicker">Good to know</span><h2 data-i18n="faq.title">Frequently asked questions</h2></div>
+    <div class="head"><span class="mono" data-i18n="faq.kicker" set:html={L('faq.kicker', lang)}></span><h2 data-i18n="faq.title" set:html={L('faq.title', lang)}></h2></div>
     <div class="faq">
-      <div class="qa"><button><span data-i18n="kb.q1">What can I use it with?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="kb.a1">Anything that supports a Bluetooth or USB HID keyboard.</p></div></div>
-      <div class="qa"><button><span data-i18n="kb.q2">How long does the battery last?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="kb.a2">Several weeks of typical use per charge.</p></div></div>
+      <div class="qa"><button><span data-i18n="kb.q1" set:html={L('kb.q1', lang)}></span> <span class="pm">+</span></button><div class="ans"><p data-i18n="kb.a1" set:html={L('kb.a1', lang)}></p></div></div>
+      <div class="qa"><button><span data-i18n="kb.q2" set:html={L('kb.q2', lang)}></span> <span class="pm">+</span></button><div class="ans"><p data-i18n="kb.a2" set:html={L('kb.a2', lang)}></p></div></div>
     </div>
   </div></section>
 
@@ -85,9 +87,9 @@ const links = [
 
   <section><div class="wrap">
     <div class="ctab">
-      <h2 data-i18n="kb.cta.t">Add a keyboard to your kit</h2>
-      <p data-i18n="kb.cta.p">The pocket companion for your TypixDeck.</p>
-      <div class="cta"><button class="btn btn--fill" data-add="keyboard" data-i18n="cart.add">Add to cart</button><a class="btn btn--glass" href="/products" data-i18n="see.all">See all products</a></div>
+      <h2 data-i18n="kb.cta.t" set:html={L('kb.cta.t', lang)}></h2>
+      <p data-i18n="kb.cta.p" set:html={L('kb.cta.p', lang)}></p>
+      <div class="cta"><button class="btn btn--fill" data-add="keyboard" data-i18n="cart.add" set:html={L('cart.add', lang)}></button><a class="btn btn--glass" href="/products" data-i18n="see.all" set:html={L('see.all', lang)}></a></div>
     </div>
   </div></section>
 

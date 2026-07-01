@@ -1,4 +1,6 @@
 ---
+import { L } from "../lib/i18n";
+const lang = (Astro.locals as any).lang ?? "en";
 import { currentStep, fmtMoney, fmtDate, parseItems, type Step } from '../lib/display';
 
 interface Props { order: Record<string, unknown>; canClaim?: boolean }
@@ -19,7 +21,7 @@ const carrier = String(order.tracking_carrier ?? '');
       <div class="ordc__id">{String(order.id)}</div>
       <div class="ordc__date">{fmtDate(order.created_at)}</div>
     </div>
-    <span class={`ordc__badge ordc__badge--${step}`} data-i18n={'order.step.' + step}>{step}</span>
+    <span class={`ordc__badge ordc__badge--${step}`} data-i18n={'order.step.' + step} set:html={L('order.step.' + step, lang)}></span>
   </div>
 
   {!canceled && (
@@ -27,7 +29,7 @@ const carrier = String(order.tracking_carrier ?? '');
       {flow.map((s) => (
         <li class={reached(s) ? 'on' : ''}>
           <span class="dot"></span>
-          <span data-i18n={'order.step.' + s}>{s}</span>
+          <span data-i18n={'order.step.' + s} set:html={L('order.step.' + s, lang)}></span>
         </li>
       ))}
     </ol>
@@ -40,23 +42,23 @@ const carrier = String(order.tracking_carrier ?? '');
   </ul>
 
   <div class="ordc__foot">
-    <span data-i18n="order.total">Total</span>
+    <span data-i18n="order.total" set:html={L('order.total', lang)}></span>
     <b>{fmtMoney(Number(order.amount_total), String(order.currency || 'usd'))}</b>
   </div>
 
   {tracking ? (
     <div class="ordc__ship">
-      <span data-i18n="order.tracking">Tracking</span>:&nbsp;
+      <span data-i18n="order.tracking" set:html={L('order.tracking', lang)}></span>:&nbsp;
       {carrier && <span>{carrier}&nbsp;</span>}
       {trackingUrl
         ? <a href={trackingUrl} target="_blank" rel="noopener">{tracking} ↗</a>
         : <span>{tracking}</span>}
     </div>
   ) : (
-    <div class="ordc__ship ordc__ship--eta" data-i18n="order.presale">Pre-order · ships in 2 weeks – 2 months</div>
+    <div class="ordc__ship ordc__ship--eta" data-i18n="order.presale" set:html={L('order.presale', lang)}></div>
   )}
 
   {canClaim && (
-    <button class="btn btn--glass ordc__claim" data-claim={String(order.id)} data-claim-email={String(order.email ?? '')} data-i18n="order.savemine">Save to my account</button>
+    <button class="btn btn--glass ordc__claim" data-claim={String(order.id)} data-claim-email={String(order.email ?? '')} data-i18n="order.savemine" set:html={L('order.savemine', lang)}></button>
   )}
 </div>

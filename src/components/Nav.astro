@@ -1,4 +1,6 @@
 ---
+import { L } from "../lib/i18n";
+const lang = (Astro.locals as any).lang ?? "en";
 interface NavLink { href: string; key: string; label: string; }
 interface Props {
   links?: NavLink[];
@@ -20,7 +22,7 @@ const { links = homeLinks, buyHref = '/typixdeck', buyAdd, showBuy = true } = As
     <img class="logo-dk" src="/assets/typixnode-logo-inverse.svg" alt="TypixNode">
   </a>
   <div class="links">
-    {links.map((l) => <a href={l.href} data-i18n={l.key}>{l.label}</a>)}
+    {links.map((l) => <a href={l.href} data-i18n={l.key} set:html={L(l.key, lang)}></a>)}
   </div>
   <span class="sp"></span>
   <div class="ctrls">
@@ -29,11 +31,11 @@ const { links = homeLinks, buyHref = '/typixdeck', buyAdd, showBuy = true } = As
     <span class="selwrap cur"><select id="cursel" aria-label="Currency"><option>USD</option><option>EUR</option><option>GBP</option><option>CNY</option><option>JPY</option></select></span>
     <button class="ctrl cartbtn" aria-label="Cart">🛍<span class="cc">0</span></button>
     {showBuy && (buyAdd
-      ? <button class="btn btn--fill navbuy" data-add={buyAdd} data-i18n="nav.buy">Buy now</button>
-      : <a class="btn btn--fill navbuy" href={buyHref} data-i18n="nav.buy">Buy now</a>)}
+      ? <button class="btn btn--fill navbuy" data-add={buyAdd} data-i18n="nav.buy" set:html={L('nav.buy', lang)}></button>
+      : <a class="btn btn--fill navbuy" href={buyHref} data-i18n="nav.buy" set:html={L('nav.buy', lang)}></a>)}
     <button class="burger" id="burger" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
   </div>
 </div></nav>
 <div class="mobnav" id="mobnav">
-  {links.map((l) => <a href={l.href} data-i18n={l.key}>{l.label}</a>)}
+  {links.map((l) => <a href={l.href} data-i18n={l.key} set:html={L(l.key, lang)}></a>)}
 </div>

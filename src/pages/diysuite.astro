@@ -1,4 +1,6 @@
 ---
+import { L } from "../lib/i18n";
+const lang = (Astro.locals as any).lang ?? "en";
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -23,61 +25,61 @@ const links = [
   <header class="prod"><div class="wrap">
     <div class="hero">
       <div class="copy">
-        <span class="chip rise d1"><span class="d"></span><span class="mono" data-i18n="hero.badge">Compact open hardware · Est. 2026</span></span>
-        <h1 class="rise d2" data-i18n="diy.h1">Solder your own<br/><span class="grad">keyboard.</span></h1>
-        <p class="lead rise d3" data-i18n="diy.lead">An open-source build kit that turns an afternoon into a keyboard you made yourself.</p>
-        <div class="price rise d3"><b data-usd="9">$9</b><span class="ship" data-i18n="deck.ship">· free worldwide shipping</span></div>
-        <div class="cta rise d3"><button class="btn btn--fill" data-add="diysuite" data-i18n="cart.add">Add to cart</button><a class="btn btn--glass" href="#features" data-i18n="look">Look inside</a></div>
-        <div class="trust rise d4"><span class="d"></span> <span data-i18n="deck.trust">In stock · ships in 2–3 days · 2-year warranty · runs the open Raspberry Pi ecosystem</span></div>
+        <span class="chip rise d1"><span class="d"></span><span class="mono" data-i18n="hero.badge" set:html={L('hero.badge', lang)}></span></span>
+        <h1 class="rise d2" data-i18n="diy.h1" set:html={L('diy.h1', lang)}></h1>
+        <p class="lead rise d3" data-i18n="diy.lead" set:html={L('diy.lead', lang)}></p>
+        <div class="price rise d3"><b data-usd="9">$9</b><span class="ship" data-i18n="deck.ship" set:html={L('deck.ship', lang)}></span></div>
+        <div class="cta rise d3"><button class="btn btn--fill" data-add="diysuite" data-i18n="cart.add" set:html={L('cart.add', lang)}></button><a class="btn btn--glass" href="#features" data-i18n="look" set:html={L('look', lang)}></a></div>
+        <div class="trust rise d4"><span class="d"></span> <span data-i18n="deck.trust" set:html={L('deck.trust', lang)}></span></div>
       </div>
       <div class="stage rise d4">
-        <span class="pin p1"><div class="k">DIY Suite</div><div class="v" data-i18n="diy.s3l">Firmware</div></span>
+        <span class="pin p1"><div class="k">DIY Suite</div><div class="v" data-i18n="diy.s3l" set:html={L('diy.s3l', lang)}></div></span>
         <img src="/assets/diysuite.jpg" alt="TypixNode DIY Suite" style="border-radius:18px">
-        <span class="pin p2"><div class="k"><span data-usd="9">$9</span></div><div class="v" data-i18n="pin.stock">In stock</div></span>
+        <span class="pin p2"><div class="k"><span data-usd="9">$9</span></div><div class="v" data-i18n="pin.stock" set:html={L('pin.stock', lang)}></div></span>
       </div>
     </div>
     <div class="strip rise d4"><div class="in">
-      <div class="stat"><div class="n grad">~2 h</div><div class="l" data-i18n="diy.s1l">Build time</div></div>
-      <div class="stat"><div class="n grad">48</div><div class="l" data-i18n="diy.s2l">Keys</div></div>
-      <div class="stat"><div class="n grad">QMK</div><div class="l" data-i18n="diy.s3l">Firmware</div></div>
-      <div class="stat"><div class="n grad">100%</div><div class="l" data-i18n="diy.s4l">Open source</div></div>
-      <div class="social" data-i18n="st.social">Built on the Raspberry Pi platform — an open ecosystem shared by <b>millions</b> of developers worldwide.</div>
+      <div class="stat"><div class="n grad">~2 h</div><div class="l" data-i18n="diy.s1l" set:html={L('diy.s1l', lang)}></div></div>
+      <div class="stat"><div class="n grad">48</div><div class="l" data-i18n="diy.s2l" set:html={L('diy.s2l', lang)}></div></div>
+      <div class="stat"><div class="n grad">QMK</div><div class="l" data-i18n="diy.s3l" set:html={L('diy.s3l', lang)}></div></div>
+      <div class="stat"><div class="n grad">100%</div><div class="l" data-i18n="diy.s4l" set:html={L('diy.s4l', lang)}></div></div>
+      <div class="social" data-i18n="st.social" set:html={L('st.social', lang)}></div>
     </div></div>
   </div></header>
 
   <section><div class="wrap">
     <div class="rows"><div class="row">
       <div class="rimg"><img src="/assets/diysuite-exploded.jpg" alt="DIY Suite parts"></div>
-      <div class="rtxt"><div class="ic">DIY Suite</div><h3 data-i18n="diy.row.t">An afternoon well spent</h3><p data-i18n="diy.row.p">Everything is in the box — PCB, plate, switches, keycaps and a guide.</p></div>
+      <div class="rtxt"><div class="ic">DIY Suite</div><h3 data-i18n="diy.row.t" set:html={L('diy.row.t', lang)}></h3><p data-i18n="diy.row.p" set:html={L('diy.row.p', lang)}></p></div>
     </div></div>
   </div></section>
 
   <section id="features"><div class="wrap">
-    <div class="head"><span class="mono" data-i18n="f.kicker">Why it's different</span><h2 data-i18n="diy.feat">A kit, not a chore</h2></div>
+    <div class="head"><span class="mono" data-i18n="f.kicker" set:html={L('f.kicker', lang)}></span><h2 data-i18n="diy.feat" set:html={L('diy.feat', lang)}></h2></div>
     <div class="feat">
-      <div class="c"><div class="ic">✎</div><h4 data-i18n="diy.f1t">Beginner-friendly</h4><p data-i18n="diy.f1p">Through-hole soldering, labeled parts and an illustrated guide.</p></div>
-      <div class="c"><div class="ic">⚿</div><h4 data-i18n="diy.f2t">Open-source PCB</h4><p data-i18n="diy.f2p">The full PCB design and bill of materials are public.</p></div>
-      <div class="c"><div class="ic">⌨</div><h4 data-i18n="diy.f3t">QMK firmware</h4><p data-i18n="diy.f3p">Remap every key, add layers and macros.</p></div>
+      <div class="c"><div class="ic">✎</div><h4 data-i18n="diy.f1t" set:html={L('diy.f1t', lang)}></h4><p data-i18n="diy.f1p" set:html={L('diy.f1p', lang)}></p></div>
+      <div class="c"><div class="ic">⚿</div><h4 data-i18n="diy.f2t" set:html={L('diy.f2t', lang)}></h4><p data-i18n="diy.f2p" set:html={L('diy.f2p', lang)}></p></div>
+      <div class="c"><div class="ic">⌨</div><h4 data-i18n="diy.f3t" set:html={L('diy.f3t', lang)}></h4><p data-i18n="diy.f3p" set:html={L('diy.f3p', lang)}></p></div>
     </div>
   </div></section>
 
   <section id="specs"><div class="wrap">
-    <div class="head"><span class="mono">DIY Suite</span><h2 data-i18n="sp.title">Technical specifications</h2></div>
+    <div class="head"><span class="mono">DIY Suite</span><h2 data-i18n="sp.title" set:html={L('sp.title', lang)}></h2></div>
     <div class="spectbl">
-      <div class="r"><div class="k" data-i18n="diy.spk1">Layout</div><div class="v" data-i18n="diy.spv1">48-key ortholinear</div></div>
-      <div class="r"><div class="k" data-i18n="diy.spk2">PCB</div><div class="v" data-i18n="diy.spv2">Open-source, through-hole</div></div>
-      <div class="r"><div class="k" data-i18n="diy.spk3">Firmware</div><div class="v" data-i18n="diy.spv3">QMK-compatible</div></div>
-      <div class="r"><div class="k" data-i18n="diy.spk4">Switches</div><div class="v" data-i18n="diy.spv4">Hot-swap compatible footprints</div></div>
-      <div class="r"><div class="k" data-i18n="diy.spk5">Includes</div><div class="v" data-i18n="diy.spv5">PCB, plate, switches, keycaps, guide</div></div>
-      <div class="r"><div class="k" data-i18n="diy.spk6">Build time</div><div class="v" data-i18n="diy.spv6">About 2 hours</div></div>
+      <div class="r"><div class="k" data-i18n="diy.spk1" set:html={L('diy.spk1', lang)}></div><div class="v" data-i18n="diy.spv1" set:html={L('diy.spv1', lang)}></div></div>
+      <div class="r"><div class="k" data-i18n="diy.spk2" set:html={L('diy.spk2', lang)}></div><div class="v" data-i18n="diy.spv2" set:html={L('diy.spv2', lang)}></div></div>
+      <div class="r"><div class="k" data-i18n="diy.spk3" set:html={L('diy.spk3', lang)}></div><div class="v" data-i18n="diy.spv3" set:html={L('diy.spv3', lang)}></div></div>
+      <div class="r"><div class="k" data-i18n="diy.spk4" set:html={L('diy.spk4', lang)}></div><div class="v" data-i18n="diy.spv4" set:html={L('diy.spv4', lang)}></div></div>
+      <div class="r"><div class="k" data-i18n="diy.spk5" set:html={L('diy.spk5', lang)}></div><div class="v" data-i18n="diy.spv5" set:html={L('diy.spv5', lang)}></div></div>
+      <div class="r"><div class="k" data-i18n="diy.spk6" set:html={L('diy.spk6', lang)}></div><div class="v" data-i18n="diy.spv6" set:html={L('diy.spv6', lang)}></div></div>
     </div>
   </div></section>
 
   <section id="faq"><div class="wrap">
-    <div class="head"><span class="mono" data-i18n="faq.kicker">Good to know</span><h2 data-i18n="faq.title">Frequently asked questions</h2></div>
+    <div class="head"><span class="mono" data-i18n="faq.kicker" set:html={L('faq.kicker', lang)}></span><h2 data-i18n="faq.title" set:html={L('faq.title', lang)}></h2></div>
     <div class="faq">
-      <div class="qa"><button><span data-i18n="diy.q1">Do I need soldering experience?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="diy.a1">No. The kit uses beginner-friendly through-hole components.</p></div></div>
-      <div class="qa"><button><span data-i18n="diy.q2">Can I customize the layout?</span> <span class="pm">+</span></button><div class="ans"><p data-i18n="diy.a2">Yes. The PCB is open-source and the board runs QMK.</p></div></div>
+      <div class="qa"><button><span data-i18n="diy.q1" set:html={L('diy.q1', lang)}></span> <span class="pm">+</span></button><div class="ans"><p data-i18n="diy.a1" set:html={L('diy.a1', lang)}></p></div></div>
+      <div class="qa"><button><span data-i18n="diy.q2" set:html={L('diy.q2', lang)}></span> <span class="pm">+</span></button><div class="ans"><p data-i18n="diy.a2" set:html={L('diy.a2', lang)}></p></div></div>
     </div>
   </div></section>
 
@@ -85,9 +87,9 @@ const links = [
 
   <section><div class="wrap">
     <div class="ctab">
-      <h2 data-i18n="diy.cta.t">Build it yourself</h2>
-      <p data-i18n="diy.cta.p">An open PCB, an illustrated guide and a satisfying click.</p>
-      <div class="cta"><button class="btn btn--fill" data-add="diysuite" data-i18n="cart.add">Add to cart</button><a class="btn btn--glass" href="/products" data-i18n="see.all">See all products</a></div>
+      <h2 data-i18n="diy.cta.t" set:html={L('diy.cta.t', lang)}></h2>
+      <p data-i18n="diy.cta.p" set:html={L('diy.cta.p', lang)}></p>
+      <div class="cta"><button class="btn btn--fill" data-add="diysuite" data-i18n="cart.add" set:html={L('cart.add', lang)}></button><a class="btn btn--glass" href="/products" data-i18n="see.all" set:html={L('see.all', lang)}></a></div>
     </div>
   </div></section>
 

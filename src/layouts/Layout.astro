@@ -1,4 +1,5 @@
 ---
+import { L } from '../lib/i18n';
 interface Props {
   title: string;
   description?: string;
@@ -20,6 +21,13 @@ const {
 const site = 'https://typixnode.com';
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site).href;
 
+// Language resolved server-side by src/middleware.ts (cookie → Accept-Language → 'en').
+// Rendering the page in this language avoids the first-paint English→target flash.
+const lang = (Astro.locals as any).lang ?? 'en';
+// Document title: prefer the translated titleKey so the <title> is correct on
+// first paint too (site.js no longer needs to rewrite it).
+const docTitle = titleKey ? L(titleKey, lang) : title;
+
 // Payment config exposed to the browser (publishable values only — never secrets).
 const env = (Astro.locals as any).runtime?.env ?? {};
 const paypalClientId: string = env.PAYPAL_CLIENT_ID ?? '';
@@ -29,11 +37,11 @@ const paypalClientId: string = env.PAYPAL_CLIENT_ID ?? '';
 const stripeEnabled: boolean = String(env.STRIPE_ENABLED ?? '') === '1';
 ---
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
+    <title>{docTitle}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonicalUrl} />
@@ -52,7 +60,11 @@ const stripeEnabled: boolean = String(env.STRIPE_ENABLED ?? '') === '1';
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/assets/css/site.css" />
-    <script is:inline>
+    <script is:inline define:vars={{ ssrLang: lang }}>
+      // Language was chosen server-side and the HTML is already rendered in it.
+      // Expose it so site.js adopts the same language instead of re-detecting
+      // (which would cause a redundant re-translate / flash).
+      window.__TNX_LANG = ssrLang;
       (function () {
         try {
           var t = localStorage.getItem('tnx-theme');

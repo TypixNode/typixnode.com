@@ -1,4 +1,6 @@
 ---
+import { L } from "../lib/i18n";
+const lang = (Astro.locals as any).lang ?? "en";
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -20,29 +22,29 @@ const links = [
 
   <section style="padding-top:64px"><div class="wrap">
     <div class="head">
-      <span class="mono" data-i18n="about.kicker">Our story</span>
-      <h2 data-i18n="about.h1">We make a few machines, very well.</h2>
-      <p data-i18n="about.lead">TypixNode is a tiny studio that designs, mills and bench-tests compact open hardware in small batches.</p>
+      <span class="mono" data-i18n="about.kicker" set:html={L('about.kicker', lang)}></span>
+      <h2 data-i18n="about.h1" set:html={L('about.h1', lang)}></h2>
+      <p data-i18n="about.lead" set:html={L('about.lead', lang)}></p>
     </div>
     <div class="rows"><div class="row">
       <div class="rimg"><img src="/assets/cyberdeck-internals.png" alt="Inside a TypixNode machine"></div>
-      <div class="rtxt"><div class="ic" data-i18n="about.kicker">Our story</div><h3 data-i18n="about.believe">What we believe</h3><p data-i18n="about.story">Open CAD, schematics and firmware in every box; small, hand-checked batches; and parts you can replace.</p></div>
+      <div class="rtxt"><div class="ic" data-i18n="about.kicker" set:html={L('about.kicker', lang)}></div><h3 data-i18n="about.believe" set:html={L('about.believe', lang)}></h3><p data-i18n="about.story" set:html={L('about.story', lang)}></p></div>
     </div></div>
   </div></section>
 
   <section style="padding-top:0"><div class="wrap">
     <div class="feat">
-      <div class="c"><div class="ic">⚿</div><h4 data-i18n="about.v1t">Built to be opened</h4><p data-i18n="about.v1p">Every product ships with public CAD, schematics and firmware.</p></div>
-      <div class="c"><div class="ic">◑</div><h4 data-i18n="about.v2t">Small batches, high care</h4><p data-i18n="about.v2p">We mill, assemble and test in small runs, checked by hand.</p></div>
-      <div class="c"><div class="ic">∞</div><h4 data-i18n="about.v3t">Made to last</h4><p data-i18n="about.v3p">Metal where it matters, standard sockets, replaceable parts.</p></div>
+      <div class="c"><div class="ic">⚿</div><h4 data-i18n="about.v1t" set:html={L('about.v1t', lang)}></h4><p data-i18n="about.v1p" set:html={L('about.v1p', lang)}></p></div>
+      <div class="c"><div class="ic">◑</div><h4 data-i18n="about.v2t" set:html={L('about.v2t', lang)}></h4><p data-i18n="about.v2p" set:html={L('about.v2p', lang)}></p></div>
+      <div class="c"><div class="ic">∞</div><h4 data-i18n="about.v3t" set:html={L('about.v3t', lang)}></h4><p data-i18n="about.v3p" set:html={L('about.v3p', lang)}></p></div>
     </div>
   </div></section>
 
   <section><div class="wrap">
     <div class="ctab">
-      <h2 data-i18n="lu.title">Four machines. Pick your size.</h2>
-      <p data-i18n="lu.sub">A small, carefully made catalogue.</p>
-      <div class="cta"><a class="btn btn--fill" href="/products" data-i18n="see.all">See all products</a><a class="btn btn--glass" href="/support" data-i18n="ft.support">Support</a></div>
+      <h2 data-i18n="lu.title" set:html={L('lu.title', lang)}></h2>
+      <p data-i18n="lu.sub" set:html={L('lu.sub', lang)}></p>
+      <div class="cta"><a class="btn btn--fill" href="/products" data-i18n="see.all" set:html={L('see.all', lang)}></a><a class="btn btn--glass" href="/support" data-i18n="ft.support" set:html={L('ft.support', lang)}></a></div>
     </div>
   </div></section>
 
