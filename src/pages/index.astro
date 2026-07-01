@@ -107,7 +107,17 @@ const compatGroups = [
   <section id="products"><div class="wrap">
     <div class="shead">
       <div class="ttl"><span class="mono" data-i18n="prod.kicker" set:html={L('prod.kicker', lang)}></span><h2 data-i18n="prod.title" set:html={L('prod.title', lang)}></h2><p data-i18n="prod.sub" set:html={L('prod.sub', lang)}></p></div>
-      <a class="hint" href="/products"><span data-i18n="see.all" set:html={L('see.all', lang)}></span> <span class="ar">→</span></a>
+      <div class="shead__aside">
+        <a class="hint" href="/products"><span data-i18n="see.all" set:html={L('see.all', lang)}></span> <span class="ar">→</span></a>
+        <div class="snav">
+          <button class="snav__btn snav__btn--prev" type="button" aria-label="Previous">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <button class="snav__btn snav__btn--next" type="button" aria-label="Next">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
   <div class="wrap">
