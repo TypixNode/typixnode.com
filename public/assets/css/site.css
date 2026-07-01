@@ -177,6 +177,15 @@ a.shead .hint,.shead a.hint{text-decoration:none}
 [data-theme="dark"] .scroller::-webkit-scrollbar-thumb{background:#ffffff26}
 .scroller .pc{flex:0 0 calc((100% - 54px)/3.5);scroll-snap-align:start}
 @media(max-width:760px){.scroller .pc{flex-basis:78%}}
+/* prev/next controls for the home scroller (live in the section header) */
+.shead__aside{display:flex;align-items:center;gap:18px}
+.snav{display:flex;gap:8px}
+.snav__btn{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--glass);border:1px solid var(--glassb);backdrop-filter:blur(10px);color:var(--ink);cursor:pointer;box-shadow:0 6px 18px #0c1a1614;transition:background .18s,color .18s,border-color .18s,transform .18s,opacity .18s}
+.snav__btn svg{width:20px;height:20px;display:block}
+.snav__btn:hover{background:var(--emerald);border-color:var(--emerald);color:#fff;transform:translateY(-1px)}
+.snav__btn:active{transform:translateY(0)}
+.snav__btn[disabled]{opacity:.32;pointer-events:none;box-shadow:none}
+@media(max-width:760px){.snav{display:none}}
 
 /* ---------- /products grid page ---------- */
 .pg-hero{padding:140px 0 18px;text-align:center}

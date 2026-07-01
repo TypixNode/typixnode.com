@@ -3628,44 +3628,87 @@
       b.addEventListener("click", function () { b.parentElement.classList.toggle("open"); });
     });
 
-    /* ---------- gentle auto-scroll for the home product scroller ----------
-       Slowly drifts the horizontal product strip so the later items (CM0
-       series) get seen. Pauses on hover, touch, focus or manual scroll, and
-       is disabled entirely for users who prefer reduced motion. */
+    /* ---------- auto-paging for the home product scroller ----------
+       Advances the horizontal product strip one snap slot at a time so the
+       later items (CM0 series) get seen. Uses scrollTo() to a real snap point
+       (cooperates with `scroll-snap-type: mandatory` — a per-frame scrollLeft
+       drift would be yanked back by the snap and appear frozen). Ping-pongs at
+       the ends, pauses on hover / touch / wheel / focus. The prev/next arrows
+       stay active for everyone; only the auto-advance is skipped for users who
+       prefer reduced motion. */
     (function () {
       var el = document.querySelector(".scroller");
       if (!el) return;
       var reduce = false;
       try { reduce = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
-      if (reduce) return;
-      var SPEED = 0.35;          // px per frame (~21px/s at 60fps) — gentle
+      var INTERVAL = 3500;       // ms between slot advances
       var dir = 1;               // 1 = forward, -1 = back
       var paused = false;
       var resumeAt = 0;          // timestamp to resume after a manual interaction
-      function overflowing() { return el.scrollWidth - el.clientWidth > 4; }
       function pauseFor(ms) { paused = true; resumeAt = performance.now() + ms; }
-      // Interactions that should pause the drift.
+      function overflowing() { return el.scrollWidth - el.clientWidth > 4; }
+      // Left offset of each card relative to the scroller's content box.
+      function cardOffsets() {
+        var cards = el.querySelectorAll(".pc"), offs = [];
+        for (var i = 0; i < cards.length; i++) offs.push(cards[i].offsetLeft - el.offsetLeft);
+        return offs;
+      }
+      function nearestIndex(offs) {
+        var x = el.scrollLeft, best = 0, bd = Infinity;
+        for (var i = 0; i < offs.length; i++) {
+          var d = Math.abs(offs[i] - x);
+          if (d < bd) { bd = d; best = i; }
+        }
+        return best;
+      }
+      function maxScroll() { return el.scrollWidth - el.clientWidth; }
+      function goTo(idx) {
+        var offs = cardOffsets();
+        if (!offs.length) return;
+        idx = Math.max(0, Math.min(offs.length - 1, idx));
+        el.scrollTo({ left: Math.min(offs[idx], maxScroll()), behavior: "smooth" });
+      }
+      // Interactions that should pause the auto-advance.
       el.addEventListener("mouseenter", function () { paused = true; });
       el.addEventListener("mouseleave", function () { if (!resumeAt) paused = false; });
-      el.addEventListener("touchstart", function () { pauseFor(4000); }, { passive: true });
-      el.addEventListener("pointerdown", function () { pauseFor(4000); });
+      el.addEventListener("touchstart", function () { pauseFor(4500); }, { passive: true });
+      el.addEventListener("pointerdown", function () { pauseFor(4500); });
       el.addEventListener("focusin", function () { paused = true; });
-      el.addEventListener("wheel", function () { pauseFor(4000); }, { passive: true });
-      var last = performance.now();
-      function tick(now) {
-        // honor a timed resume window
-        if (resumeAt && now >= resumeAt) { resumeAt = 0; paused = false; }
-        var dt = Math.min(50, now - last); last = now;
-        if (!paused && overflowing()) {
-          var step = SPEED * (dt / 16.67);
-          el.scrollLeft += step * dir;
-          var max = el.scrollWidth - el.clientWidth;
-          if (el.scrollLeft >= max - 1) { dir = -1; pauseFor(1500); }
-          else if (el.scrollLeft <= 1) { dir = 1; if (now > 1000) pauseFor(1500); }
-        }
-        requestAnimationFrame(tick);
+      el.addEventListener("wheel", function () { pauseFor(4500); }, { passive: true });
+
+      // Prev / next controls (in the section header) share the snap logic.
+      var section = el.closest("section") || document;
+      var prevBtn = section.querySelector(".snav__btn--prev");
+      var nextBtn = section.querySelector(".snav__btn--next");
+      function syncNav() {
+        if (prevBtn) prevBtn.disabled = el.scrollLeft <= 2;
+        if (nextBtn) nextBtn.disabled = el.scrollLeft >= maxScroll() - 2;
       }
-      requestAnimationFrame(tick);
+      if (prevBtn) prevBtn.addEventListener("click", function () {
+        dir = -1; pauseFor(6000);
+        goTo(nearestIndex(cardOffsets()) - 1);   // one product per click
+      });
+      if (nextBtn) nextBtn.addEventListener("click", function () {
+        dir = 1; pauseFor(6000);
+        goTo(nearestIndex(cardOffsets()) + 1);    // one product per click
+      });
+      var syncT;
+      el.addEventListener("scroll", function () {
+        clearTimeout(syncT); syncT = setTimeout(syncNav, 60);
+      }, { passive: true });
+      syncNav();
+
+      if (reduce) return;        // arrows still work; skip only the auto-advance
+      setInterval(function () {
+        if (resumeAt && performance.now() >= resumeAt) { resumeAt = 0; paused = false; }
+        if (paused || !overflowing()) return;
+        var offs = cardOffsets();
+        if (offs.length < 2) return;
+        var i = nearestIndex(offs), next = i + dir;
+        if (next >= offs.length) { dir = -1; next = i - 1; }
+        else if (next < 0) { dir = 1; next = i + 1; }
+        el.scrollTo({ left: offs[next], behavior: "smooth" });
+      }, INTERVAL);
     })();
 
     /* ---------- TypixDeck configurator (single SKU + options) ---------- */
