@@ -8,6 +8,9 @@ interface SendArgs {
   to: string;
   subject: string;
   html: string;
+  /** Optional Reply-To. Customer emails set this to a monitored inbox
+   *  (support@…) so replies to a no-reply From still reach a human. */
+  replyTo?: string;
 }
 
 export async function sendEmail(args: SendArgs): Promise<boolean> {
@@ -27,6 +30,7 @@ export async function sendEmail(args: SendArgs): Promise<boolean> {
         to: args.to,
         subject: args.subject,
         html: args.html,
+        ...(args.replyTo ? { reply_to: args.replyTo } : {}),
       }),
     });
     if (!res.ok) {

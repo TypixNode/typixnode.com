@@ -30,6 +30,7 @@ if (env?.DB && token) {
           apiKey: env.RESEND_API_KEY,
           from: env.FROM_EMAIL || 'TypixNode <onboarding@resend.dev>',
           to: sub.email,
+          replyTo: 'support@typixnode.com',
           subject,
           html: welcomeHtml({ unsubscribeUrl: unsubUrl, name: sub.name }),
         });
