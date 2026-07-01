@@ -57,6 +57,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       apiKey: env.RESEND_API_KEY,
       from,
       to: sub.email,
+      replyTo: 'support@typixnode.com',
       subject,
       html: subscribeConfirmHtml({ confirmUrl, name: sub.name }),
     });

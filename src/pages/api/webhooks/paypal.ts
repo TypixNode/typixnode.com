@@ -90,6 +90,7 @@ async function markPaidAndNotify(
       apiKey: env.RESEND_API_KEY,
       from: env.FROM_EMAIL || 'TypixNode <onboarding@resend.dev>',
       to: email,
+      replyTo: 'support@typixnode.com',
       subject: `Your TypixNode order ${order.id}`,
       html: orderConfirmationHtml({
         orderId: String(order.id), items,
