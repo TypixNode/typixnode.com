@@ -15,6 +15,12 @@ const homeLinks: NavLink[] = [
   { href: 'https://github.com/TypixNode', key: 'nav.open', label: 'Open' },
 ];
 const { links = homeLinks, buyHref = '/typixdeck', buyAdd, showBuy = true } = Astro.props;
+// Discord nav entry style — switchable for preview via ?dc=icon|ghost|soft|pill.
+// Default "icon": a subtle glass icon button that matches the other nav controls
+// (the loud solid-blurple pill felt out of place in the top bar).
+const dcAllowed = ['icon', 'ghost', 'soft', 'pill'];
+const dcParam = Astro.url.searchParams.get('dc') || '';
+const dcStyle = dcAllowed.includes(dcParam) ? dcParam : 'icon';
 const langOpts: [string, string][] = [
   ['en', 'English'], ['zh', '简体中文'], ['zh-Hant', '繁體中文'], ['ja', '日本語'],
   ['de', 'Deutsch'], ['fr', 'Français'], ['es', 'Español'], ['pt', 'Português'],
@@ -37,7 +43,7 @@ const dIcon = `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentCo
     <button class="ctrl themebtn" aria-label="Toggle theme"><span class="ti">☾</span></button>
     <span class="selwrap lang"><select class="js-langsel" id="langsel" aria-label="Language">{langOpts.map(([v, l]) => <option value={v}>{l}</option>)}</select></span>
     <span class="selwrap cur"><select class="js-cursel" id="cursel" aria-label="Currency">{curOpts.map((c) => <option>{c}</option>)}</select></span>
-    <a class="dc-nav" href={DISCORD_INVITE} target="_blank" rel="noopener" aria-label="Discord"><span set:html={dIcon}></span>Discord</a>
+    <a class:list={["dc-nav", `dc-nav--${dcStyle}`]} href={DISCORD_INVITE} target="_blank" rel="noopener" aria-label="Discord" title="Discord"><span class="dc-nav__ic" set:html={dIcon}></span><span class="dc-nav__t">Discord</span></a>
     <button class="ctrl cartbtn" aria-label="Cart">🛍<span class="cc">0</span></button>
     {showBuy && (buyAdd
       ? <button class="btn btn--fill navbuy" data-add={buyAdd} data-i18n="nav.buy" set:html={L('nav.buy', lang)}></button>
@@ -51,5 +57,5 @@ const dIcon = `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentCo
     <span class="selwrap lang"><select class="js-langsel" aria-label="Language">{langOpts.map(([v, l]) => <option value={v}>{l}</option>)}</select></span>
     <span class="selwrap cur"><select class="js-cursel" aria-label="Currency">{curOpts.map((c) => <option>{c}</option>)}</select></span>
   </div>
-  <a class="dc-nav" href={DISCORD_INVITE} target="_blank" rel="noopener"><span set:html={dIcon}></span>Discord</a>
+  <a class="dc-nav" href={DISCORD_INVITE} target="_blank" rel="noopener"><span class="dc-nav__ic" set:html={dIcon}></span><span class="dc-nav__t">Discord</span></a>
 </div>
