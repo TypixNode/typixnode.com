@@ -35,8 +35,14 @@
       values: {
         body: { delta: 0, i18n: "cfg.compute.body" },
         cm0: { delta: 40, i18n: "cfg.compute.cm0" },
+        cm4_2g: { delta: 75, i18n: "cfg.compute.cm4_2g" },
         cm4: { delta: 95, i18n: "cfg.compute.cm4" },
-        cm5: { delta: 105, i18n: "cfg.compute.cm5" }
+        cm5: { delta: 105, i18n: "cfg.compute.cm5" },
+        cm5_8g: { delta: 130, i18n: "cfg.compute.cm5_8g" },
+        cm5_16g: { delta: 165, i18n: "cfg.compute.cm5_16g" },
+        // "custom" is not an add-to-cart price; selecting it opens the
+        // custom-order email form instead (handled in initConfigurator).
+        custom: { delta: 0, i18n: "cfg.compute.custom", custom: true }
       }
     },
     storage: {
@@ -44,7 +50,9 @@
       values: {
         none: { delta: 0, i18n: "cfg.storage.none" },
         tf64: { delta: 19, i18n: "cfg.storage.tf64" },
-        ssd128: { delta: 40, i18n: "cfg.storage.ssd128", note: "cfg.storage.ssd128.note" }
+        ssd128: { delta: 25, i18n: "cfg.storage.ssd128", note: "cfg.storage.ssd128.note" },
+        tf128: { delta: 29, i18n: "cfg.storage.tf128" },
+        ssd256: { delta: 45, i18n: "cfg.storage.ssd256", note: "cfg.storage.ssd128.note" }
       }
     }
   };
@@ -118,6 +126,12 @@
     if (!root) return;
     function update() {
       var o = readConfig();
+      // "Custom / other" compute → swap the price+add bar for the email form.
+      var isCustom = o.compute === "custom";
+      var bar = root.querySelector(".cfg__bar");
+      var custom = root.querySelector("#cfgCustom");
+      if (bar) bar.style.display = isCustom ? "none" : "";
+      if (custom) custom.style.display = isCustom ? "block" : "none";
       var price = lineUsd({ id: "typixdeck", options: o });
       var pe = root.querySelector("#cfgPrice");
       if (pe) {
@@ -167,7 +181,10 @@
         var tEl = lab.querySelector(".cfg__t");
         if (tEl) { var lbl = optLabel(v); if (lbl) tEl.textContent = lbl; }
         var dEl = lab.querySelector(".cfg__d");
-        if (dEl) dEl.textContent = v.delta ? ("+" + money(v.delta, cur)) : L("cfg.delta.0", lang);
+        if (dEl) {
+          if (v.custom) dEl.textContent = L("cfg.custom.badge", lang);
+          else dEl.textContent = v.delta ? ("+" + money(v.delta, cur)) : L("cfg.delta.0", lang);
+        }
       });
     }
     root.addEventListener("change", function (e) { if (e.target && e.target.name && e.target.name.indexOf("cfg-") === 0) update(); });
@@ -254,6 +271,22 @@
       "cfg.storage.tf64": "SanDisk 64GB · Raspberry Pi OS preloaded",
       "cfg.storage.ssd128": "M.2 SSD 128GB · 2230 · OS preloaded",
       "cfg.storage.ssd128.note": "CM4 / CM5 only — CM0 uses eMMC or a TF card",
+      "cfg.compute.cm4_2g": "CM4 · 2GB · Wi-Fi · no eMMC",
+      "cfg.compute.cm5_8g": "CM5 · 8GB · Wi-Fi · no eMMC",
+      "cfg.compute.cm5_16g": "CM5 · 16GB · Wi-Fi · no eMMC",
+      "cfg.compute.custom": "Custom / other",
+      "cfg.storage.tf128": "SanDisk 128GB · Raspberry Pi OS preloaded",
+      "cfg.storage.ssd256": "M.2 SSD 256GB · 2230 · OS preloaded",
+      "cfg.custom.badge": "By request",
+      "cfg.custom.title": "Custom or bulk order",
+      "cfg.custom.desc": "Tell us what you need — other RAM, storage, cases, quantity — and we'll email you a quote.",
+      "cfg.custom.email": "Your email",
+      "cfg.custom.req": "What would you like? (RAM, storage, case, quantity…)",
+      "cfg.custom.send": "Send request →",
+      "cfg.custom.sending": "Sending…",
+      "cfg.custom.ok": "Thanks — we've received your request and will reply by email.",
+      "cfg.custom.invalid": "Please enter a valid email address.",
+      "cfg.custom.err": "Something went wrong. Please try again.",
       "pg.title": "All products",
       "pg.kicker": "The catalogue",
       "pg.sub": "Compact open hardware · open-source · shipped worldwide",
@@ -261,7 +294,7 @@
       "dc.cta.title": "Join the TypixNode community", "dc.cta.sub": "Talk firmware, configs and the open-source ecosystem with other builders — and hear about restocks and new products first.",
       "dc.cta.btn": "Join Discord →", "dc.hub.title": "Connect with us", "dc.hub.sub": "Follow along and join the conversation.",
       "dc.card.dc": "Chat with builders in real time", "dc.card.gh": "Open hardware, firmware & docs", "dc.card.x": "Product news & shipping updates",
-      "promo.badge": "Sale", "promo.until": "Ends",
+      "promo.badge": "Limited-time offer", "promo.until": "Ends",
       "pg.configure": "Configure ›",
       "pg.sec.compute": "Computers",
       "pg.sec.kb": "Keyboards",
@@ -490,6 +523,22 @@
       "cfg.storage.tf64": "SanDisk 64GB · 预装树莓派 OS",
       "cfg.storage.ssd128": "M.2 SSD 128GB · 2230 · 预装系统",
       "cfg.storage.ssd128.note": "仅 CM4 / CM5 可用 — CM0 只能用 eMMC 或 TF 卡",
+      "cfg.compute.cm4_2g": "CM4 · 2GB · WiFi · 无 eMMC",
+      "cfg.compute.cm5_8g": "CM5 · 8GB · WiFi · 无 eMMC",
+      "cfg.compute.cm5_16g": "CM5 · 16GB · WiFi · 无 eMMC",
+      "cfg.compute.custom": "其他定制",
+      "cfg.storage.tf128": "SanDisk 128GB · 预装树莓派 OS",
+      "cfg.storage.ssd256": "M.2 SSD 256GB · 2230 · 预装系统",
+      "cfg.custom.badge": "定制报价",
+      "cfg.custom.title": "定制 / 批量订单",
+      "cfg.custom.desc": "告诉我们你的需求——其他内存、存储、外壳、数量——我们会邮件给你报价。",
+      "cfg.custom.email": "你的邮箱",
+      "cfg.custom.req": "你想要什么?(内存、存储、外壳、数量…)",
+      "cfg.custom.send": "发送需求 →",
+      "cfg.custom.sending": "发送中…",
+      "cfg.custom.ok": "谢谢——我们已收到你的需求,会通过邮件回复你。",
+      "cfg.custom.invalid": "请输入有效的电子邮箱。",
+      "cfg.custom.err": "出错了,请重试。",
       "pg.title": "全部产品",
       "pg.kicker": "产品目录",
       "pg.sub": "紧凑开源硬件 · 开源 · 全球发货",
@@ -725,6 +774,22 @@
       "cfg.storage.tf64": "SanDisk 64GB · Raspberry Pi OS プリインストール",
       "cfg.storage.ssd128": "M.2 SSD 128GB · 2230 · OS プリインストール",
       "cfg.storage.ssd128.note": "CM4 / CM5 のみ — CM0 は eMMC か TF カード",
+      "cfg.compute.cm4_2g": "CM4 · 2GB · Wi-Fi · eMMC なし",
+      "cfg.compute.cm5_8g": "CM5 · 8GB · Wi-Fi · eMMC なし",
+      "cfg.compute.cm5_16g": "CM5 · 16GB · Wi-Fi · eMMC なし",
+      "cfg.compute.custom": "カスタム / その他",
+      "cfg.storage.tf128": "SanDisk 128GB · Raspberry Pi OS プリインストール",
+      "cfg.storage.ssd256": "M.2 SSD 256GB · 2230 · OS プリインストール",
+      "cfg.custom.badge": "お見積り",
+      "cfg.custom.title": "カスタム / まとめ買い",
+      "cfg.custom.desc": "ご希望（他のRAM・ストレージ・ケース・数量など）をお知らせください。メールでお見積りします。",
+      "cfg.custom.email": "メールアドレス",
+      "cfg.custom.req": "ご希望は？（RAM・ストレージ・ケース・数量…）",
+      "cfg.custom.send": "リクエストを送信 →",
+      "cfg.custom.sending": "送信中…",
+      "cfg.custom.ok": "ありがとうございます——リクエストを受け取りました。メールでご返信します。",
+      "cfg.custom.invalid": "有効なメールアドレスを入力してください。",
+      "cfg.custom.err": "エラーが発生しました。もう一度お試しください。",
       "pg.title": "製品一覧",
       "pg.kicker": "カタログ",
       "pg.sub": "コンパクトなオープンハードウェア · オープンソース · 世界中へ発送",
@@ -970,6 +1035,22 @@
       "cfg.storage.tf64": "SanDisk 64GB · 預裝 Raspberry Pi OS",
       "cfg.storage.ssd128": "M.2 SSD 128GB · 2230 · 預裝系統",
       "cfg.storage.ssd128.note": "僅 CM4 / CM5 可用 — CM0 只能用 eMMC 或 TF 卡",
+      "cfg.compute.cm4_2g": "CM4 · 2GB · Wi-Fi · 無 eMMC",
+      "cfg.compute.cm5_8g": "CM5 · 8GB · Wi-Fi · 無 eMMC",
+      "cfg.compute.cm5_16g": "CM5 · 16GB · Wi-Fi · 無 eMMC",
+      "cfg.compute.custom": "其他客製",
+      "cfg.storage.tf128": "SanDisk 128GB · 預裝 Raspberry Pi OS",
+      "cfg.storage.ssd256": "M.2 SSD 256GB · 2230 · 預裝系統",
+      "cfg.custom.badge": "客製報價",
+      "cfg.custom.title": "客製 / 大量訂購",
+      "cfg.custom.desc": "告訴我們你的需求——其他記憶體、儲存、外殼、數量——我們會以電子郵件報價。",
+      "cfg.custom.email": "你的電子郵件",
+      "cfg.custom.req": "你想要什麼?(記憶體、儲存、外殼、數量…)",
+      "cfg.custom.send": "傳送需求 →",
+      "cfg.custom.sending": "傳送中…",
+      "cfg.custom.ok": "謝謝——我們已收到你的需求,將以電子郵件回覆你。",
+      "cfg.custom.invalid": "請輸入有效的電子郵件。",
+      "cfg.custom.err": "發生錯誤,請再試一次。",
       "pg.title": "全部產品",
       "pg.kicker": "產品型錄",
       "pg.sub": "精巧的開源硬體 · 開源 · 銷往全球",
@@ -1343,6 +1424,22 @@
       "cfg.storage.tf64": "SanDisk 64GB · Raspberry Pi OS vorinstalliert",
       "cfg.storage.ssd128": "M.2 SSD 128GB · 2230 · OS vorinstalliert",
       "cfg.storage.ssd128.note": "Nur CM4 / CM5 — CM0 nutzt eMMC oder eine TF-Karte",
+      "cfg.compute.cm4_2g": "CM4 · 2GB · Wi-Fi · kein eMMC",
+      "cfg.compute.cm5_8g": "CM5 · 8GB · Wi-Fi · kein eMMC",
+      "cfg.compute.cm5_16g": "CM5 · 16GB · Wi-Fi · kein eMMC",
+      "cfg.compute.custom": "Individuell / Sonstiges",
+      "cfg.storage.tf128": "SanDisk 128GB · Raspberry Pi OS vorinstalliert",
+      "cfg.storage.ssd256": "M.2 SSD 256GB · 2230 · OS vorinstalliert",
+      "cfg.custom.badge": "Auf Anfrage",
+      "cfg.custom.title": "Individuelle oder Großbestellung",
+      "cfg.custom.desc": "Sag uns, was du brauchst – anderer RAM, Speicher, Gehäuse, Menge – wir schicken dir ein Angebot per E-Mail.",
+      "cfg.custom.email": "Deine E-Mail-Adresse",
+      "cfg.custom.req": "Was möchtest du? (RAM, Speicher, Gehäuse, Menge …)",
+      "cfg.custom.send": "Anfrage senden →",
+      "cfg.custom.sending": "Wird gesendet…",
+      "cfg.custom.ok": "Danke – wir haben deine Anfrage erhalten und melden uns per E-Mail.",
+      "cfg.custom.invalid": "Bitte gib eine gültige E-Mail-Adresse ein.",
+      "cfg.custom.err": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
       "pg.title": "Alle Produkte",
       "pg.kicker": "Der Katalog",
       "pg.sub": "Kompakte Open Hardware · Open Source · weltweiter Versand",
@@ -1716,6 +1813,22 @@
       "cfg.storage.tf64": "SanDisk 64 Go · Raspberry Pi OS préinstallé",
       "cfg.storage.ssd128": "SSD M.2 128 Go · 2230 · OS préinstallé",
       "cfg.storage.ssd128.note": "CM4 / CM5 uniquement — le CM0 utilise eMMC ou une carte TF",
+      "cfg.compute.cm4_2g": "CM4 · 2 Go · Wi-Fi · sans eMMC",
+      "cfg.compute.cm5_8g": "CM5 · 8 Go · Wi-Fi · sans eMMC",
+      "cfg.compute.cm5_16g": "CM5 · 16 Go · Wi-Fi · sans eMMC",
+      "cfg.compute.custom": "Sur mesure / autre",
+      "cfg.storage.tf128": "SanDisk 128 Go · Raspberry Pi OS préinstallé",
+      "cfg.storage.ssd256": "SSD M.2 256 Go · 2230 · OS préinstallé",
+      "cfg.custom.badge": "Sur devis",
+      "cfg.custom.title": "Commande sur mesure ou en gros",
+      "cfg.custom.desc": "Dites-nous ce qu'il vous faut — autre RAM, stockage, boîtier, quantité — et nous vous enverrons un devis par e-mail.",
+      "cfg.custom.email": "Votre adresse e-mail",
+      "cfg.custom.req": "Que souhaitez-vous ? (RAM, stockage, boîtier, quantité…)",
+      "cfg.custom.send": "Envoyer la demande →",
+      "cfg.custom.sending": "Envoi…",
+      "cfg.custom.ok": "Merci — nous avons bien reçu votre demande et vous répondrons par e-mail.",
+      "cfg.custom.invalid": "Veuillez saisir une adresse e-mail valide.",
+      "cfg.custom.err": "Une erreur est survenue. Veuillez réessayer.",
       "pg.title": "Tous les produits",
       "pg.kicker": "Le catalogue",
       "pg.sub": "Open hardware compact · open-source · expédié dans le monde entier",
@@ -2089,6 +2202,22 @@
       "cfg.storage.tf64": "SanDisk 64 GB · Raspberry Pi OS preinstalado",
       "cfg.storage.ssd128": "SSD M.2 128 GB · 2230 · SO preinstalado",
       "cfg.storage.ssd128.note": "Solo CM4 / CM5 — el CM0 usa eMMC o una tarjeta TF",
+      "cfg.compute.cm4_2g": "CM4 · 2 GB · Wi-Fi · sin eMMC",
+      "cfg.compute.cm5_8g": "CM5 · 8 GB · Wi-Fi · sin eMMC",
+      "cfg.compute.cm5_16g": "CM5 · 16 GB · Wi-Fi · sin eMMC",
+      "cfg.compute.custom": "Personalizado / otro",
+      "cfg.storage.tf128": "SanDisk 128 GB · Raspberry Pi OS preinstalado",
+      "cfg.storage.ssd256": "SSD M.2 256 GB · 2230 · SO preinstalado",
+      "cfg.custom.badge": "Bajo pedido",
+      "cfg.custom.title": "Pedido personalizado o al por mayor",
+      "cfg.custom.desc": "Dinos qué necesitas — otra RAM, almacenamiento, carcasa, cantidad — y te enviaremos un presupuesto por correo.",
+      "cfg.custom.email": "Tu correo electrónico",
+      "cfg.custom.req": "¿Qué te gustaría? (RAM, almacenamiento, carcasa, cantidad…)",
+      "cfg.custom.send": "Enviar solicitud →",
+      "cfg.custom.sending": "Enviando…",
+      "cfg.custom.ok": "Gracias: hemos recibido tu solicitud y te responderemos por correo.",
+      "cfg.custom.invalid": "Introduce un correo electrónico válido.",
+      "cfg.custom.err": "Algo salió mal. Inténtalo de nuevo.",
       "pg.title": "Todos los productos",
       "pg.kicker": "El catálogo",
       "pg.sub": "Hardware abierto y compacto · open-source · envío a todo el mundo",
@@ -2462,6 +2591,22 @@
       "cfg.storage.tf64": "SanDisk 64GB · Raspberry Pi OS pré-instalado",
       "cfg.storage.ssd128": "SSD M.2 128GB · 2230 · SO pré-instalado",
       "cfg.storage.ssd128.note": "Apenas CM4 / CM5 — o CM0 usa eMMC ou cartão TF",
+      "cfg.compute.cm4_2g": "CM4 · 2GB · Wi-Fi · sem eMMC",
+      "cfg.compute.cm5_8g": "CM5 · 8GB · Wi-Fi · sem eMMC",
+      "cfg.compute.cm5_16g": "CM5 · 16GB · Wi-Fi · sem eMMC",
+      "cfg.compute.custom": "Personalizado / outro",
+      "cfg.storage.tf128": "SanDisk 128GB · Raspberry Pi OS pré-instalado",
+      "cfg.storage.ssd256": "SSD M.2 256GB · 2230 · SO pré-instalado",
+      "cfg.custom.badge": "Sob consulta",
+      "cfg.custom.title": "Pedido personalizado ou por atacado",
+      "cfg.custom.desc": "Diga-nos o que precisa — outra RAM, armazenamento, caixa, quantidade — e enviaremos um orçamento por e-mail.",
+      "cfg.custom.email": "O seu e-mail",
+      "cfg.custom.req": "O que gostaria? (RAM, armazenamento, caixa, quantidade…)",
+      "cfg.custom.send": "Enviar pedido →",
+      "cfg.custom.sending": "A enviar…",
+      "cfg.custom.ok": "Obrigado — recebemos o seu pedido e responderemos por e-mail.",
+      "cfg.custom.invalid": "Introduza um e-mail válido.",
+      "cfg.custom.err": "Algo correu mal. Tente novamente.",
       "pg.title": "Todos os produtos",
       "pg.kicker": "O catálogo",
       "pg.sub": "Open hardware compacto · open-source · enviado para todo o mundo",
@@ -2835,6 +2980,22 @@
       "cfg.storage.tf64": "SanDisk 64GB · Raspberry Pi OS 사전 설치",
       "cfg.storage.ssd128": "M.2 SSD 128GB · 2230 · OS 사전 설치",
       "cfg.storage.ssd128.note": "CM4 / CM5 전용 — CM0는 eMMC 또는 TF 카드 사용",
+      "cfg.compute.cm4_2g": "CM4 · 2GB · Wi-Fi · eMMC 없음",
+      "cfg.compute.cm5_8g": "CM5 · 8GB · Wi-Fi · eMMC 없음",
+      "cfg.compute.cm5_16g": "CM5 · 16GB · Wi-Fi · eMMC 없음",
+      "cfg.compute.custom": "맞춤 / 기타",
+      "cfg.storage.tf128": "SanDisk 128GB · Raspberry Pi OS 사전 설치",
+      "cfg.storage.ssd256": "M.2 SSD 256GB · 2230 · OS 사전 설치",
+      "cfg.custom.badge": "견적 문의",
+      "cfg.custom.title": "맞춤 제작 또는 대량 주문",
+      "cfg.custom.desc": "원하시는 것을 알려주세요 — 다른 RAM, 저장장치, 케이스, 수량 — 이메일로 견적을 보내드립니다.",
+      "cfg.custom.email": "이메일 주소",
+      "cfg.custom.req": "무엇을 원하시나요? (RAM, 저장장치, 케이스, 수량…)",
+      "cfg.custom.send": "요청 보내기 →",
+      "cfg.custom.sending": "보내는 중…",
+      "cfg.custom.ok": "감사합니다 — 요청을 받았으며 이메일로 답변드리겠습니다.",
+      "cfg.custom.invalid": "유효한 이메일 주소를 입력해 주세요.",
+      "cfg.custom.err": "문제가 발생했습니다. 다시 시도해 주세요.",
       "pg.title": "전체 제품",
       "pg.kicker": "카탈로그",
       "pg.sub": "컴팩트 오픈 하드웨어 · 오픈소스 · 전 세계 배송",
@@ -3208,6 +3369,22 @@
       "cfg.storage.tf64": "SanDisk 64GB · Raspberry Pi OS preinstallato",
       "cfg.storage.ssd128": "SSD M.2 128GB · 2230 · OS preinstallato",
       "cfg.storage.ssd128.note": "Solo CM4 / CM5 — il CM0 usa eMMC o una scheda TF",
+      "cfg.compute.cm4_2g": "CM4 · 2GB · Wi-Fi · senza eMMC",
+      "cfg.compute.cm5_8g": "CM5 · 8GB · Wi-Fi · senza eMMC",
+      "cfg.compute.cm5_16g": "CM5 · 16GB · Wi-Fi · senza eMMC",
+      "cfg.compute.custom": "Personalizzato / altro",
+      "cfg.storage.tf128": "SanDisk 128GB · Raspberry Pi OS preinstallato",
+      "cfg.storage.ssd256": "SSD M.2 256GB · 2230 · OS preinstallato",
+      "cfg.custom.badge": "Su richiesta",
+      "cfg.custom.title": "Ordine personalizzato o all'ingrosso",
+      "cfg.custom.desc": "Dicci di cosa hai bisogno — altra RAM, archiviazione, scocca, quantità — e ti invieremo un preventivo via email.",
+      "cfg.custom.email": "La tua email",
+      "cfg.custom.req": "Cosa desideri? (RAM, archiviazione, scocca, quantità…)",
+      "cfg.custom.send": "Invia richiesta →",
+      "cfg.custom.sending": "Invio…",
+      "cfg.custom.ok": "Grazie — abbiamo ricevuto la tua richiesta e ti risponderemo via email.",
+      "cfg.custom.invalid": "Inserisci un indirizzo email valido.",
+      "cfg.custom.err": "Qualcosa è andato storto. Riprova.",
       "pg.title": "Tutti i prodotti",
       "pg.kicker": "Il catalogo",
       "pg.sub": "Hardware compatto e open · open-source · spedito in tutto il mondo",
@@ -3665,6 +3842,8 @@
     if (id !== "typixdeck" && !PRODUCTS[id]) return;
     var item = { id: id, qty: 1 };
     if (id === "typixdeck") item.options = normOptions(options);
+    // "Custom / other" is a quote request, not a purchasable line — never cart it.
+    if (id === "typixdeck" && item.options && item.options.compute === "custom") return;
     var c = loadCart(), key = lineKey(item);
     var f = c.find(function (i) { return lineKey(i) === key; });
     if (f) f.qty++; else c.push(item);
@@ -3923,6 +4102,47 @@
           .then(function () { if (btn) { btn.disabled = false; btn.textContent = L("nl.btn", lang); } });
       });
     });
+
+    /* ---------- TypixDeck custom-build enquiry (configurator "Custom / other") ---------- */
+    (function () {
+      var form = document.getElementById("cfgCustom");
+      if (!form) return;
+      var msg = form.querySelector(".cfg__custom-msg");
+      var btn = form.querySelector(".cfg__custom-send");
+      var emailEl = form.querySelector('input[name="email"]');
+      var reqEl = form.querySelector('textarea[name="requirements"]');
+      function setMsg(text, cls) { if (msg) { msg.textContent = text; msg.className = "cfg__custom-msg" + (cls ? " " + cls : ""); } }
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var email = (emailEl && emailEl.value || "").trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          if (emailEl) emailEl.setAttribute("aria-invalid", "true");
+          setMsg(L("cfg.custom.invalid", lang), "err");
+          return;
+        }
+        if (emailEl) emailEl.removeAttribute("aria-invalid");
+        if (btn) { btn.disabled = true; btn.textContent = L("cfg.custom.sending", lang); }
+        setMsg("", "");
+        fetch("/api/custom-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: email,
+            requirements: (reqEl && reqEl.value || "").trim(),
+            options: (typeof readConfig === "function") ? readConfig() : null,
+            lang: lang
+          }),
+        }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
+          .then(function (res) {
+            var d = res.d || {};
+            if (res.ok && d.status === "sent") { setMsg(L("cfg.custom.ok", lang), "ok"); if (reqEl) reqEl.value = ""; }
+            else if (d.status === "invalid") { setMsg(L("cfg.custom.invalid", lang), "err"); }
+            else { setMsg(L("cfg.custom.err", lang), "err"); }
+          })
+          .catch(function () { setMsg(L("cfg.custom.err", lang), "err"); })
+          .then(function () { if (btn) { btn.disabled = false; btn.textContent = L("cfg.custom.send", lang); } });
+      });
+    })();
 
     document.querySelectorAll(".qa button").forEach(function (b) {
       b.addEventListener("click", function () { b.parentElement.classList.toggle("open"); });

@@ -183,6 +183,66 @@ export function adminSubscriberHtml(opts: {
   });
 }
 
+/** Admin/support notification for a custom-build enquiry from the configurator.
+ *  Reply-To is set to the customer's address so support can just hit reply. */
+export function customOrderAdminHtml(opts: {
+  email: string;
+  requirements: string;
+  config: Array<{ group: string; value: string }>;
+  lang?: string;
+}): string {
+  const cfgRows = opts.config
+    .map(
+      (c) =>
+        `<tr><td style="padding:6px 0;color:#4a5f58">${c.group}</td><td style="padding:6px 0;text-align:right"><b>${c.value}</b></td></tr>`
+    )
+    .join('');
+  const reqHtml = opts.requirements
+    ? opts.requirements.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>')
+    : '<i style="color:#9aa8a2">(none)</i>';
+  return shell({
+    preheader: `Custom TypixDeck enquiry from ${opts.email}`,
+    body: `
+      <h2 style="margin:0 0 8px;font-size:18px">New custom-build enquiry</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:#0c1a16">
+        <tr><td style="padding:6px 0;color:#4a5f58">From</td><td style="padding:6px 0;text-align:right"><b>${opts.email}</b></td></tr>
+        ${opts.lang ? `<tr><td style="padding:6px 0;color:#4a5f58">Language</td><td style="padding:6px 0;text-align:right">${opts.lang}</td></tr>` : ''}
+        ${cfgRows}
+      </table>
+      <div style="margin-top:14px;padding:12px 14px;background:#f4f8f6;border:1px solid #e2ece8;border-radius:10px;color:#2c443c;font-size:14px">
+        <div style="color:#4a5f58;font-size:12px;margin-bottom:6px">Requirements</div>
+        ${reqHtml}
+      </div>
+      <p style="color:#9aa8a2;font-size:12px;margin:14px 0 0">Reply to this email to reach the customer directly.</p>`,
+  });
+}
+
+/** Acknowledgement to the customer confirming we received their custom enquiry. */
+export function customOrderAckHtml(opts: { requirements: string; config: Array<{ group: string; value: string }> }): string {
+  const cfgRows = opts.config
+    .map(
+      (c) =>
+        `<tr><td style="padding:6px 0;color:#4a5f58">${c.group}</td><td style="padding:6px 0;text-align:right"><b>${c.value}</b></td></tr>`
+    )
+    .join('');
+  return shell({
+    preheader: "We've received your custom TypixDeck request.",
+    body: `
+      <h2 style="margin:0 0 8px;font-size:20px">Thanks — we've got your request 🛠️</h2>
+      <p style="color:#4a5f58;margin:0 0 16px;font-size:14px">
+        We build every TypixDeck in small batches, so we're happy to quote custom configurations.
+        A human will review your request and reply by email shortly.
+      </p>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:#0c1a16;border-top:1px solid #eee">
+        ${cfgRows}
+      </table>
+      <p style="color:#9aa8a2;font-size:12px;margin:16px 0 0">
+        Questions? Just reply to this email or write to
+        <a href="mailto:support@typixnode.com" style="color:#0a8f6e">support@typixnode.com</a>. — TypixNode
+      </p>`,
+  });
+}
+
 export function orderConfirmationHtml(opts: {
   orderId: string;
   items: Array<{ name: string; qty: number; unitPriceUsd: number }>;

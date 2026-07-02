@@ -159,8 +159,14 @@ export const OPTIONS_SEED: OptionsMap = {
       values: {
         body: { delta: 0, label: { en: 'Body only', zh: '仅机身', ja: '本体のみ' } },
         cm0: { delta: 40, label: { en: 'CM0 (soldered CM0→CM4 adapter)', zh: 'CM0（含贴片转接板）', ja: 'CM0（実装済アダプタ）' } },
+        cm4_2g: { delta: 75, label: { en: 'CM4 · 2GB · Wi-Fi · no eMMC', zh: 'CM4 · 2GB · WiFi · 无 eMMC', ja: 'CM4 · 2GB · Wi-Fi · eMMC なし' } },
         cm4: { delta: 95, label: { en: 'CM4 · 4GB · Wi-Fi · no eMMC', zh: 'CM4 · 4GB · WiFi · 无 eMMC', ja: 'CM4 · 4GB · Wi-Fi · eMMC なし' } },
         cm5: { delta: 105, label: { en: 'CM5 · 4GB · Wi-Fi · no eMMC', zh: 'CM5 · 4GB · WiFi · 无 eMMC', ja: 'CM5 · 4GB · Wi-Fi · eMMC なし' } },
+        cm5_8g: { delta: 130, label: { en: 'CM5 · 8GB · Wi-Fi · no eMMC', zh: 'CM5 · 8GB · WiFi · 无 eMMC', ja: 'CM5 · 8GB · Wi-Fi · eMMC なし' } },
+        cm5_16g: { delta: 165, label: { en: 'CM5 · 16GB · Wi-Fi · no eMMC', zh: 'CM5 · 16GB · WiFi · 无 eMMC', ja: 'CM5 · 16GB · Wi-Fi · eMMC なし' } },
+        // "custom" routes to the custom-order email flow on the site; it is not a
+        // real add-to-cart price (delta 0, guarded client-side).
+        custom: { delta: 0, label: { en: 'Custom / other', zh: '其他定制', ja: 'カスタム / その他' } },
       },
     },
     storage: {
@@ -171,8 +177,14 @@ export const OPTIONS_SEED: OptionsMap = {
         none: { delta: 0, label: { en: 'No TF card', zh: '不含 TF 卡', ja: 'TF カードなし' } },
         tf64: { delta: 19, label: { en: 'SanDisk 64GB · Raspberry Pi OS preloaded', zh: 'SanDisk 64GB · 预装树莓派 OS', ja: 'SanDisk 64GB · Raspberry Pi OS プリインストール' } },
         ssd128: {
-          delta: 40,
+          delta: 25,
           label: { en: 'M.2 SSD 128GB · 2230 · OS preloaded', zh: 'M.2 SSD 128GB · 2230 · 预装系统', ja: 'M.2 SSD 128GB · 2230 · OS プリインストール' },
+          note: { en: 'CM4 / CM5 only — CM0 uses eMMC or a TF card', zh: '仅 CM4 / CM5 可用 — CM0 只能用 eMMC 或 TF 卡', ja: 'CM4 / CM5 のみ — CM0 は eMMC か TF カード' },
+        },
+        tf128: { delta: 29, label: { en: 'SanDisk 128GB · Raspberry Pi OS preloaded', zh: 'SanDisk 128GB · 预装树莓派 OS', ja: 'SanDisk 128GB · Raspberry Pi OS プリインストール' } },
+        ssd256: {
+          delta: 45,
+          label: { en: 'M.2 SSD 256GB · 2230 · OS preloaded', zh: 'M.2 SSD 256GB · 2230 · 预装系统', ja: 'M.2 SSD 256GB · 2230 · OS プリインストール' },
           note: { en: 'CM4 / CM5 only — CM0 uses eMMC or a TF card', zh: '仅 CM4 / CM5 可用 — CM0 只能用 eMMC 或 TF 卡', ja: 'CM4 / CM5 のみ — CM0 は eMMC か TF カード' },
         },
       },

@@ -152,6 +152,10 @@ header.prod{padding:54px 0 24px}
 .pin{position:absolute;z-index:2;background:var(--glass2);border:1px solid var(--glassb);backdrop-filter:blur(8px);border-radius:16px;padding:11px 15px;box-shadow:0 10px 28px #0002}
 .pin .k{font-family:var(--d);font-weight:700;font-size:.98rem}.pin .v{color:var(--soft);font-size:.82rem}
 .pin.p1{left:24px;top:24px}.pin.p2{right:24px;bottom:24px;text-align:right}
+/* promo inside the floating price pin: sale price + badge wrap tidily */
+.pin .k .pr{display:inline-flex;flex-wrap:wrap;align-items:baseline;gap:.05em .3em}
+.pin.p2 .k .pr{justify-content:flex-end}
+.pin .k .pr-badge{font-size:.5em}
 /* Sits at the top-right corner, above the pins, so it's never clipped or hidden. */
 .savebadge{position:absolute;z-index:3;top:-12px;right:24px;background:linear-gradient(135deg,var(--teal),var(--amber));color:#04241b;font-family:var(--d);font-weight:800;font-size:.9rem;padding:9px 15px;border-radius:16px;transform:rotate(5deg);box-shadow:0 12px 30px #0fb88f55;text-align:center;line-height:1.05}
 .savebadge.r{right:24px;top:-12px;transform:rotate(5deg)}
@@ -229,6 +233,19 @@ a.shead .hint,.shead a.hint{text-decoration:none}
 .cfg__price b{font-family:var(--d);font-weight:800;font-size:1.7rem}
 .cfg__price .cfg__ship{color:var(--soft2);font-size:.8rem;width:100%}
 @media(max-width:520px){.cfg__bar .cta{width:100%}.cfg__bar .cta .btn{flex:1}}
+/* custom-build enquiry (shown when compute = "Custom / other") */
+.cfg__custom{margin-top:20px;padding-top:18px;border-top:1px solid var(--glassb);display:flex;flex-direction:column;gap:10px}
+.cfg__custom-h{font-family:var(--d);font-weight:800;font-size:1.15rem;color:var(--ink)}
+.cfg__custom-d{margin:0;color:var(--soft);font-size:.88rem;line-height:1.5}
+.cfg__custom-email,.cfg__custom-req{width:100%;border:1.5px solid var(--glassb);border-radius:14px;background:var(--glass);backdrop-filter:blur(8px);color:var(--ink);font:inherit;font-size:.9rem;padding:12px 14px;transition:border-color .16s}
+.cfg__custom-email:focus,.cfg__custom-req:focus{outline:none;border-color:var(--teal)}
+.cfg__custom-email[aria-invalid="true"]{border-color:#e0554e}
+.cfg__custom-req{resize:vertical;min-height:76px;line-height:1.5}
+.cfg__custom-send{align-self:flex-start}
+.cfg__custom-msg{margin:2px 0 0;font-size:.85rem;min-height:1.2em}
+.cfg__custom-msg.ok{color:var(--teal)}
+.cfg__custom-msg.err{color:#e0554e}
+@media(max-width:520px){.cfg__custom-send{align-self:stretch;width:100%}}
 
 /* product cards */
 .pc{background:var(--glass);border:1px solid var(--glassb);border-radius:24px;padding:16px;backdrop-filter:blur(12px);display:flex;flex-direction:column;transition:.3s}
