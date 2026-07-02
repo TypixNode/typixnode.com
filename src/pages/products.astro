@@ -5,6 +5,7 @@ import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import CartDrawer from '../components/CartDrawer.astro';
+import CommunityGrid from '../components/CommunityGrid.astro';
 
 // All SKUs grouped by category. id -> data-add (cart), usd -> data-usd (price),
 // href -> detail/anchor, ds -> i18n key for the description (falls back to name).
@@ -89,6 +90,8 @@ const sections = [
       </div>
     </div></section>
   ))}
+
+  <CommunityGrid />
 
   <Footer />
   <CartDrawer />

@@ -5,6 +5,7 @@ import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import CartDrawer from '../components/CartDrawer.astro';
+import DiscordCTA from '../components/DiscordCTA.astro';
 ---
 <Layout
   title="TypixNode — Compact Open Hardware"
@@ -74,6 +75,8 @@ import CartDrawer from '../components/CartDrawer.astro';
       <div class="cta"><a class="btn btn--fill" href="/typixdeck" data-i18n="cta.home.b1" set:html={L('cta.home.b1', lang)}></a><a class="btn btn--glass" href="/products" data-i18n="cta.home.b2" set:html={L('cta.home.b2', lang)}></a></div>
     </div>
   </div></section>
+
+  <DiscordCTA />
 
   </div>
 
