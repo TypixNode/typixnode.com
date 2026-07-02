@@ -62,8 +62,12 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
           <div class="cfg__opts">
             <label class="cfg__opt"><input type="radio" name="cfg-compute" value="body" checked><span class="cfg__t" data-i18n="cfg.compute.body" set:html={L('cfg.compute.body', lang)}></span><span class="cfg__d" data-i18n="cfg.delta.0" set:html={L('cfg.delta.0', lang)}></span></label>
             <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm0"><span class="cfg__t" data-i18n="cfg.compute.cm0" set:html={L('cfg.compute.cm0', lang)}></span><span class="cfg__d">+<span data-usd="40">$40</span></span></label>
+            <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm4_2g"><span class="cfg__t" data-i18n="cfg.compute.cm4_2g" set:html={L('cfg.compute.cm4_2g', lang)}></span><span class="cfg__d">+<span data-usd="75">$75</span></span></label>
             <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm4"><span class="cfg__t" data-i18n="cfg.compute.cm4" set:html={L('cfg.compute.cm4', lang)}></span><span class="cfg__d">+<span data-usd="95">$95</span></span></label>
             <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm5"><span class="cfg__t" data-i18n="cfg.compute.cm5" set:html={L('cfg.compute.cm5', lang)}></span><span class="cfg__d">+<span data-usd="105">$105</span></span></label>
+            <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm5_8g"><span class="cfg__t" data-i18n="cfg.compute.cm5_8g" set:html={L('cfg.compute.cm5_8g', lang)}></span><span class="cfg__d">+<span data-usd="130">$130</span></span></label>
+            <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm5_16g"><span class="cfg__t" data-i18n="cfg.compute.cm5_16g" set:html={L('cfg.compute.cm5_16g', lang)}></span><span class="cfg__d">+<span data-usd="165">$165</span></span></label>
+            <label class="cfg__opt cfg__opt--custom"><input type="radio" name="cfg-compute" value="custom"><span class="cfg__t" data-i18n="cfg.compute.custom" set:html={L('cfg.compute.custom', lang)}></span><span class="cfg__d" data-i18n="cfg.custom.badge" set:html={L('cfg.custom.badge', lang)}></span></label>
           </div>
         </div>
         <div class="cfg__group">
@@ -71,7 +75,9 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
           <div class="cfg__opts">
             <label class="cfg__opt"><input type="radio" name="cfg-storage" value="none" checked><span class="cfg__t" data-i18n="cfg.storage.none" set:html={L('cfg.storage.none', lang)}></span><span class="cfg__d" data-i18n="cfg.delta.0" set:html={L('cfg.delta.0', lang)}></span></label>
             <label class="cfg__opt"><input type="radio" name="cfg-storage" value="tf64"><span class="cfg__t" data-i18n="cfg.storage.tf64" set:html={L('cfg.storage.tf64', lang)}></span><span class="cfg__d">+<span data-usd="19">$19</span></span></label>
-            <label class="cfg__opt"><input type="radio" name="cfg-storage" value="ssd128"><span class="cfg__t" data-i18n="cfg.storage.ssd128" set:html={L('cfg.storage.ssd128', lang)}></span><span class="cfg__d">+<span data-usd="40">$40</span></span></label>
+            <label class="cfg__opt"><input type="radio" name="cfg-storage" value="ssd128"><span class="cfg__t" data-i18n="cfg.storage.ssd128" set:html={L('cfg.storage.ssd128', lang)}></span><span class="cfg__d">+<span data-usd="25">$25</span></span></label>
+            <label class="cfg__opt"><input type="radio" name="cfg-storage" value="tf128"><span class="cfg__t" data-i18n="cfg.storage.tf128" set:html={L('cfg.storage.tf128', lang)}></span><span class="cfg__d">+<span data-usd="29">$29</span></span></label>
+            <label class="cfg__opt"><input type="radio" name="cfg-storage" value="ssd256"><span class="cfg__t" data-i18n="cfg.storage.ssd256" set:html={L('cfg.storage.ssd256', lang)}></span><span class="cfg__d">+<span data-usd="45">$45</span></span></label>
           </div>
           <p class="cfg__note" id="cfgNote" style="display:none"></p>
         </div>
@@ -79,6 +85,14 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
           <div class="cfg__price"><span class="cfg__pl" data-i18n="cfg.total" set:html={L('cfg.total', lang)}></span> <b id="cfgPrice">$119</b><span class="cfg__ship" data-i18n="deck.ship" set:html={L('deck.ship', lang)}></span></div>
           <div class="cta"><button class="btn btn--fill" data-add="typixdeck" data-i18n="deck.add" set:html={L('deck.add', lang)}></button><a class="btn btn--glass" href="#inside" data-i18n="deck.look" set:html={L('deck.look', lang)}></a></div>
         </div>
+        <form class="cfg__custom" id="cfgCustom" style="display:none">
+          <div class="cfg__custom-h" data-i18n="cfg.custom.title" set:html={L('cfg.custom.title', lang)}></div>
+          <p class="cfg__custom-d" data-i18n="cfg.custom.desc" set:html={L('cfg.custom.desc', lang)}></p>
+          <input class="cfg__custom-email" type="email" name="email" autocomplete="email" required data-i18n-ph="cfg.custom.email" placeholder={L('cfg.custom.email', lang)}>
+          <textarea class="cfg__custom-req" name="requirements" rows="3" data-i18n-ph="cfg.custom.req" placeholder={L('cfg.custom.req', lang)}></textarea>
+          <button class="btn btn--fill cfg__custom-send" type="submit" data-i18n="cfg.custom.send" set:html={L('cfg.custom.send', lang)}></button>
+          <p class="cfg__custom-msg" role="status" aria-live="polite"></p>
+        </form>
         <p class="coolnote rise d3" data-i18n="deck.coolnote" set:html={L('deck.coolnote', lang)}></p>
         <div class="trust rise d4"><span class="d"></span> <span data-i18n="deck.trust" set:html={L('deck.trust', lang)}></span></div>
       </div>
