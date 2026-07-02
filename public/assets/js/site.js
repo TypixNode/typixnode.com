@@ -3682,6 +3682,17 @@
     applyI18n();
     applyCurrency();
 
+    // Live FX rates (display only). Overrides the hard-coded CUR rates with the
+    // current exchange rate from /api/fx; checkout is unaffected (always USD,
+    // priced server-side). Falls back silently to the built-in rates on failure.
+    fetch("/api/fx").then(function (r) { return r.ok ? r.json() : null; }).then(function (fx) {
+      if (!fx || !fx.rates) return;
+      Object.keys(fx.rates).forEach(function (c) {
+        if (CUR[c] && typeof fx.rates[c] === "number" && fx.rates[c] > 0) CUR[c].rate = fx.rates[c];
+      });
+      applyCurrency();
+    }).catch(function () {});
+
     // Refresh prices/names from the DB-backed catalogue (/api/products) so
     // dashboard price edits take effect without a deploy. The hard-coded
     // PRODUCTS above is the fallback used until this resolves (or if it fails).
