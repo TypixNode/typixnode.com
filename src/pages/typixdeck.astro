@@ -57,20 +57,60 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
       </div>
 
       <div class="cfg rise d3" data-cfg="typixdeck">
-        <div class="cfg__group">
+        <div class="cfg__group cfg__group--compute">
           <div class="cfg__label" data-i18n="cfg.compute" set:html={L('cfg.compute', lang)}></div>
-          <div class="cfg__opts">
-            <label class="cfg__opt"><input type="radio" name="cfg-compute" value="body" checked><span class="cfg__t" data-i18n="cfg.compute.body" set:html={L('cfg.compute.body', lang)}></span><span class="cfg__d" data-i18n="cfg.delta.0" set:html={L('cfg.delta.0', lang)}></span></label>
-            <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm0"><span class="cfg__t" data-i18n="cfg.compute.cm0" set:html={L('cfg.compute.cm0', lang)}></span><span class="cfg__d">+<span data-usd="40">$40</span></span></label>
-            <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm4_2g"><span class="cfg__t" data-i18n="cfg.compute.cm4_2g" set:html={L('cfg.compute.cm4_2g', lang)}></span><span class="cfg__d">+<span data-usd="75">$75</span></span></label>
-            <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm4"><span class="cfg__t" data-i18n="cfg.compute.cm4" set:html={L('cfg.compute.cm4', lang)}></span><span class="cfg__d">+<span data-usd="95">$95</span></span></label>
-            <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm5"><span class="cfg__t" data-i18n="cfg.compute.cm5" set:html={L('cfg.compute.cm5', lang)}></span><span class="cfg__d">+<span data-usd="105">$105</span></span></label>
-            <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm5_8g"><span class="cfg__t" data-i18n="cfg.compute.cm5_8g" set:html={L('cfg.compute.cm5_8g', lang)}></span><span class="cfg__d">+<span data-usd="130">$130</span></span></label>
-            <label class="cfg__opt"><input type="radio" name="cfg-compute" value="cm5_16g"><span class="cfg__t" data-i18n="cfg.compute.cm5_16g" set:html={L('cfg.compute.cm5_16g', lang)}></span><span class="cfg__d">+<span data-usd="165">$165</span></span></label>
-            <label class="cfg__opt cfg__opt--custom"><input type="radio" name="cfg-compute" value="custom"><span class="cfg__t" data-i18n="cfg.compute.custom" set:html={L('cfg.compute.custom', lang)}></span><span class="cfg__d" data-i18n="cfg.custom.badge" set:html={L('cfg.custom.badge', lang)}></span></label>
+
+          {/* Step 1 — pick the platform family (CM0 / CM4 / CM5 / body / custom).
+              The buttons drive the real radios below; family is derived from the
+              chosen value so server pricing + cart stay unchanged. */}
+          <div class="cfg__step" data-i18n="cfg.step1" set:html={L('cfg.step1', lang)}></div>
+          <div class="cfg__plats" role="group">
+            <button type="button" class="cfg__plat" data-plat="body">
+              <span class="cfg__plat-n" data-i18n="cfg.plat.body" set:html={L('cfg.plat.body', lang)}></span>
+              <span class="cfg__plat-d" data-i18n="cfg.plat.body.d" set:html={L('cfg.plat.body.d', lang)}></span>
+              <span class="cfg__plat-p" data-i18n="cfg.delta.0" set:html={L('cfg.delta.0', lang)}></span>
+            </button>
+            <button type="button" class="cfg__plat" data-plat="cm0">
+              <span class="cfg__plat-n" data-i18n="cfg.plat.cm0" set:html={L('cfg.plat.cm0', lang)}></span>
+              <span class="cfg__plat-soc">BCM2710A1 · 40nm · ARMv8</span>
+              <span class="cfg__plat-d" data-i18n="cfg.plat.cm0.d" set:html={L('cfg.plat.cm0.d', lang)}></span>
+              <span class="cfg__plat-p">+<span data-usd="40">$40</span></span>
+            </button>
+            <button type="button" class="cfg__plat" data-plat="cm4">
+              <span class="cfg__plat-n" data-i18n="cfg.plat.cm4" set:html={L('cfg.plat.cm4', lang)}></span>
+              <span class="cfg__plat-soc">BCM2711 · 28nm · ARMv8</span>
+              <span class="cfg__plat-d" data-i18n="cfg.plat.cm4.d" set:html={L('cfg.plat.cm4.d', lang)}></span>
+              <span class="cfg__plat-p">+<span data-usd="75">$75</span></span>
+            </button>
+            <button type="button" class="cfg__plat" data-plat="cm5">
+              <span class="cfg__plat-n" data-i18n="cfg.plat.cm5" set:html={L('cfg.plat.cm5', lang)}></span>
+              <span class="cfg__plat-soc">BCM2712 · 16nm · ARMv8.2</span>
+              <span class="cfg__plat-d" data-i18n="cfg.plat.cm5.d" set:html={L('cfg.plat.cm5.d', lang)}></span>
+              <span class="cfg__plat-p">+<span data-usd="105">$105</span></span>
+            </button>
+            <button type="button" class="cfg__plat cfg__plat--custom" data-plat="custom">
+              <span class="cfg__plat-n" data-i18n="cfg.plat.custom" set:html={L('cfg.plat.custom', lang)}></span>
+              <span class="cfg__plat-d" data-i18n="cfg.plat.custom.d" set:html={L('cfg.plat.custom.d', lang)}></span>
+              <span class="cfg__plat-p" data-i18n="cfg.custom.badge" set:html={L('cfg.custom.badge', lang)}></span>
+            </button>
+          </div>
+
+          {/* Step 2 — pick the exact variant within the chosen family. Only the
+              rows for the active family are shown (JS toggles [data-fam]); hidden
+              rows keep their radios so pricing stays valid. */}
+          <div class="cfg__step cfg__step--2" data-i18n="cfg.step2" set:html={L('cfg.step2', lang)}></div>
+          <div class="cfg__opts cfg__opts--compute">
+            <label class="cfg__opt" data-fam="body"><input type="radio" name="cfg-compute" value="body" checked><span class="cfg__t" data-i18n="cfg.compute.body" set:html={L('cfg.compute.body', lang)}></span><span class="cfg__d" data-i18n="cfg.delta.0" set:html={L('cfg.delta.0', lang)}></span></label>
+            <label class="cfg__opt" data-fam="cm0"><input type="radio" name="cfg-compute" value="cm0"><span class="cfg__t" data-i18n="cfg.compute.cm0" set:html={L('cfg.compute.cm0', lang)}></span><span class="cfg__d">+<span data-usd="40">$40</span></span></label>
+            <label class="cfg__opt" data-fam="cm4"><input type="radio" name="cfg-compute" value="cm4_2g"><span class="cfg__t" data-i18n="cfg.compute.cm4_2g" set:html={L('cfg.compute.cm4_2g', lang)}></span><span class="cfg__d">+<span data-usd="75">$75</span></span></label>
+            <label class="cfg__opt" data-fam="cm4"><input type="radio" name="cfg-compute" value="cm4"><span class="cfg__t" data-i18n="cfg.compute.cm4" set:html={L('cfg.compute.cm4', lang)}></span><span class="cfg__d">+<span data-usd="95">$95</span></span></label>
+            <label class="cfg__opt" data-fam="cm5"><input type="radio" name="cfg-compute" value="cm5"><span class="cfg__t" data-i18n="cfg.compute.cm5" set:html={L('cfg.compute.cm5', lang)}></span><span class="cfg__d">+<span data-usd="105">$105</span></span></label>
+            <label class="cfg__opt" data-fam="cm5"><input type="radio" name="cfg-compute" value="cm5_8g"><span class="cfg__t" data-i18n="cfg.compute.cm5_8g" set:html={L('cfg.compute.cm5_8g', lang)}></span><span class="cfg__d">+<span data-usd="130">$130</span></span></label>
+            <label class="cfg__opt" data-fam="cm5"><input type="radio" name="cfg-compute" value="cm5_16g"><span class="cfg__t" data-i18n="cfg.compute.cm5_16g" set:html={L('cfg.compute.cm5_16g', lang)}></span><span class="cfg__d">+<span data-usd="165">$165</span></span></label>
+            <label class="cfg__opt cfg__opt--custom" data-fam="custom"><input type="radio" name="cfg-compute" value="custom"><span class="cfg__t" data-i18n="cfg.compute.custom" set:html={L('cfg.compute.custom', lang)}></span><span class="cfg__d" data-i18n="cfg.custom.badge" set:html={L('cfg.custom.badge', lang)}></span></label>
           </div>
         </div>
-        <div class="cfg__group">
+        <div class="cfg__group cfg__group--storage">
           <div class="cfg__label" data-i18n="cfg.storage" set:html={L('cfg.storage', lang)}></div>
           <div class="cfg__opts">
             <label class="cfg__opt"><input type="radio" name="cfg-storage" value="none" checked><span class="cfg__t" data-i18n="cfg.storage.none" set:html={L('cfg.storage.none', lang)}></span><span class="cfg__d" data-i18n="cfg.delta.0" set:html={L('cfg.delta.0', lang)}></span></label>
@@ -300,13 +340,17 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
   .hero .copy .lead{max-width:none}
   .hero .stage{width:100%}
   .hero .stage img{max-height:460px}
-  /* the two option groups sit side-by-side; bar/notes span the full width */
+  /* single-column stack: the compute picker (two steps + perf matrix) is rich
+     enough to want the full width; storage sits below with its options in a
+     responsive 2-up grid. */
   .hero .cfg{
     display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:18px 26px;
+    grid-template-columns:1fr;
+    gap:20px 26px;
     align-items:start;
   }
+  .hero .cfg__group{margin-bottom:0}
+  .hero .cfg__group--storage .cfg__opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px}
   .hero .cfg__bar,
   .hero .cfg .coolnote,
   .hero .cfg .trust{grid-column:1 / -1}
