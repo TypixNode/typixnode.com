@@ -13,6 +13,10 @@ const compatGroups = [
       { slug: 'arch-linux', name: 'Arch Linux ARM' },
       { slug: 'kali-linux', name: 'Kali Linux' },
       { slug: 'freebsd', name: 'FreeBSD' },
+      { slug: 'batocera', name: 'Batocera' },
+      { slug: 'muos', name: 'muOS' },
+      { slug: 'rocknix', name: 'ROCKNIX' },
+      { slug: 'knulli', name: 'Knulli' },
     ],
   },
   {
@@ -38,7 +42,6 @@ const compatGroups = [
   },
   {
     items: [
-      { slug: 'claude-code', name: 'Claude Code' },
       { slug: 'c', name: 'C' },
       { slug: 'cpp', name: 'C++' },
       { slug: 'python', name: 'Python' },
@@ -64,6 +67,28 @@ const compatGroups = [
       { slug: 'latex', name: 'LaTeX' },
     ],
   },
+  {
+    // AI / vibe coding — local models + terminal agents
+    items: [
+      { slug: 'claude-code', name: 'Claude Code' },
+      { slug: 'ollama', name: 'Ollama' },
+      { slug: 'opencode', name: 'OpenCode' },
+      { slug: 'aider', name: 'Aider' },
+      { slug: 'codex', name: 'Codex' },
+      { slug: 'crush', name: 'Crush' },
+    ],
+  },
+  {
+    // Handheld & maker community favourites
+    items: [
+      { slug: 'openclaw', name: 'OpenClaw' },
+      { slug: 'portmaster', name: 'PortMaster' },
+      { slug: 'pwnagotchi', name: 'Pwnagotchi' },
+      { slug: 'sonic-pi', name: 'Sonic Pi' },
+      { slug: 'pihole', name: 'Pi-hole' },
+      { slug: 'home-assistant', name: 'Home Assistant' },
+    ],
+  },
 ];
 
 // One unified flat "wall" of all logos (no per-group boxes). Chromium is a
@@ -75,6 +100,8 @@ const _emu = compatGroups[1].items as CItem[];
 const _engines = compatGroups[2].items as CItem[];
 const _devAll = compatGroups[3].items as CItem[];
 const _media = compatGroups[4].items as CItem[];
+const _ai = compatGroups[5].items as CItem[];
+const _fun = compatGroups[6].items as CItem[];
 
 const _langSlugs = ['c', 'cpp', 'python', 'lua', 'go', 'nodejs', 'rust', 'openjdk', 'dotnet'];
 const _langs = _devAll.filter((i) => _langSlugs.includes(i.slug));
@@ -82,7 +109,7 @@ const _tools = _devAll.filter((i) => !_langSlugs.includes(i.slug) && i.slug !== 
 const _chromium = _devAll.find((i) => i.slug === 'chromium');
 const _web: CItem[] = [...(_chromium ? [_chromium] : []), ..._media];
 
-const compatItems: CItem[] = [..._os, ..._emu, ..._engines, ..._langs, ..._tools, ..._web];
+const compatItems: CItem[] = [..._os, ..._emu, ..._engines, ..._langs, ..._tools, ..._ai, ..._fun, ..._web];
 ---
 <section id="compat"><div class="wrap">
   <div class="head">
@@ -110,17 +137,17 @@ const compatItems: CItem[] = [..._os, ..._emu, ..._engines, ..._langs, ..._tools
   /* One unified flat wall of all logos, in a single glass panel. */
   .compat-items{list-style:none;margin:0;padding:0}
   .compat-items--flat{
-    display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));
-    gap:26px 14px;
-    border:1px solid var(--line2);border-radius:18px;padding:28px 22px;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));
+    gap:18px 8px;
+    border:1px solid var(--line2);border-radius:18px;padding:26px 20px;
     background:linear-gradient(180deg,color-mix(in srgb,var(--glass) 84%,transparent),color-mix(in srgb,var(--glass) 58%,transparent));
     box-shadow:inset 0 1px 0 rgba(255,255,255,.045)}
   /* Fixed-height cell with the icon+label unit centered both ways, so every
      tile reads as a tidy centered pair (no top-hugging dead space). */
   .compat-items li{
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-    min-height:104px;text-align:center;
-    font-size:.76rem;line-height:1.2;color:var(--soft);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
+    min-height:92px;text-align:center;
+    font-size:.74rem;line-height:1.2;color:var(--soft);
     overflow-wrap:anywhere}
   .compat-items li>span:last-child{
     display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
@@ -146,6 +173,6 @@ const compatItems: CItem[] = [..._os, ..._emu, ..._engines, ..._langs, ..._tools
     font-size:.74rem;color:var(--soft2);line-height:1.5}
 
   @media(max-width:520px){
-    .compat-items--flat{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 10px}
+    .compat-items--flat{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 6px}
   }
 </style>
