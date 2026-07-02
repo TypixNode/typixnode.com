@@ -15,6 +15,12 @@ const homeLinks: NavLink[] = [
   { href: 'https://github.com/TypixNode', key: 'nav.open', label: 'Open' },
 ];
 const { links = homeLinks, buyHref = '/typixdeck', buyAdd, showBuy = true } = Astro.props;
+const langOpts: [string, string][] = [
+  ['en', 'English'], ['zh', '简体中文'], ['zh-Hant', '繁體中文'], ['ja', '日本語'],
+  ['de', 'Deutsch'], ['fr', 'Français'], ['es', 'Español'], ['pt', 'Português'],
+  ['ko', '한국어'], ['it', 'Italiano'],
+];
+const curOpts: string[] = ['USD', 'EUR', 'GBP', 'CNY', 'JPY'];
 ---
 <nav><div class="nav">
   <a class="brand" href="/">
@@ -27,8 +33,8 @@ const { links = homeLinks, buyHref = '/typixdeck', buyAdd, showBuy = true } = As
   <span class="sp"></span>
   <div class="ctrls">
     <button class="ctrl themebtn" aria-label="Toggle theme"><span class="ti">☾</span></button>
-    <span class="selwrap lang"><select id="langsel" aria-label="Language"><option value="en">English</option><option value="zh">简体中文</option><option value="zh-Hant">繁體中文</option><option value="ja">日本語</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option><option value="ko">한국어</option><option value="it">Italiano</option></select></span>
-    <span class="selwrap cur"><select id="cursel" aria-label="Currency"><option>USD</option><option>EUR</option><option>GBP</option><option>CNY</option><option>JPY</option></select></span>
+    <span class="selwrap lang"><select class="js-langsel" id="langsel" aria-label="Language">{langOpts.map(([v, l]) => <option value={v}>{l}</option>)}</select></span>
+    <span class="selwrap cur"><select class="js-cursel" id="cursel" aria-label="Currency">{curOpts.map((c) => <option>{c}</option>)}</select></span>
     <button class="ctrl cartbtn" aria-label="Cart">🛍<span class="cc">0</span></button>
     {showBuy && (buyAdd
       ? <button class="btn btn--fill navbuy" data-add={buyAdd} data-i18n="nav.buy" set:html={L('nav.buy', lang)}></button>
@@ -38,4 +44,8 @@ const { links = homeLinks, buyHref = '/typixdeck', buyAdd, showBuy = true } = As
 </div></nav>
 <div class="mobnav" id="mobnav">
   {links.map((l) => <a href={l.href} data-i18n={l.key} set:html={L(l.key, lang)}></a>)}
+  <div class="mrow">
+    <span class="selwrap lang"><select class="js-langsel" aria-label="Language">{langOpts.map(([v, l]) => <option value={v}>{l}</option>)}</select></span>
+    <span class="selwrap cur"><select class="js-cursel" aria-label="Currency">{curOpts.map((c) => <option>{c}</option>)}</select></span>
+  </div>
 </div>

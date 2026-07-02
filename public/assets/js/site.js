@@ -3506,7 +3506,7 @@
     document.querySelectorAll("[data-i18n-ph]").forEach(function (el) {
       el.setAttribute("placeholder", L(el.dataset.i18nPh, lang));
     });
-    var ls = document.getElementById("langsel"); if (ls) ls.value = lang;
+    document.querySelectorAll(".js-langsel").forEach(function (ls) { ls.value = lang; });
     renderCart();
     if (window.__cfgUpdate) window.__cfgUpdate();
   }
@@ -3518,7 +3518,7 @@
     document.querySelectorAll("[data-usd]").forEach(function (el) {
       el.textContent = money(parseFloat(el.dataset.usd), cur);
     });
-    var cs = document.getElementById("cursel"); if (cs) cs.value = cur;
+    document.querySelectorAll(".js-cursel").forEach(function (cs) { cs.value = cur; });
     renderCart();
     if (window.__cfgUpdate) window.__cfgUpdate();
   }
@@ -3723,15 +3723,19 @@
       if (window.__cfgUpdate) window.__cfgUpdate();
     }).catch(function () {});
 
-    var ls = document.getElementById("langsel");
-    if (ls) ls.addEventListener("change", function () {
-      lang = ls.value;
-      setCookie("tnx-lang", lang); // server reads this on next navigation/refresh
-      set("tnx-lang", lang);       // keep localStorage in sync for legacy paths
-      applyI18n(); applyCurrency();
+    // Language selectors live in both the top bar (desktop) and the mobile menu.
+    // Bind by class and let applyI18n() keep every instance in sync.
+    document.querySelectorAll(".js-langsel").forEach(function (ls) {
+      ls.addEventListener("change", function () {
+        lang = ls.value;
+        setCookie("tnx-lang", lang); // server reads this on next navigation/refresh
+        set("tnx-lang", lang);       // keep localStorage in sync for legacy paths
+        applyI18n(); applyCurrency();
+      });
     });
-    var cs = document.getElementById("cursel");
-    if (cs) cs.addEventListener("change", function () { cur = cs.value; set("tnx-cur", cur); applyCurrency(); });
+    document.querySelectorAll(".js-cursel").forEach(function (cs) {
+      cs.addEventListener("change", function () { cur = cs.value; set("tnx-cur", cur); applyCurrency(); });
+    });
 
     document.querySelectorAll(".themebtn").forEach(function (b) {
       b.addEventListener("click", function () { applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"); });
