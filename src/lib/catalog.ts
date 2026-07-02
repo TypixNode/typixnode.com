@@ -10,6 +10,29 @@ export interface Product {
   name: { en: string; zh: string; ja: string };
   /** Image path under /public (used for Stripe line-item images). */
   img: string;
+  /** Limited-time sale price in USD (whole dollars). null = no promo. */
+  promoUsd?: number | null;
+  /** ISO 8601 datetime the promo ends. null = no expiry (still needs promoUsd). */
+  promoEnds?: string | null;
+}
+
+/** The active sale price for a product, or null when there is no live promo.
+ *  Active = promoUsd is a positive amount below the regular price AND the promo
+ *  has not expired. This is the single rule used everywhere (checkout + API). */
+export function activePromoUsd(p: Product, now: number = Date.now()): number | null {
+  if (p.promoUsd == null) return null;
+  const promo = Number(p.promoUsd);
+  if (!Number.isFinite(promo) || promo <= 0 || promo >= p.usd) return null;
+  if (p.promoEnds) {
+    const t = Date.parse(p.promoEnds);
+    if (Number.isFinite(t) && t <= now) return null; // expired
+  }
+  return Math.floor(promo);
+}
+
+/** Effective unit price (whole USD): the sale price if a promo is live, else base. */
+export function effectiveUsd(p: Product, now: number = Date.now()): number {
+  return activePromoUsd(p, now) ?? p.usd;
 }
 
 // This object is the SEED + safety fallback; the live catalogue is in D1
@@ -242,7 +265,7 @@ export async function loadCatalog(db: D1Database | undefined): Promise<Record<st
   try {
     const rs = await db
       .prepare(
-        `SELECT sku, name_en, name_zh, name_ja, usd, img FROM products WHERE active = 1 ORDER BY sort`
+        `SELECT sku, name_en, name_zh, name_ja, usd, img, promo_usd, promo_ends FROM products WHERE active = 1 ORDER BY sort`
       )
       .all();
     const rows = (rs?.results ?? []) as any[];
@@ -254,6 +277,8 @@ export async function loadCatalog(db: D1Database | undefined): Promise<Record<st
         usd: Number(r.usd) || 0,
         name: { en: r.name_en, zh: r.name_zh, ja: r.name_ja },
         img: r.img ?? '',
+        promoUsd: r.promo_usd == null ? null : Number(r.promo_usd),
+        promoEnds: r.promo_ends ?? null,
       };
     }
     _catalogCache = { at: now, map };
@@ -327,7 +352,8 @@ export function resolveCartWith(
   catalog: Record<string, Product>,
   lines: unknown,
   locale: Locale = 'en',
-  options: OptionsMap = OPTIONS_SEED
+  options: OptionsMap = OPTIONS_SEED,
+  now: number = Date.now()
 ): ResolvedLine[] {
   if (!Array.isArray(lines)) return [];
   const out: ResolvedLine[] = [];
@@ -339,9 +365,13 @@ export function resolveCartWith(
     const p = catalog[id];
     if (!p) continue;
 
+    // Promo (limited-time sale) applies ONLY to the product's base price; option
+    // deltas are never discounted. Effective price is authoritative for money.
+    const baseUsd = effectiveUsd(p, now);
+
     const groups = options[id];
     if (groups) {
-      // Configured product: base (products.usd) + option deltas (DB-driven).
+      // Configured product: base (products.usd, promo-adjusted) + option deltas.
       // Use a clean base name (strip a "(body only)"-style suffix) so the
       // composed name reads "TypixDeck · CM5 · … · M.2 SSD …".
       const fullName = p.name[locale] ?? p.name.en;
@@ -351,7 +381,7 @@ export function resolveCartWith(
         resolveConfigured(
           id,
           baseName,
-          p.usd,
+          baseUsd,
           groups,
           opts && typeof opts === 'object' ? opts : undefined,
           qty,
@@ -365,8 +395,8 @@ export function resolveCartWith(
       id,
       name: p.name[locale] ?? p.name.en,
       qty,
-      unitPriceUsd: p.usd,
-      unitAmount: p.usd * 100,
+      unitPriceUsd: baseUsd,
+      unitAmount: baseUsd * 100,
     });
   }
   return out;

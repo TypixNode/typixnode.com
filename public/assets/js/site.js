@@ -51,7 +51,7 @@
   // Base price for typixdeck comes from the catalogue (DB-driven via /api/products),
   // falling back to the seed PRODUCTS price.
   function typixdeckBase() {
-    return (PRODUCTS.typixdeck && typeof PRODUCTS.typixdeck.usd === "number") ? PRODUCTS.typixdeck.usd : 119;
+    return baseUsdOf("typixdeck") || 119;
   }
   // Localized label for an option value: prefer a DB-provided label map, else the i18n key.
   function optLabel(val) {
@@ -84,7 +84,7 @@
       Object.keys(TYPIXDECK_OPTIONS).forEach(function (g) { sum += TYPIXDECK_OPTIONS[g].values[o[g]].delta; });
       return sum;
     }
-    return PRODUCTS[item.id] ? PRODUCTS[item.id].usd : 0;
+    return baseUsdOf(item.id);
   }
   // Display name for a cart line.
   function lineName(item) {
@@ -119,7 +119,26 @@
     function update() {
       var o = readConfig();
       var price = lineUsd({ id: "typixdeck", options: o });
-      var pe = root.querySelector("#cfgPrice"); if (pe) pe.textContent = money(price, cur);
+      var pe = root.querySelector("#cfgPrice");
+      if (pe) {
+        var pr = activePromo("typixdeck");
+        if (pr) {
+          // Same option deltas, but priced off the regular base -> the "was" total.
+          var deltas = price - baseUsdOf("typixdeck");
+          var regular = ((PRODUCTS.typixdeck && typeof PRODUCTS.typixdeck.usd === "number") ? PRODUCTS.typixdeck.usd : 119) + deltas;
+          pe.innerHTML = "";
+          var w = document.createElement("s"); w.className = "pr-was"; w.textContent = money(regular, cur);
+          var n = document.createElement("span"); n.className = "pr-now"; n.textContent = money(price, cur);
+          var b = document.createElement("span"); b.className = "pr-badge"; b.textContent = L("promo.badge", lang);
+          pe.appendChild(w); pe.appendChild(document.createTextNode(" ")); pe.appendChild(n); pe.appendChild(b);
+          pe.setAttribute("title", promoTitle(pr));
+          pe.classList.add("has-promo");
+        } else {
+          pe.textContent = money(price, cur);
+          pe.classList.remove("has-promo");
+          pe.removeAttribute("title");
+        }
+      }
       // Advisory note: show the note of any selected option value that has one.
       var note = root.querySelector("#cfgNote");
       if (note) {
@@ -172,6 +191,41 @@
     return c.sym + s;
   }
 
+  /* ---------- promo (limited-time sale) ---------- */
+  // Active sale for a SKU, or null. Mirrors catalog.ts activePromoUsd: the promo
+  // price must be a positive amount below the regular price and not expired.
+  function activePromo(sku) {
+    var p = PRODUCTS[sku];
+    if (!p || !p.promo) return null;
+    var promo = Number(p.promo.usd), base = Number(p.usd);
+    if (!(promo > 0) || !(promo < base)) return null;
+    if (p.promo.ends) {
+      var t = Date.parse(p.promo.ends);
+      if (isFinite(t) && t <= Date.now()) return null; // expired
+    }
+    return { usd: promo, base: base, ends: p.promo.ends || null };
+  }
+  // Effective base price for a SKU: sale price if a promo is live, else regular.
+  function baseUsdOf(sku) {
+    var p = PRODUCTS[sku];
+    if (!p || typeof p.usd !== "number") return 0;
+    var pr = activePromo(sku);
+    return pr ? pr.usd : p.usd;
+  }
+  // Hover tooltip for a promoted price: localized badge + deadline.
+  function promoTitle(pr) {
+    var s = L("promo.badge", lang);
+    if (pr.ends) {
+      var d = new Date(pr.ends);
+      if (!isNaN(d.getTime())) {
+        var loc = lang === "zh" ? "zh-CN" : lang === "ja" ? "ja-JP" : "en-US";
+        s += " · " + L("promo.until", lang) + " " +
+          d.toLocaleString(loc, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+      }
+    }
+    return s;
+  }
+
   /* ---------- i18n ---------- */
   var I18N = {
     en: {
@@ -204,6 +258,7 @@
       "pg.kicker": "The catalogue",
       "pg.sub": "Compact open hardware · open-source · shipped worldwide",
       "pg.from": "from ",
+      "promo.badge": "Sale", "promo.until": "Ends",
       "pg.configure": "Configure ›",
       "pg.sec.compute": "Computers",
       "pg.sec.kb": "Keyboards",
@@ -436,6 +491,7 @@
       "pg.kicker": "产品目录",
       "pg.sub": "紧凑开源硬件 · 开源 · 全球发货",
       "pg.from": "起 ",
+      "promo.badge": "限时优惠", "promo.until": "截止",
       "pg.configure": "去配置 ›",
       "pg.sec.compute": "电脑",
       "pg.sec.kb": "键盘",
@@ -667,6 +723,7 @@
       "pg.kicker": "カタログ",
       "pg.sub": "コンパクトなオープンハードウェア · オープンソース · 世界中へ発送",
       "pg.from": "より ",
+      "promo.badge": "セール", "promo.until": "終了",
       "pg.configure": "構成する ›",
       "pg.sec.compute": "コンピュータ",
       "pg.sec.kb": "キーボード",
@@ -908,6 +965,7 @@
       "pg.kicker": "產品型錄",
       "pg.sub": "精巧的開源硬體 · 開源 · 銷往全球",
       "pg.from": "起 ",
+      "promo.badge": "限時優惠", "promo.until": "截止",
       "pg.configure": "去設定 ›",
       "pg.sec.compute": "電腦",
       "pg.sec.kb": "鍵盤",
@@ -1277,6 +1335,7 @@
       "pg.kicker": "Der Katalog",
       "pg.sub": "Kompakte Open Hardware · Open Source · weltweiter Versand",
       "pg.from": "ab ",
+      "promo.badge": "Angebot", "promo.until": "Endet",
       "pg.configure": "Konfigurieren ›",
       "pg.sec.compute": "Computer",
       "pg.sec.kb": "Tastaturen",
@@ -1646,6 +1705,7 @@
       "pg.kicker": "Le catalogue",
       "pg.sub": "Open hardware compact · open-source · expédié dans le monde entier",
       "pg.from": "à partir de ",
+      "promo.badge": "Promo", "promo.until": "Fin",
       "pg.configure": "Configurer ›",
       "pg.sec.compute": "Ordinateurs",
       "pg.sec.kb": "Claviers",
@@ -2015,6 +2075,7 @@
       "pg.kicker": "El catálogo",
       "pg.sub": "Hardware abierto y compacto · open-source · envío a todo el mundo",
       "pg.from": "desde ",
+      "promo.badge": "Oferta", "promo.until": "Termina",
       "pg.configure": "Configurar ›",
       "pg.sec.compute": "Computadoras",
       "pg.sec.kb": "Teclados",
@@ -2384,6 +2445,7 @@
       "pg.kicker": "O catálogo",
       "pg.sub": "Open hardware compacto · open-source · enviado para todo o mundo",
       "pg.from": "a partir de ",
+      "promo.badge": "Promoção", "promo.until": "Termina",
       "pg.configure": "Configurar ›",
       "pg.sec.compute": "Computadores",
       "pg.sec.kb": "Teclados",
@@ -2753,6 +2815,7 @@
       "pg.kicker": "카탈로그",
       "pg.sub": "컴팩트 오픈 하드웨어 · 오픈소스 · 전 세계 배송",
       "pg.from": "부터 ",
+      "promo.badge": "특가", "promo.until": "종료",
       "pg.configure": "구성하기 ›",
       "pg.sec.compute": "컴퓨터",
       "pg.sec.kb": "키보드",
@@ -3122,6 +3185,7 @@
       "pg.kicker": "Il catalogo",
       "pg.sub": "Hardware compatto e open · open-source · spedito in tutto il mondo",
       "pg.from": "da ",
+      "promo.badge": "Offerta", "promo.until": "Fine",
       "pg.configure": "Configura ›",
       "pg.sec.compute": "Computer",
       "pg.sec.kb": "Tastiere",
@@ -3516,11 +3580,44 @@
   /* ---------- apply currency ---------- */
   function applyCurrency() {
     document.querySelectorAll("[data-usd]").forEach(function (el) {
+      // SKU-bound prices go through the promo-aware renderer; plain prices
+      // (option deltas, pins) are just currency-converted.
+      if (el.hasAttribute("data-sku")) { renderPrice(el); return; }
       el.textContent = money(parseFloat(el.dataset.usd), cur);
     });
     document.querySelectorAll(".js-cursel").forEach(function (cs) { cs.value = cur; });
     renderCart();
     if (window.__cfgUpdate) window.__cfgUpdate();
+  }
+  // Render a SKU-bound price: strikethrough regular + sale price + badge when a
+  // promo is live (deadline on hover), otherwise the plain price. Prefers the DB
+  // price so dashboard edits and sales both reflect here.
+  function renderPrice(el) {
+    var sku = el.dataset.sku;
+    var base = (PRODUCTS[sku] && typeof PRODUCTS[sku].usd === "number")
+      ? PRODUCTS[sku].usd : (parseFloat(el.dataset.usd) || 0);
+    var pr = activePromo(sku);
+    var from = el.querySelector(".from"); // preserve a "from" prefix if present
+    el.innerHTML = "";
+    if (from) el.appendChild(from);
+    if (pr) {
+      var was = document.createElement("s");
+      was.className = "pr-was"; was.textContent = money(base, cur);
+      var now = document.createElement("span");
+      now.className = "pr-now"; now.textContent = money(pr.usd, cur);
+      var badge = document.createElement("span");
+      badge.className = "pr-badge"; badge.textContent = L("promo.badge", lang);
+      el.appendChild(was);
+      el.appendChild(document.createTextNode(" "));
+      el.appendChild(now);
+      el.appendChild(badge);
+      el.classList.add("has-promo");
+      el.setAttribute("title", promoTitle(pr));
+    } else {
+      el.appendChild(document.createTextNode(money(base, cur)));
+      el.classList.remove("has-promo");
+      el.removeAttribute("title");
+    }
   }
 
   /* ---------- theme ---------- */
@@ -3703,7 +3800,7 @@
       Object.keys(prods).forEach(function (sku) {
         var p = prods[sku];
         if (p && typeof p.usd === "number") {
-          PRODUCTS[sku] = { img: p.img, usd: p.usd, name: p.name };
+          PRODUCTS[sku] = { img: p.img, usd: p.usd, name: p.name, promo: p.promo || null };
         }
       });
       // options: override TYPIXDECK_OPTIONS with DB-driven deltas/labels/notes so
@@ -3726,9 +3823,11 @@
         });
       }
       // Re-apply any price displays bound to known SKUs + refresh cart & configurator.
+      // renderPrice reflects both DB price edits and live promos (sale + deadline).
       document.querySelectorAll("[data-usd][data-sku]").forEach(function (el) {
-        var sku = el.dataset.sku, prod = PRODUCTS[sku];
-        if (prod) { el.dataset.usd = prod.usd; el.textContent = money(prod.usd, cur); }
+        var prod = PRODUCTS[el.dataset.sku];
+        if (prod && typeof prod.usd === "number") el.dataset.usd = prod.usd;
+        renderPrice(el);
       });
       renderCart();
       if (window.__cfgUpdate) window.__cfgUpdate();
