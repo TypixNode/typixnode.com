@@ -77,7 +77,7 @@ const sections = [
               ? <p class="ds" data-i18n={p.ds} set:html={L(p.ds, lang)}></p>
               : <p class="ds">{p.name}</p>}
             <div class="foot">
-              <span class="pr" data-usd={p.usd}>
+              <span class="pr" data-sku={p.id} data-usd={p.usd}>
                 {p.fromPrice && <span class="from" data-i18n="pg.from" set:html={L('pg.from', lang)}></span>}${p.usd}
               </span>
               {p.fromPrice

@@ -240,6 +240,16 @@ a.shead .hint,.shead a.hint{text-decoration:none}
 .pc .ds{color:var(--soft);font-size:.88rem;margin:6px 0 14px;flex:1}
 .pc .foot{display:flex;justify-content:space-between;align-items:center}
 .pc .pr{font-family:var(--d);font-weight:800;font-size:1.22rem}
+/* limited-time sale: struck-through regular price + highlighted sale price + badge.
+   Deadline is shown via the element's title (hover). Works in grid cards, product
+   hero (.price b) and the TypixDeck configurator total (#cfgPrice). */
+.has-promo{cursor:help}
+.pr-was{color:var(--soft2);text-decoration:line-through;font-weight:600;opacity:.8;margin-right:.12em}
+.pr-now{color:var(--coral)}
+.pr-badge{display:inline-block;margin-left:.4em;padding:.1em .5em;border-radius:999px;
+  font-family:var(--b);font-weight:800;font-size:.58em;letter-spacing:.04em;text-transform:uppercase;
+  vertical-align:middle;white-space:nowrap;color:#fff;background:linear-gradient(135deg,var(--coral),var(--amber));
+  box-shadow:0 3px 10px #ff7a5940}
 .pc .add{width:38px;height:38px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:1.15rem;transition:.2s;cursor:pointer;flex:none}
 .pc .add:hover{background:var(--emerald);color:#fff;transform:rotate(90deg)}
 
