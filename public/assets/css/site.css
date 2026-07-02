@@ -352,7 +352,7 @@ a.shead .hint,.shead a.hint{text-decoration:none}
 /* footer */
 footer{padding:24px 0 60px}
 .ft{background:var(--glass);border:1px solid var(--glassb);border-radius:26px;padding:34px 30px;backdrop-filter:blur(12px)}
-.ft .top{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}
+.ft .top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:34px 40px;align-items:start}
 .ft img{height:30px;margin-bottom:12px}
 .ft .logo-dk{display:none}
 [data-theme="dark"] .ft .logo-lt{display:none}[data-theme="dark"] .ft .logo-dk{display:block}
@@ -362,6 +362,8 @@ footer{padding:24px 0 60px}
 .ft .bot{border-top:1px solid var(--line);margin-top:26px;padding-top:18px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;color:var(--soft2);font-size:.84rem}
 .ft .bot .botlinks{display:flex;gap:18px;flex-wrap:wrap}
 .ft .bot .botlinks a:hover{color:var(--ink)}
+@media(max-width:820px){.ft .top{grid-template-columns:repeat(3,1fr)}.ft .brandcol{grid-column:1/-1}}
+@media(max-width:480px){.ft .top{grid-template-columns:1fr 1fr}}
 
 /* footer newsletter */
 .nlcard{display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap;
@@ -562,12 +564,27 @@ footer{padding:24px 0 60px}
   .v3d-zoom{right:10px}.v3d-zbtn{width:36px;height:36px}}
 
 /* ============ Discord community entry points ============ */
-/* Style 1 — nav Discord button (brand blurple pill) */
+/* Style 1 — nav Discord button. Base = solid blurple "pill"; per-variant
+   overrides below let it be a subtle icon/ghost/soft entry (see ?dc= switch). */
 .dc-nav{display:inline-flex;align-items:center;gap:7px;font-family:var(--b);font-weight:700;font-size:.9rem;
   height:38px;padding:0 16px;border-radius:30px;border:0;cursor:pointer;background:var(--dc);color:#fff;
   text-decoration:none;transition:.2s;white-space:nowrap}
 .dc-nav:hover{background:var(--dc2);transform:translateY(-1px);box-shadow:0 8px 22px #5865f24d}
 .dc-nav svg{width:19px;height:19px;flex:none}
+.dc-nav__ic{display:inline-flex;align-items:center}
+
+/* Variant: icon — subtle glass icon button, matches .themebtn/.cartbtn */
+.dc-nav--icon{width:38px;padding:0;gap:0;justify-content:center;background:var(--glass);
+  border:1px solid var(--glassb);backdrop-filter:blur(10px);color:var(--ink)}
+.dc-nav--icon .dc-nav__t{display:none}
+.dc-nav--icon:hover{background:var(--dc);border-color:var(--dc);color:#fff}
+/* Variant: ghost — blurple outline, fills on hover */
+.dc-nav--ghost{background:transparent;border:1.5px solid var(--dc);color:var(--dc)}
+.dc-nav--ghost:hover{background:var(--dc);color:#fff}
+/* Variant: soft — low-saturation blurple tint */
+.dc-nav--soft{background:color-mix(in srgb,var(--dc) 14%,transparent);
+  border:1px solid color-mix(in srgb,var(--dc) 34%,transparent);color:var(--dc)}
+.dc-nav--soft:hover{background:var(--dc);border-color:var(--dc);color:#fff}
 
 /* Style 4 — community CTA band */
 .dc-cta-sec{padding:20px 0 10px}
