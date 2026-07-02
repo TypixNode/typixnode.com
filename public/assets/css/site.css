@@ -3,6 +3,7 @@
   --bg:#eef3f1; --ink:#0c1a16; --soft:#4a5f58; --soft2:#7c8e87;
   --line:#0c1a1614; --line2:#0c1a1626;
   --teal:#0fb88f; --emerald:#0a8f6e; --aqua:#5fd0c0; --amber:#ffb347; --coral:#ff7a59;
+  --dc:#5865F2; --dc2:#4752c4; /* Discord brand blurple */
   /* lower alpha = see-through to the base + a soft (not painted-white) rim */
   --glass:#ffffff80; --glass2:#ffffffbf; --glassb:#ffffff40;
   --photobg:#ffffff;
@@ -542,3 +543,46 @@ footer{padding:24px 0 60px}
 .v3d-zbtn:active{color:#fff;background:linear-gradient(135deg,var(--teal),var(--emerald))}
 @media(max-width:560px){.v3d-hint{display:none}.v3d-info{top:10px;left:10px}
   .v3d-zoom{right:10px}.v3d-zbtn{width:36px;height:36px}}
+
+/* ============ Discord community entry points ============ */
+/* Style 1 — nav Discord button (brand blurple pill) */
+.dc-nav{display:inline-flex;align-items:center;gap:7px;font-family:var(--b);font-weight:700;font-size:.9rem;
+  height:38px;padding:0 16px;border-radius:30px;border:0;cursor:pointer;background:var(--dc);color:#fff;
+  text-decoration:none;transition:.2s;white-space:nowrap}
+.dc-nav:hover{background:var(--dc2);transform:translateY(-1px);box-shadow:0 8px 22px #5865f24d}
+.dc-nav svg{width:19px;height:19px;flex:none}
+
+/* Style 4 — community CTA band */
+.dc-cta-sec{padding:20px 0 10px}
+.dc-cta{display:flex;gap:24px;align-items:center;flex-wrap:wrap;padding:30px 34px;border-radius:22px;
+  background:linear-gradient(135deg,#5865F2,#8b5cf6);color:#fff;box-shadow:0 18px 48px #5865f238}
+.dc-cta .badge{width:66px;height:66px;border-radius:18px;background:#ffffff26;display:grid;place-items:center;flex:none}
+.dc-cta .badge svg{width:38px;height:38px}
+.dc-cta .txt{flex:1;min-width:240px}
+.dc-cta .txt h3{font-family:var(--d);font-weight:800;font-size:1.5rem;margin:0 0 6px}
+.dc-cta .txt p{margin:0;opacity:.9;font-size:.96rem;line-height:1.55;max-width:60ch}
+.dc-cta .go{background:#fff;color:var(--dc2);font-family:var(--b);font-weight:800;font-size:.98rem;
+  padding:14px 26px;border-radius:40px;text-decoration:none;white-space:nowrap;transition:.2s}
+.dc-cta .go:hover{transform:translateY(-2px);box-shadow:0 12px 28px #0003}
+
+/* Style 9 — community bento grid */
+.dc-hub{padding:8px 0 4px}
+.dc-hub-head{margin:0 0 18px}
+.dc-hub-head h3{font-family:var(--d);font-weight:800;font-size:1.5rem;margin:0 0 4px}
+.dc-hub-head p{color:var(--soft);margin:0;font-size:.95rem}
+.dc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.dc-gcard{position:relative;display:flex;flex-direction:column;gap:6px;padding:22px;border-radius:18px;
+  border:1px solid var(--line2);background:var(--glass);backdrop-filter:blur(8px);text-decoration:none;color:var(--ink);transition:.2s}
+.dc-gcard:hover{transform:translateY(-3px);box-shadow:0 16px 38px #0c1a1616;border-color:var(--dc)}
+.dc-gcard .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:#fff;margin-bottom:8px}
+.dc-gcard .ic svg{width:23px;height:23px}
+.dc-gcard .ic.dc{background:var(--dc)} .dc-gcard .ic.gh{background:#24292f} .dc-gcard .ic.x{background:#000}
+.dc-gcard b{font-family:var(--d);font-size:1.05rem}
+.dc-gcard .d{color:var(--soft);font-size:.86rem;line-height:1.45}
+.dc-gcard .arr{position:absolute;top:20px;right:20px;color:var(--soft2);opacity:0;transform:translate(-4px,4px);transition:.2s}
+.dc-gcard:hover .arr{opacity:1;transform:none;color:var(--dc)}
+/* nav pill: hide in the top bar on mobile (it lives in the burger menu instead) */
+@media(max-width:760px){.nav .dc-nav{display:none}}
+/* mobile-menu Discord button spans the row */
+.mobnav .dc-nav{justify-content:center;margin-top:10px}
+@media(max-width:560px){.dc-cta{padding:24px}.dc-cta .txt h3{font-size:1.28rem}}
