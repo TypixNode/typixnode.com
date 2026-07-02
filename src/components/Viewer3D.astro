@@ -32,6 +32,11 @@ const { src = '/assets/models/typixdeck.glb', height = '62vh' } = Astro.props;
     </div>
   </div>
 
+  <div class="v3d-zoom">
+    <button class="v3d-zbtn" data-act="zoomin" aria-label="Zoom in" title="Zoom in">+</button>
+    <button class="v3d-zbtn" data-act="zoomout" aria-label="Zoom out" title="Zoom out">−</button>
+  </div>
+
   <div class="v3d-hint" data-i18n="v3d.hint" set:html={L('v3d.hint', lang)}></div>
 </figure>
 
@@ -85,6 +90,9 @@ const { src = '/assets/models/typixdeck.glb', height = '62vh' } = Astro.props;
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
     controls.enablePan = false;
+    // Wheel/pinch must NOT zoom — the page scroll (and its explode link) owns the
+    // wheel. Zoom is driven only by the on-screen +/- buttons (map-style).
+    controls.enableZoom = false;
     controls.minDistance = 0;
     controls.maxDistance = Infinity;
 
@@ -293,6 +301,21 @@ const { src = '/assets/models/typixdeck.glb', height = '62vh' } = Astro.props;
       spinBtn.classList.toggle('v3d-on', spinning);
       spinBtn.setAttribute('aria-pressed', String(spinning));
     });
+
+    // ---- map-style zoom buttons (dolly the camera along its view axis) ----
+    function zoomBy(factor: number) {
+      const offset = camera.position.clone().sub(controls.target);
+      const dist = Math.max(
+        controls.minDistance,
+        Math.min(controls.maxDistance, offset.length() * factor)
+      );
+      offset.setLength(dist);
+      camera.position.copy(controls.target).add(offset);
+      camera.updateProjectionMatrix();
+      controls.update();
+    }
+    fig.querySelector('[data-act="zoomin"]')?.addEventListener('click', () => zoomBy(0.8));
+    fig.querySelector('[data-act="zoomout"]')?.addEventListener('click', () => zoomBy(1.25));
 
     const ro = new ResizeObserver(() => { sizeToStage(); });
     ro.observe(stage);
