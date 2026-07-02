@@ -202,6 +202,34 @@
       var opts2 = root.querySelector(".cfg__opts--compute");
       if (step2) step2.style.display = multi ? "" : "none";
       if (opts2) opts2.style.display = multi ? "" : "none";
+      // --- internal-PCB preview sync ---
+      // Each combo is a full board-aligned render, so we just swap the single
+      // preview image to match the chosen family + storage type. Available
+      // renders: body, cm0_tf, cm4_tf, cm4_ssd, cm5_tf, cm5_ssd. Missing combos
+      // fall back to the closest render (cm0 only ships a TF render).
+      var st = o.storage || "none";
+      var stKind = (st === "ssd128" || st === "ssd256") ? "ssd"
+                 : (st === "tf64" || st === "tf128") ? "tf" : "";
+      var pcb = "body";
+      if (fam === "cm4") pcb = stKind === "ssd" ? "cm4_ssd" : "cm4_tf";
+      else if (fam === "cm5") pcb = stKind === "ssd" ? "cm5_ssd" : "cm5_tf";
+      else if (fam === "cm0") pcb = "cm0_tf";
+      var pcbImg = root.querySelector("#pcbMain");
+      if (pcbImg) {
+        var wantSrc = "/assets/pcb/" + pcb + ".png";
+        if (pcbImg.getAttribute("src") !== wantSrc) pcbImg.setAttribute("src", wantSrc);
+      }
+      // --- live "your build" summary sync (left rail) ---
+      var SUM_MEM = { body: "\u2014", cm0: "512MB", cm4_2g: "2GB \u00b7 WiFi", cm4: "4GB \u00b7 WiFi", cm5: "4GB \u00b7 WiFi", cm5_8g: "8GB \u00b7 WiFi", cm5_16g: "16GB \u00b7 WiFi", custom: "\u2014" };
+      var SUM_STO = { none: "\u2014", tf64: "TF 64GB", ssd128: "M.2 SSD 128GB", tf128: "TF 128GB", ssd256: "M.2 SSD 256GB" };
+      var sumPlat = root.querySelector("#cfgSumPlat");
+      var sumMem = root.querySelector("#cfgSumMem");
+      var sumSto = root.querySelector("#cfgSumSto");
+      var sumPrice = root.querySelector("#cfgSumPrice");
+      if (sumPlat) sumPlat.textContent = L("cfg.plat." + fam, lang);
+      if (sumMem) sumMem.textContent = SUM_MEM[o.compute] || "\u2014";
+      if (sumSto) sumSto.textContent = isCustom ? L("cfg.custom.badge", lang) : (SUM_STO[o.storage] || "\u2014");
+      if (sumPrice) sumPrice.textContent = isCustom ? L("cfg.custom.badge", lang) : money(price, cur);
     }
     root.addEventListener("change", function (e) { if (e.target && e.target.name && e.target.name.indexOf("cfg-") === 0) update(); });
     // Step-1 platform buttons: pick the family's default (cheapest) variant if
@@ -331,7 +359,15 @@
       "cfg.plat.cm5": "CM5",
       "cfg.plat.cm5.d": "Quad A76 @2.4GHz · 4–16GB — near-desktop PC",
       "cfg.plat.custom": "Custom",
-      "cfg.plat.custom.d": "Other RAM/storage/bulk — we'll email a quote",      "cfg.custom.sending": "Sending…",
+      "cfg.plat.custom.d": "Other RAM/storage/bulk — we'll email a quote",
+      "cfg.pcb.cap": "Illustration — real modules shown in their slots",
+      "cfg.sum.title": "Your TypixDeck",
+      "cfg.sum.plat": "Platform",
+      "cfg.sum.mem": "Memory",
+      "cfg.sum.sto": "Storage",
+      "cfg.sum.disp": "Display",
+      "cfg.sum.disp.v": "3.5″ touch",
+      "cfg.custom.sending": "Sending…",
       "cfg.custom.ok": "Thanks — we've received your request and will reply by email.",
       "cfg.custom.invalid": "Please enter a valid email address.",
       "cfg.custom.err": "Something went wrong. Please try again.",
