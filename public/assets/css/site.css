@@ -214,7 +214,25 @@ a.shead .hint,.shead a.hint{text-decoration:none}
 .grid .pc{height:100%}
 
 /* ---------- TypixDeck configurator ---------- */
-.cfg{margin:22px 0 8px;max-width:560px}
+/* Configurator: spans the full hero width and splits into a left rail
+   (preview + live build summary) and a right main column (the option steps). */
+.cfg{margin:22px 0 8px;grid-column:1/-1;display:grid;grid-template-columns:.92fr 1.08fr;gap:28px;align-items:start}
+@media(max-width:900px){.cfg{grid-template-columns:1fr;gap:22px}}
+.cfg__rail{position:sticky;top:24px;display:flex;flex-direction:column;gap:16px}
+@media(max-width:900px){.cfg__rail{position:static}}
+.cfg__main{min-width:0}
+.cfg__sum{border:1px solid var(--glassb);background:var(--glass);border-radius:18px;padding:18px 20px;backdrop-filter:blur(12px)}
+.cfg__sum-h{font-family:var(--d);font-weight:800;font-size:.98rem;color:var(--soft);letter-spacing:.02em}
+.cfg__sum-price{font-family:var(--d);font-weight:800;font-size:1.6rem;margin:2px 0 12px;min-height:1.6em}
+.cfg__sum-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--glassb);font-size:.85rem}
+.cfg__sum-k{color:var(--soft2)}.cfg__sum-v{font-weight:600;text-align:right}
+.cfg__pcb{margin:0}
+/* Glass panel matching .stage instead of a flat black box; a soft teal glow
+   centres the eye and a drop-shadow floats the (transparent) board render. */
+.cfg__pcb-stack{position:relative;display:flex;justify-content:center;align-items:center;width:100%;padding:18px 14px;border-radius:18px;overflow:hidden;border:1px solid var(--glassb);background:var(--glass);backdrop-filter:blur(16px);box-shadow:0 20px 60px #0a8f6e1f}
+.cfg__pcb-stack::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 54% at 50% 42%,#0fb88f26,transparent 70%);pointer-events:none}
+.cfg__pcb-l{position:relative;display:block;width:auto;max-width:100%;height:auto;max-height:500px;margin:0 auto;filter:drop-shadow(0 16px 30px rgba(0,0,0,.45))}
+.cfg__pcb-cap{margin-top:8px;font-size:.72rem;color:var(--soft2);text-align:center;letter-spacing:.01em}
 .cfg__group{margin-bottom:18px}
 .cfg__label{font-family:var(--d);font-weight:700;font-size:.95rem;margin-bottom:10px}
 .cfg__opts{display:flex;flex-direction:column;gap:8px}

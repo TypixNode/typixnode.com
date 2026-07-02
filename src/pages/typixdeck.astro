@@ -57,6 +57,27 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
       </div>
 
       <div class="cfg rise d3" data-cfg="typixdeck">
+        {/* Left rail: internal-PCB preview + a live "your build" summary. The
+            preview uses full-device renders (one per compute+storage combo)
+            that are board-aligned to the same pixel frame, so switching options
+            swaps the whole image with the carrier board staying put. */}
+        <div class="cfg__rail">
+          <div class="cfg__pcb" aria-hidden="true">
+            <div class="cfg__pcb-stack">
+              <img class="cfg__pcb-l" id="pcbMain" src="/assets/pcb/body.png" alt="TypixDeck internal PCB" width="1205" height="1757" decoding="async">
+            </div>
+            <div class="cfg__pcb-cap" data-i18n="cfg.pcb.cap" set:html={L('cfg.pcb.cap', lang)}></div>
+          </div>
+          <div class="cfg__sum" aria-live="polite">
+            <h4 class="cfg__sum-h" data-i18n="cfg.sum.title" set:html={L('cfg.sum.title', lang)}></h4>
+            <div class="cfg__sum-price"><b id="cfgSumPrice"></b></div>
+            <div class="cfg__sum-row"><span class="cfg__sum-k" data-i18n="cfg.sum.plat" set:html={L('cfg.sum.plat', lang)}></span><span class="cfg__sum-v" id="cfgSumPlat"></span></div>
+            <div class="cfg__sum-row"><span class="cfg__sum-k" data-i18n="cfg.sum.mem" set:html={L('cfg.sum.mem', lang)}></span><span class="cfg__sum-v" id="cfgSumMem"></span></div>
+            <div class="cfg__sum-row"><span class="cfg__sum-k" data-i18n="cfg.sum.sto" set:html={L('cfg.sum.sto', lang)}></span><span class="cfg__sum-v" id="cfgSumSto"></span></div>
+            <div class="cfg__sum-row"><span class="cfg__sum-k" data-i18n="cfg.sum.disp" set:html={L('cfg.sum.disp', lang)}></span><span class="cfg__sum-v" data-i18n="cfg.sum.disp.v" set:html={L('cfg.sum.disp.v', lang)}></span></div>
+          </div>
+        </div>
+        <div class="cfg__main">
         <div class="cfg__group cfg__group--compute">
           <div class="cfg__label" data-i18n="cfg.compute" set:html={L('cfg.compute', lang)}></div>
 
@@ -135,6 +156,7 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
         </form>
         <p class="coolnote rise d3" data-i18n="deck.coolnote" set:html={L('deck.coolnote', lang)}></p>
         <div class="trust rise d4"><span class="d"></span> <span data-i18n="deck.trust" set:html={L('deck.trust', lang)}></span></div>
+        </div>
       </div>
     </div>
 
@@ -340,23 +362,23 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
   .hero .copy .lead{max-width:none}
   .hero .stage{width:100%}
   .hero .stage img{max-height:460px}
-  /* single-column stack: the compute picker (two steps + perf matrix) is rich
-     enough to want the full width; storage sits below with its options in a
-     responsive 2-up grid. */
+  /* two-column split: a sticky left rail (internal-PCB preview + live build
+     summary) beside the right main column that holds the option steps, total
+     bar and notes. Collapses to a single stack on narrow screens. */
   .hero .cfg{
     display:grid;
-    grid-template-columns:1fr;
-    gap:20px 26px;
+    grid-template-columns:.92fr 1.08fr;
+    gap:28px;
     align-items:start;
   }
+  .hero .cfg__rail{position:sticky;top:24px;display:flex;flex-direction:column;gap:16px;min-width:0}
+  .hero .cfg__main{display:flex;flex-direction:column;gap:20px;min-width:0}
   .hero .cfg__group{margin-bottom:0}
   .hero .cfg__group--storage .cfg__opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px}
-  .hero .cfg__bar,
-  .hero .cfg .coolnote,
-  .hero .cfg .trust{grid-column:1 / -1}
   /* stats strip below as a spec bar — needs breathing room from the card above */
   .strip{margin-top:36px}
-  @media(max-width:720px){
-    .hero .cfg{grid-template-columns:1fr}
+  @media(max-width:900px){
+    .hero .cfg{grid-template-columns:1fr;gap:22px}
+    .hero .cfg__rail{position:static}
   }
 </style>
