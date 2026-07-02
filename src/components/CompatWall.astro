@@ -149,9 +149,14 @@ const compatItems: CItem[] = [..._os, ..._emu, ..._engines, ..._langs, ..._tools
     min-height:92px;text-align:center;
     font-size:.74rem;line-height:1.2;color:var(--soft);
     overflow-wrap:anywhere}
+  /* Reserve two lines for every label so the icon+label unit is always the
+     same height — otherwise a wrapping title (e.g. "Raspberry Pi OS",
+     "Arch Linux ARM") makes the centered block taller and shifts its icon up
+     out of alignment with the single-line tiles. */
   .compat-items li>span:last-child{
     display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
-    overflow:hidden;width:100%;text-align:center}
+    overflow:hidden;width:100%;text-align:center;
+    min-height:2.4em}
   /* Own class (not `.ci`, which is the cart-item grid in site.css) so the
      global 3-column grid can't leak in and skew the icon. */
   .compat-items .cwi{
