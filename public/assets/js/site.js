@@ -186,11 +186,48 @@
           else dEl.textContent = v.delta ? ("+" + money(v.delta, cur)) : L("cfg.delta.0", lang);
         }
       });
+      // --- two-step platform picker sync ---
+      // Derive the family (CM0/CM4/CM5/body/custom) from the chosen compute value
+      // so step-1 highlight and step-2 visible rows both track it.
+      var fam = computeFamily(o.compute);
+      root.querySelectorAll(".cfg__plat").forEach(function (b) {
+        b.classList.toggle("on", b.getAttribute("data-plat") === fam);
+      });
+      // Step 2 only matters when the family has more than one variant (CM4/CM5).
+      var multi = fam === "cm4" || fam === "cm5";
+      root.querySelectorAll(".cfg__opts--compute .cfg__opt").forEach(function (lab) {
+        lab.style.display = lab.getAttribute("data-fam") === fam ? "" : "none";
+      });
+      var step2 = root.querySelector(".cfg__step--2");
+      var opts2 = root.querySelector(".cfg__opts--compute");
+      if (step2) step2.style.display = multi ? "" : "none";
+      if (opts2) opts2.style.display = multi ? "" : "none";
     }
     root.addEventListener("change", function (e) { if (e.target && e.target.name && e.target.name.indexOf("cfg-") === 0) update(); });
+    // Step-1 platform buttons: pick the family's default (cheapest) variant if
+    // none in that family is selected yet, then refresh. Keeps an already-chosen
+    // variant (e.g. CM5 16GB) when re-clicking the same platform.
+    root.querySelectorAll(".cfg__plat").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var famSel = b.getAttribute("data-plat");
+        var chk = root.querySelector('.cfg__opt[data-fam="' + famSel + '"] input:checked');
+        if (!chk) {
+          var first = root.querySelector('.cfg__opt[data-fam="' + famSel + '"] input');
+          if (first) first.checked = true;
+        }
+        update();
+      });
+    });
     // expose so applyI18n/applyCurrency can refresh labels & price
     window.__cfgUpdate = update;
     update();
+  }
+  // Map a compute value key to its platform family.
+  function computeFamily(v) {
+    if (v === "body" || v === "cm0" || v === "custom") return v;
+    if (v && v.indexOf("cm4") === 0) return "cm4";
+    if (v && v.indexOf("cm5") === 0) return "cm5";
+    return "body";
   }
 
   /* ---------- currency ---------- */
@@ -283,7 +320,18 @@
       "cfg.custom.email": "Your email",
       "cfg.custom.req": "What would you like? (RAM, storage, case, quantity…)",
       "cfg.custom.send": "Send request →",
-      "cfg.custom.sending": "Sending…",
+      "cfg.step1": "Step 1 · Choose your platform",
+      "cfg.step2": "Step 2 · Choose the configuration",
+      "cfg.plat.body": "Body only",
+      "cfg.plat.body.d": "Enclosure only — add your own module",
+      "cfg.plat.cm0": "CM0",
+      "cfg.plat.cm0.d": "Quad A53 @1GHz · 512MB — entry, ultra-low-power",
+      "cfg.plat.cm4": "CM4",
+      "cfg.plat.cm4.d": "Quad A72 @1.5GHz · 2–8GB — everyday desktop",
+      "cfg.plat.cm5": "CM5",
+      "cfg.plat.cm5.d": "Quad A76 @2.4GHz · 4–16GB — near-desktop PC",
+      "cfg.plat.custom": "Custom",
+      "cfg.plat.custom.d": "Other RAM/storage/bulk — we'll email a quote",      "cfg.custom.sending": "Sending…",
       "cfg.custom.ok": "Thanks — we've received your request and will reply by email.",
       "cfg.custom.invalid": "Please enter a valid email address.",
       "cfg.custom.err": "Something went wrong. Please try again.",
@@ -535,7 +583,18 @@
       "cfg.custom.email": "你的邮箱",
       "cfg.custom.req": "你想要什么?(内存、存储、外壳、数量…)",
       "cfg.custom.send": "发送需求 →",
-      "cfg.custom.sending": "发送中…",
+      "cfg.step1": "第一步 · 选择平台",
+      "cfg.step2": "第二步 · 选择具体配置",
+      "cfg.plat.body": "仅机身",
+      "cfg.plat.body.d": "仅外壳 — 需自备计算模块",
+      "cfg.plat.cm0": "CM0",
+      "cfg.plat.cm0.d": "四核 A53 @1GHz · 512MB — 入门 · 超低功耗",
+      "cfg.plat.cm4": "CM4",
+      "cfg.plat.cm4.d": "四核 A72 @1.5GHz · 2–8GB — 日常桌面",
+      "cfg.plat.cm5": "CM5",
+      "cfg.plat.cm5.d": "四核 A76 @2.4GHz · 4–16GB — 接近入门 PC",
+      "cfg.plat.custom": "定制",
+      "cfg.plat.custom.d": "其他内存/存储/批量 — 邮件报价",      "cfg.custom.sending": "发送中…",
       "cfg.custom.ok": "谢谢——我们已收到你的需求,会通过邮件回复你。",
       "cfg.custom.invalid": "请输入有效的电子邮箱。",
       "cfg.custom.err": "出错了,请重试。",
@@ -786,7 +845,18 @@
       "cfg.custom.email": "メールアドレス",
       "cfg.custom.req": "ご希望は？（RAM・ストレージ・ケース・数量…）",
       "cfg.custom.send": "リクエストを送信 →",
-      "cfg.custom.sending": "送信中…",
+      "cfg.step1": "ステップ1 · プラットフォームを選択",
+      "cfg.step2": "ステップ2 · 構成を選択",
+      "cfg.plat.body": "本体のみ",
+      "cfg.plat.body.d": "筐体のみ — モジュールは別途",
+      "cfg.plat.cm0": "CM0",
+      "cfg.plat.cm0.d": "クアッド A53 @1GHz · 512MB — 入門・超低消費電力",
+      "cfg.plat.cm4": "CM4",
+      "cfg.plat.cm4.d": "クアッド A72 @1.5GHz · 2–8GB — 日常デスクトップ",
+      "cfg.plat.cm5": "CM5",
+      "cfg.plat.cm5.d": "クアッド A76 @2.4GHz · 4–16GB — デスクトップPC級",
+      "cfg.plat.custom": "カスタム",
+      "cfg.plat.custom.d": "他の RAM/ストレージ/大量注文 — 見積もりをメール",      "cfg.custom.sending": "送信中…",
       "cfg.custom.ok": "ありがとうございます——リクエストを受け取りました。メールでご返信します。",
       "cfg.custom.invalid": "有効なメールアドレスを入力してください。",
       "cfg.custom.err": "エラーが発生しました。もう一度お試しください。",
@@ -1047,7 +1117,18 @@
       "cfg.custom.email": "你的電子郵件",
       "cfg.custom.req": "你想要什麼?(記憶體、儲存、外殼、數量…)",
       "cfg.custom.send": "傳送需求 →",
-      "cfg.custom.sending": "傳送中…",
+      "cfg.step1": "第一步 · 選擇平台",
+      "cfg.step2": "第二步 · 選擇詳細配置",
+      "cfg.plat.body": "僅機身",
+      "cfg.plat.body.d": "僅外殼 — 需自備運算模組",
+      "cfg.plat.cm0": "CM0",
+      "cfg.plat.cm0.d": "四核 A53 @1GHz · 512MB — 入門 · 超低功耗",
+      "cfg.plat.cm4": "CM4",
+      "cfg.plat.cm4.d": "四核 A72 @1.5GHz · 2–8GB — 日常桌面",
+      "cfg.plat.cm5": "CM5",
+      "cfg.plat.cm5.d": "四核 A76 @2.4GHz · 4–16GB — 接近入門 PC",
+      "cfg.plat.custom": "客製",
+      "cfg.plat.custom.d": "其他記憶體/儲存/大量 — 郵件報價",      "cfg.custom.sending": "傳送中…",
       "cfg.custom.ok": "謝謝——我們已收到你的需求,將以電子郵件回覆你。",
       "cfg.custom.invalid": "請輸入有效的電子郵件。",
       "cfg.custom.err": "發生錯誤,請再試一次。",
@@ -1436,7 +1517,18 @@
       "cfg.custom.email": "Deine E-Mail-Adresse",
       "cfg.custom.req": "Was möchtest du? (RAM, Speicher, Gehäuse, Menge …)",
       "cfg.custom.send": "Anfrage senden →",
-      "cfg.custom.sending": "Wird gesendet…",
+      "cfg.step1": "Schritt 1 · Plattform wählen",
+      "cfg.step2": "Schritt 2 · Konfiguration wählen",
+      "cfg.plat.body": "Nur Gehäuse",
+      "cfg.plat.body.d": "Nur Gehäuse — eigenes Modul einsetzen",
+      "cfg.plat.cm0": "CM0",
+      "cfg.plat.cm0.d": "Quad A53 @1GHz · 512MB — Einstieg, sehr sparsam",
+      "cfg.plat.cm4": "CM4",
+      "cfg.plat.cm4.d": "Quad A72 @1.5GHz · 2–8GB — Alltags-Desktop",
+      "cfg.plat.cm5": "CM5",
+      "cfg.plat.cm5.d": "Quad A76 @2.4GHz · 4–16GB — fast Desktop-PC",
+      "cfg.plat.custom": "Individuell",
+      "cfg.plat.custom.d": "Anderer RAM/Speicher/Menge — Angebot per E-Mail",      "cfg.custom.sending": "Wird gesendet…",
       "cfg.custom.ok": "Danke – wir haben deine Anfrage erhalten und melden uns per E-Mail.",
       "cfg.custom.invalid": "Bitte gib eine gültige E-Mail-Adresse ein.",
       "cfg.custom.err": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
@@ -1825,7 +1917,18 @@
       "cfg.custom.email": "Votre adresse e-mail",
       "cfg.custom.req": "Que souhaitez-vous ? (RAM, stockage, boîtier, quantité…)",
       "cfg.custom.send": "Envoyer la demande →",
-      "cfg.custom.sending": "Envoi…",
+      "cfg.step1": "Étape 1 · Choisir la plateforme",
+      "cfg.step2": "Étape 2 · Choisir la configuration",
+      "cfg.plat.body": "Boîtier seul",
+      "cfg.plat.body.d": "Boîtier seul — ajoutez votre module",
+      "cfg.plat.cm0": "CM0",
+      "cfg.plat.cm0.d": "Quad A53 @1GHz · 512 Mo — entrée de gamme, très basse consommation",
+      "cfg.plat.cm4": "CM4",
+      "cfg.plat.cm4.d": "Quad A72 @1.5GHz · 2–8 Go — bureau au quotidien",
+      "cfg.plat.cm5": "CM5",
+      "cfg.plat.cm5.d": "Quad A76 @2.4GHz · 4–16 Go — quasi PC de bureau",
+      "cfg.plat.custom": "Sur mesure",
+      "cfg.plat.custom.d": "Autre RAM/stockage/quantité — devis par e-mail",      "cfg.custom.sending": "Envoi…",
       "cfg.custom.ok": "Merci — nous avons bien reçu votre demande et vous répondrons par e-mail.",
       "cfg.custom.invalid": "Veuillez saisir une adresse e-mail valide.",
       "cfg.custom.err": "Une erreur est survenue. Veuillez réessayer.",
@@ -2214,7 +2317,18 @@
       "cfg.custom.email": "Tu correo electrónico",
       "cfg.custom.req": "¿Qué te gustaría? (RAM, almacenamiento, carcasa, cantidad…)",
       "cfg.custom.send": "Enviar solicitud →",
-      "cfg.custom.sending": "Enviando…",
+      "cfg.step1": "Paso 1 · Elige la plataforma",
+      "cfg.step2": "Paso 2 · Elige la configuración",
+      "cfg.plat.body": "Solo carcasa",
+      "cfg.plat.body.d": "Solo carcasa — añade tu propio módulo",
+      "cfg.plat.cm0": "CM0",
+      "cfg.plat.cm0.d": "Quad A53 @1GHz · 512MB — básico, muy bajo consumo",
+      "cfg.plat.cm4": "CM4",
+      "cfg.plat.cm4.d": "Quad A72 @1.5GHz · 2–8GB — escritorio diario",
+      "cfg.plat.cm5": "CM5",
+      "cfg.plat.cm5.d": "Quad A76 @2.4GHz · 4–16GB — casi un PC de escritorio",
+      "cfg.plat.custom": "Personalizado",
+      "cfg.plat.custom.d": "Otra RAM/almacenamiento/volumen — presupuesto por correo",      "cfg.custom.sending": "Enviando…",
       "cfg.custom.ok": "Gracias: hemos recibido tu solicitud y te responderemos por correo.",
       "cfg.custom.invalid": "Introduce un correo electrónico válido.",
       "cfg.custom.err": "Algo salió mal. Inténtalo de nuevo.",
@@ -2603,7 +2717,18 @@
       "cfg.custom.email": "O seu e-mail",
       "cfg.custom.req": "O que gostaria? (RAM, armazenamento, caixa, quantidade…)",
       "cfg.custom.send": "Enviar pedido →",
-      "cfg.custom.sending": "A enviar…",
+      "cfg.step1": "Passo 1 · Escolha a plataforma",
+      "cfg.step2": "Passo 2 · Escolha a configuração",
+      "cfg.plat.body": "Somente estrutura",
+      "cfg.plat.body.d": "Somente carcaça — use seu próprio módulo",
+      "cfg.plat.cm0": "CM0",
+      "cfg.plat.cm0.d": "Quad A53 @1GHz · 512MB — entrada, consumo muito baixo",
+      "cfg.plat.cm4": "CM4",
+      "cfg.plat.cm4.d": "Quad A72 @1.5GHz · 2–8GB — desktop do dia a dia",
+      "cfg.plat.cm5": "CM5",
+      "cfg.plat.cm5.d": "Quad A76 @2.4GHz · 4–16GB — quase um PC de mesa",
+      "cfg.plat.custom": "Personalizado",
+      "cfg.plat.custom.d": "Outra RAM/armazenamento/volume — orçamento por e-mail",      "cfg.custom.sending": "A enviar…",
       "cfg.custom.ok": "Obrigado — recebemos o seu pedido e responderemos por e-mail.",
       "cfg.custom.invalid": "Introduza um e-mail válido.",
       "cfg.custom.err": "Algo correu mal. Tente novamente.",
@@ -2992,7 +3117,18 @@
       "cfg.custom.email": "이메일 주소",
       "cfg.custom.req": "무엇을 원하시나요? (RAM, 저장장치, 케이스, 수량…)",
       "cfg.custom.send": "요청 보내기 →",
-      "cfg.custom.sending": "보내는 중…",
+      "cfg.step1": "1단계 · 플랫폼 선택",
+      "cfg.step2": "2단계 · 세부 구성 선택",
+      "cfg.plat.body": "본체만",
+      "cfg.plat.body.d": "케이스만 — 모듈은 별도 장착",
+      "cfg.plat.cm0": "CM0",
+      "cfg.plat.cm0.d": "쿼드 A53 @1GHz · 512MB — 입문 · 초저전력",
+      "cfg.plat.cm4": "CM4",
+      "cfg.plat.cm4.d": "쿼드 A72 @1.5GHz · 2–8GB — 일상 데스크톱",
+      "cfg.plat.cm5": "CM5",
+      "cfg.plat.cm5.d": "쿼드 A76 @2.4GHz · 4–16GB — 데스크톱 PC급",
+      "cfg.plat.custom": "맞춤 제작",
+      "cfg.plat.custom.d": "다른 RAM/저장/대량 — 이메일로 견적",      "cfg.custom.sending": "보내는 중…",
       "cfg.custom.ok": "감사합니다 — 요청을 받았으며 이메일로 답변드리겠습니다.",
       "cfg.custom.invalid": "유효한 이메일 주소를 입력해 주세요.",
       "cfg.custom.err": "문제가 발생했습니다. 다시 시도해 주세요.",
@@ -3381,7 +3517,18 @@
       "cfg.custom.email": "La tua email",
       "cfg.custom.req": "Cosa desideri? (RAM, archiviazione, scocca, quantità…)",
       "cfg.custom.send": "Invia richiesta →",
-      "cfg.custom.sending": "Invio…",
+      "cfg.step1": "Passo 1 · Scegli la piattaforma",
+      "cfg.step2": "Passo 2 · Scegli la configurazione",
+      "cfg.plat.body": "Solo telaio",
+      "cfg.plat.body.d": "Solo scocca — aggiungi il tuo modulo",
+      "cfg.plat.cm0": "CM0",
+      "cfg.plat.cm0.d": "Quad A53 @1GHz · 512MB — base, consumo bassissimo",
+      "cfg.plat.cm4": "CM4",
+      "cfg.plat.cm4.d": "Quad A72 @1.5GHz · 2–8GB — desktop quotidiano",
+      "cfg.plat.cm5": "CM5",
+      "cfg.plat.cm5.d": "Quad A76 @2.4GHz · 4–16GB — quasi un PC desktop",
+      "cfg.plat.custom": "Su misura",
+      "cfg.plat.custom.d": "Altra RAM/archiviazione/quantità — preventivo via e-mail",      "cfg.custom.sending": "Invio…",
       "cfg.custom.ok": "Grazie — abbiamo ricevuto la tua richiesta e ti risponderemo via email.",
       "cfg.custom.invalid": "Inserisci un indirizzo email valido.",
       "cfg.custom.err": "Qualcosa è andato storto. Riprova.",
