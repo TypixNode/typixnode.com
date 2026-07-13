@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypixNode — Catalogue No. 3</title>
+<style>
+  /* ============================================================
+     Variant E — "Catalogue" · Teenage-Engineering / 瑞士印刷目录风
+     White paper, one typeface, numbered index, huge product
+     figures, tiny captions. Nothing decorative.
+     ============================================================ */
+  :root{
+    --paper:#fff; --ink:#000; --mut:#8a8a8a; --line:#000; --hair:#e6e6e6;
+    --f:'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 30px}
+  .cap{font-size:11px;letter-spacing:.02em;color:var(--mut);text-transform:uppercase}
+
+  header{border-bottom:1px solid var(--line)}
+  header .wrap{display:flex;align-items:baseline;gap:26px;padding:18px 30px}
+  header .t{font-size:15px;font-weight:700;letter-spacing:-.01em}
+  header nav{display:flex;gap:22px;font-size:13px;color:var(--mut)}
+  header nav a:hover{color:var(--ink)}
+  header .sp{flex:1}
+  header .cart{font-size:13px;border:1px solid var(--ink);padding:7px 16px;border-radius:0}
+  header .cart:hover{background:var(--ink);color:#fff}
+
+  /* masthead */
+  .mast{padding:64px 0 40px;border-bottom:1px solid var(--line)}
+  .mast h1{font-size:clamp(44px,8.4vw,118px);line-height:.95;letter-spacing:-.045em;font-weight:700}
+  .mast .row{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-top:26px;flex-wrap:wrap}
+  .mast p{max-width:44ch;font-size:16px}
+  .mast .no{font-size:12px;color:var(--mut);text-align:right;line-height:1.7}
+
+  /* index — like a catalog table of contents */
+  .index{border-bottom:1px solid var(--line)}
+  .ixrow{display:grid;grid-template-columns:70px 1fr auto auto;gap:24px;align-items:center;padding:0;border-bottom:1px solid var(--hair)}
+  .ixrow:last-child{border-bottom:0}
+  .ixrow>*{padding:20px 0}
+  .ixrow .n{font-size:13px;color:var(--mut);padding-left:0}
+  .ixrow .nm{font-size:clamp(20px,3vw,32px);font-weight:700;letter-spacing:-.02em}
+  .ixrow .ds{font-size:13px;color:var(--mut);text-align:right;max-width:36ch}
+  .ixrow .pr{font-size:15px;font-variant-numeric:tabular-nums;text-align:right;min-width:70px}
+  .ixrow:hover .nm{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}
+  @media(max-width:760px){.ixrow{grid-template-columns:40px 1fr auto}.ixrow .ds{display:none}}
+
+  /* figure pages */
+  .fig{border-bottom:1px solid var(--line)}
+  .fig .grid{display:grid;grid-template-columns:1fr 1fr;min-height:520px}
+  @media(max-width:900px){.fig .grid{grid-template-columns:1fr}}
+  .fig .im{display:flex;align-items:center;justify-content:center;padding:40px;border-right:1px solid var(--hair);background:#fafafa}
+  .fig.alt .grid{direction:rtl}
+  .fig.alt .grid>*{direction:ltr}
+  .fig.alt .im{border-right:0;border-left:1px solid var(--hair)}
+  .fig .tx{padding:44px;display:flex;flex-direction:column;justify-content:center}
+  .fig .no{font-size:12px;color:var(--mut);margin-bottom:14px}
+  .fig h2{font-size:clamp(26px,3.4vw,44px);letter-spacing:-.03em;line-height:1.02;font-weight:700;margin-bottom:16px}
+  .fig p{max-width:46ch;font-size:15.5px}
+  .fig p+p{margin-top:10px}
+  .fig .kv{margin-top:26px;max-width:420px}
+  .fig .kv .r{display:flex;justify-content:space-between;gap:18px;padding:7px 0;border-top:1px solid var(--hair);font-size:13px}
+  .fig .kv .r span:first-child{color:var(--mut)}
+  .fig .kv .r span:last-child{text-align:right;font-variant-numeric:tabular-nums}
+  .fig .buy{margin-top:26px;display:flex;align-items:center;gap:16px}
+  .fig .buy a{border:1px solid var(--ink);padding:11px 24px;font-size:13px}
+  .fig .buy a:hover{background:var(--ink);color:#fff}
+  .fig .buy .p{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+
+  /* wide photo interlude */
+  .plate{border-bottom:1px solid var(--line);background:#fafafa}
+  .plate img{margin:0 auto;max-height:620px;padding:40px 30px 20px}
+  .plate .cap{padding:0 30px 18px;max-width:1240px;margin:0 auto}
+
+  /* accessories strip */
+  .acc{border-bottom:1px solid var(--line)}
+  .acc .grid{display:grid;grid-template-columns:repeat(3,1fr)}
+  @media(max-width:860px){.acc .grid{grid-template-columns:1fr}}
+  .acc .cell{padding:34px;border-right:1px solid var(--hair)}
+  .acc .cell:last-child{border-right:0}
+  @media(max-width:860px){.acc .cell{border-right:0;border-bottom:1px solid var(--hair)}}
+  .acc .cell img{height:210px;object-fit:contain;margin-bottom:20px;mix-blend-mode:multiply}
+  .acc h3{font-size:19px;letter-spacing:-.01em;display:flex;justify-content:space-between;gap:12px}
+  .acc h3 span{font-weight:400;font-variant-numeric:tabular-nums}
+  .acc p{font-size:13px;color:var(--mut);margin-top:6px;max-width:40ch}
+  .acc a.get{display:inline-block;margin-top:16px;font-size:12px;border-bottom:1px solid var(--ink);padding-bottom:2px}
+
+  /* colophon / spec appendix */
+  .colo{border-bottom:1px solid var(--line)}
+  .colo .grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  @media(max-width:800px){.colo .grid{grid-template-columns:1fr}}
+  .colo .cell{padding:40px 44px;border-right:1px solid var(--hair)}
+  .colo .cell:last-child{border-right:0}
+  .colo h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px}
+  .colo .r{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:8px 0;border-top:1px solid var(--hair);font-size:13.5px}
+  .colo .r .k{color:var(--mut)}
+
+  footer{padding:26px 0 60px}
+  footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mut)}
+</style>
+</head>
+<body>
+
+<header><div class="wrap" style="padding-left:0;padding-right:0">
+  <span class="t">TypixNode®</span>
+  <nav><a href="#ix">Index</a><a href="#f1">TypixDeck</a><a href="#acc">Accessories</a><a href="#colo">Specifications</a></nav>
+  <span class="sp"></span>
+  <a class="cart" href="#">Cart (0)</a>
+</div></header>
+
+<section class="mast"><div class="wrap">
+  <h1>Small computers,<br>honestly made.</h1>
+  <div class="row">
+    <p>Catalogue №3 — a palm-sized fanless Linux machine milled from aluminum, a card-sized
+    keyboard, a wearable Macintosh. Everything open, everything repairable, shipped worldwide.</p>
+    <div class="no">Summer 2026<br>typixnode.com<br>github.com/TypixNode</div>
+  </div>
+</div></section>
+
+<section class="index" id="ix"><div class="wrap">
+  <a class="ixrow" href="#f1"><span class="n">01</span><span class="nm">TypixDeck</span><span class="ds">Fanless CNC-aluminum Linux computer, Raspberry Pi CM inside</span><span class="pr">$119</span></a>
+  <a class="ixrow" href="#f2"><span class="n">02</span><span class="nm">BLE Keyboard</span><span class="ds">Card-sized · ZMK · air-mouse · white backlight</span><span class="pr">$39</span></a>
+  <a class="ixrow" href="#acc"><span class="n">03</span><span class="nm">Pico-Mac Nano</span><span class="ds">A 1984 Macintosh for your palm</span><span class="pr">$60</span></a>
+  <a class="ixrow" href="#acc"><span class="n">04</span><span class="nm">DIY Suite</span><span class="ds">Solder-it-yourself snap-dome keyboard kit</span><span class="pr">$9</span></a>
+  <a class="ixrow" href="#acc"><span class="n">05</span><span class="nm">CM0 Adapter</span><span class="ds">Castellated 132-pin CM0→CM4 adapter, CM0 soldered</span><span class="pr">$40</span></a>
+</div></section>
+
+<section class="fig" id="f1">
+  <div class="grid">
+    <div class="im"><img src="/assets/cyberdeck.png" alt="TypixDeck" style="max-height:440px"></div>
+    <div class="tx">
+      <span class="no">Fig. 01 — TypixDeck</span>
+      <h2>The chassis is the heatsink.</h2>
+      <p>One billet of 6061-T6 aluminum, milled into a body that cools a Raspberry Pi compute
+      module at zero decibels. No fan to fill with dust, no vent to whistle, nothing to wear out.</p>
+      <p>Four captive screws open it. The socket takes CM4, CM5 — or the tiny CM0 through our own
+      132-pin adapter — so the computer you buy this year is faster in three, with the same body.</p>
+      <div class="kv">
+        <div class="r"><span>Dimensions</span><span>95 × 62 × 22 mm</span></div>
+        <div class="r"><span>Mass</span><span>280 g</span></div>
+        <div class="r"><span>Noise</span><span>0 dB</span></div>
+        <div class="r"><span>Material</span><span>6061-T6, anodized</span></div>
+      </div>
+      <div class="buy"><a href="#">Configure &amp; order</a><span class="p">$119</span><span class="cap">body kit · CM from +$40</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="plate">
+  <img src="/assets/cyberdeck-internals.png" alt="TypixDeck internal layout">
+  <p class="cap">Plate I — internal arrangement. M.2 NVMe slot, compute-module socket, 40-pin GPIO. Schematics and STEP files published on GitHub.</p>
+</div>
+
+<section class="fig alt" id="f2">
+  <div class="grid">
+    <div class="im"><img src="/assets/keyboard.jpg" alt="BLE keyboard" style="max-height:420px"></div>
+    <div class="tx">
+      <span class="no">Fig. 02 — BLE Keyboard</span>
+      <h2>A whole keyboard, the size of a card.</h2>
+      <p>Full QWERTY on an nRF52840 running open ZMK firmware. Bluetooth and USB-C, white
+      backlight, and a 6-axis gyro that turns the whole board into an air-mouse.</p>
+      <p>Prefer soldering? The DIY Suite is the same keyboard as a $9 kit of silicone domes,
+      snap domes and bare boards.</p>
+      <div class="kv">
+        <div class="r"><span>Controller</span><span>nRF52840</span></div>
+        <div class="r"><span>Firmware</span><span>ZMK (open source)</span></div>
+        <div class="r"><span>Link</span><span>BLE · USB-C</span></div>
+        <div class="r"><span>Extra</span><span>6-axis air-mouse</span></div>
+      </div>
+      <div class="buy"><a href="#">Add to cart</a><span class="p">$39</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="acc" id="acc"><div class="grid">
+  <div class="cell">
+    <img src="/assets/picomac.jpg" alt="Pico-Mac Nano">
+    <h3>03 — Pico-Mac Nano <span>$60</span></h3>
+    <p>A working 1984 Macintosh, shrunk to your palm. System 3 boots in seconds.</p>
+    <a class="get" href="#">Add to cart</a>
+  </div>
+  <div class="cell">
+    <img src="/assets/diysuite.jpg" alt="DIY Suite">
+    <h3>04 — DIY Suite <span>$9</span></h3>
+    <p>Silicone-dome + snap-dome keyboard kit. A soldering iron and an afternoon.</p>
+    <a class="get" href="#">Add to cart</a>
+  </div>
+  <div class="cell">
+    <img src="/assets/cm0-adapter.png" alt="CM0 adapter">
+    <h3>05 — CM0 Adapter <span>$40</span></h3>
+    <p>CM0 soldered on a castellated 132-pin CM0→CM4 adapter. Bare board, $10.</p>
+    <a class="get" href="#">Add to cart</a>
+  </div>
+</div></section>
+
+<section class="colo" id="colo"><div class="grid">
+  <div class="cell">
+    <h2>Appendix A — TypixDeck specification</h2>
+    <div class="r"><span class="k">Compute</span><span>Raspberry Pi CM4 / CM5 (socketed); CM0 via castellated 132-pin adapter</span></div>
+    <div class="r"><span class="k">Chassis</span><span>CNC-milled 6061-T6 aluminum, bead-blasted &amp; anodized</span></div>
+    <div class="r"><span class="k">Cooling</span><span>Passive, 0 dB; CM5 adds optional 4-pin PWM fan header</span></div>
+    <div class="r"><span class="k">Storage</span><span>microSD + internal M.2 NVMe slot</span></div>
+    <div class="r"><span class="k">Ports</span><span>HDMI, USB-C (PD), 2× USB-A, Gigabit Ethernet, 40-pin GPIO</span></div>
+    <div class="r"><span class="k">Wireless</span><span>Wi-Fi 5 / Bluetooth 5.0 (CM-dependent)</span></div>
+    <div class="r"><span class="k">Dimensions</span><span>95 × 62 × 22 mm · 280 g</span></div>
+  </div>
+  <div class="cell">
+    <h2>Colophon</h2>
+    <div class="r"><span class="k">Design files</span><span>Full STEP, schematics, firmware — github.com/TypixNode</span></div>
+    <div class="r"><span class="k">Manufacture</span><span>Machined and assembled in small batches</span></div>
+    <div class="r"><span class="k">Repair</span><span>Four captive screws, no glue, public teardown guide, spare parts stocked</span></div>
+    <div class="r"><span class="k">Shipping</span><span>Worldwide, free; est. dispatch Q3 2026</span></div>
+    <div class="r"><span class="k">Refunds</span><span>Full refund any time before your unit ships</span></div>
+    <div class="r"><span class="k">Set in</span><span>Helvetica Neue. No stock photos, no renders you can't download.</span></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <span>© 2026 TypixNode — compact open hardware</span>
+  <span>Catalogue №3 · printed on the web · typixnode.com</span>
+</div></footer>
+
+</body>
+</html>
