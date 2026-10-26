@@ -157,7 +157,7 @@ header.prod{padding:54px 0 24px}
 .pin.p2 .k .pr{justify-content:flex-end}
 .pin .k .pr-badge{font-size:.5em}
 /* Sits at the top-right corner, above the pins, so it's never clipped or hidden. */
-.savebadge{position:absolute;z-index:3;top:-12px;right:24px;background:linear-gradient(135deg,var(--teal),var(--amber));color:#04241b;font-family:var(--d);font-weight:800;font-size:.9rem;padding:9px 15px;border-radius:16px;transform:rotate(5deg);box-shadow:0 12px 30px #0fb88f55;text-align:center;line-height:1.05}
+.savebadge{position:absolute;z-index:3;top:-12px;right:24px;background:linear-gradient(135deg,var(--teal),var(--amber));color:#04241b;font-family:var(--d);font-weight:800;font-size:.86rem;padding:8px 14px;border-radius:16px;transform:rotate(5deg);box-shadow:0 12px 30px #0fb88f55;text-align:center;line-height:1.1;max-width:11.5rem}
 .savebadge.r{right:24px;top:-12px;transform:rotate(5deg)}
 /* save.sub is now empty on most pages; collapse the empty <small> so it adds no height. */
 .savebadge small{display:block;font-weight:600;font-size:.62rem;opacity:.85}
@@ -270,6 +270,10 @@ a.shead .hint,.shead a.hint{text-decoration:none}
 .pc .ds{color:var(--soft);font-size:.88rem;margin:6px 0 14px;flex:1}
 .pc .foot{display:flex;justify-content:space-between;align-items:center}
 .pc .pr{font-family:var(--d);font-weight:800;font-size:1.22rem}
+.pr--tba{font-size:.95em;font-weight:700;letter-spacing:.02em;color:var(--soft)}
+.pin .k .pr--tba{font-size:.72em}
+.cfg__price .pr--tba{font-size:1.15rem;color:var(--ink)}
+.cfg__d:empty,.cfg__plat-p:empty{display:none}
 /* limited-time sale: struck-through regular price + highlighted sale price + badge.
    Deadline is shown via the element's title (hover). Works in grid cards, product
    hero (.price b) and the TypixDeck configurator total (#cfgPrice). */
@@ -427,10 +431,14 @@ footer{padding:24px 0 60px}
 .cart .cf .sub{display:flex;justify-content:space-between;align-items:baseline}
 .cart .cf .sub b{font-family:var(--d);font-weight:800;font-size:1.4rem}
 .cart .cf .note{color:var(--soft2);font-size:.78rem;text-align:center}
-.cart .cf .checkout-btn{width:100%;padding:14px 18px;border:0;border-radius:14px;background:var(--emerald,#0bbf7a);color:#fff;font-weight:700;font-size:1rem;cursor:pointer;transition:filter .2s,opacity .2s}
-.cart .cf .checkout-btn:hover{filter:brightness(1.06)}
-.cart .cf .checkout-btn:disabled{opacity:.55;cursor:default}
-.cart .cf .paypal-wrap{min-height:0}
+.cart .cf .cart-cta{display:grid;gap:10px}
+.cart .cf .cart-ks{width:100%;padding:13px 16px;border:0;border-radius:14px;background:var(--ink);color:var(--bg);font-weight:700;font-size:.92rem;display:flex;align-items:center;justify-content:center;gap:10px;cursor:default;opacity:.88;line-height:1.25;text-align:center}
+.cart .cf .cart-ks__soon{flex:none;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#05ce78;color:#04140f;padding:4px 8px;border-radius:999px}
+.cart .cf .cart-or{text-align:center;color:var(--soft2);font-size:.78rem}
+.cart .cf .cart-dc{width:100%;padding:13px 16px;border-radius:14px;background:#5865F2;color:#fff;font-weight:700;font-size:.92rem;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;line-height:1.25;text-align:center;transition:filter .2s,transform .18s}
+.cart .cf .cart-dc:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.cart .cf .cart-dc__ic{display:grid;place-items:center;flex:none}
+.cart .cf .cart-dc svg{width:18px;height:18px;display:block}
 .cart .cf .cart-note{color:var(--soft2);font-size:.78rem;text-align:center}
 .cart .cf .cart-err{display:none;color:#e2574c;font-size:.82rem;text-align:center}
 

@@ -37,13 +37,14 @@ export function effectiveUsd(p: Product, now: number = Date.now()): number {
 
 // This object is the SEED + safety fallback; the live catalogue is in D1
 // (products table, migration 0005). TypixDeck is a single configurable SKU:
-// $119 bare body + the chosen `compute` option delta (cm0 +$40, cm4 +$95,
-// cm5 +$105; reference no-eMMC "Lite" 4GB street prices, Jun 2026) plus an
-// optional `storage` delta. The deltas live in OPTIONS_SEED / product_option_values.
+// $186 bare body (~¥1,250 @ live ~6.72) + the chosen `compute` option delta (cm0 +$40,
+// cm4 +$107, cm5 +$119; Wi-Fi Lite, Digi-Key China VAT-inclusive ≈ official × 1.13,
+// Aug 2026) plus an optional `storage` delta. The deltas live in OPTIONS_SEED
+// / product_option_values.
 export const PRODUCTS: Record<string, Product> = {
   typixdeck: {
     id: 'typixdeck',
-    usd: 119,
+    usd: 186,
     name: {
       en: 'TypixDeck (body only)',
       zh: 'TypixDeck（仅机身）',
@@ -52,8 +53,8 @@ export const PRODUCTS: Record<string, Product> = {
     img: '/assets/cyberdeck.png',
   },
   // CM4 / CM5 / CM0 are NOT separate SKUs. TypixDeck is one configurable product:
-  // base $119 + the chosen `compute` option delta (cm0 +$40, cm4 +$95, cm5 +$105)
-  // — see OPTIONS_SEED below and product_option_values (migration 0006).
+  // base $186 (~¥1,250 @ live ~6.72) + the chosen `compute` option delta (cm0 +$40, cm4 +$107, cm5 +$119)
+  // — see OPTIONS_SEED below and product_option_values (migration 0006 / 0011).
   keyboard: {
     id: 'keyboard',
     usd: 39,
@@ -122,7 +123,7 @@ export type Locale = 'en' | 'zh' | 'ja';
 // ---------------------------------------------------------------------------
 // TypixDeck configurator (single SKU + options).
 //
-// `typixdeck` is sold as ONE product whose price is the body base ($119) plus
+// `typixdeck` is sold as ONE product whose price is the body base ($186) plus
 // the chosen option deltas. The SERVER is the price authority: resolveCart()
 // re-derives every amount from this table and never trusts client prices.
 // The chosen configuration is snapshotted onto the order line (options[]),
@@ -159,11 +160,11 @@ export const OPTIONS_SEED: OptionsMap = {
       values: {
         body: { delta: 0, label: { en: 'Body only', zh: '仅机身', ja: '本体のみ' } },
         cm0: { delta: 40, label: { en: 'CM0 (soldered CM0→CM4 adapter)', zh: 'CM0（含贴片转接板）', ja: 'CM0（実装済アダプタ）' } },
-        cm4_2g: { delta: 75, label: { en: 'CM4 · 2GB · Wi-Fi · no eMMC', zh: 'CM4 · 2GB · WiFi · 无 eMMC', ja: 'CM4 · 2GB · Wi-Fi · eMMC なし' } },
-        cm4: { delta: 95, label: { en: 'CM4 · 4GB · Wi-Fi · no eMMC', zh: 'CM4 · 4GB · WiFi · 无 eMMC', ja: 'CM4 · 4GB · Wi-Fi · eMMC なし' } },
-        cm5: { delta: 105, label: { en: 'CM5 · 4GB · Wi-Fi · no eMMC', zh: 'CM5 · 4GB · WiFi · 无 eMMC', ja: 'CM5 · 4GB · Wi-Fi · eMMC なし' } },
-        cm5_8g: { delta: 130, label: { en: 'CM5 · 8GB · Wi-Fi · no eMMC', zh: 'CM5 · 8GB · WiFi · 无 eMMC', ja: 'CM5 · 8GB · Wi-Fi · eMMC なし' } },
-        cm5_16g: { delta: 165, label: { en: 'CM5 · 16GB · Wi-Fi · no eMMC', zh: 'CM5 · 16GB · WiFi · 无 eMMC', ja: 'CM5 · 16GB · Wi-Fi · eMMC なし' } },
+        cm4_2g: { delta: 71, label: { en: 'CM4 · 2GB · Wi-Fi · no eMMC', zh: 'CM4 · 2GB · WiFi · 无 eMMC', ja: 'CM4 · 2GB · Wi-Fi · eMMC なし' } },
+        cm4: { delta: 107, label: { en: 'CM4 · 4GB · Wi-Fi · no eMMC', zh: 'CM4 · 4GB · WiFi · 无 eMMC', ja: 'CM4 · 4GB · Wi-Fi · eMMC なし' } },
+        cm5: { delta: 119, label: { en: 'CM5 · 4GB · Wi-Fi · no eMMC', zh: 'CM5 · 4GB · WiFi · 无 eMMC', ja: 'CM5 · 4GB · Wi-Fi · eMMC なし' } },
+        cm5_8g: { delta: 192, label: { en: 'CM5 · 8GB · Wi-Fi · no eMMC', zh: 'CM5 · 8GB · WiFi · 无 eMMC', ja: 'CM5 · 8GB · Wi-Fi · eMMC なし' } },
+        cm5_16g: { delta: 339, label: { en: 'CM5 · 16GB · Wi-Fi · no eMMC', zh: 'CM5 · 16GB · WiFi · 无 eMMC', ja: 'CM5 · 16GB · Wi-Fi · eMMC なし' } },
         // "custom" routes to the custom-order email flow on the site; it is not a
         // real add-to-cart price (delta 0, guarded client-side).
         custom: { delta: 0, label: { en: 'Custom / other', zh: '其他定制', ja: 'カスタム / その他' } },

@@ -16,6 +16,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
       headers: { 'Content-Type': 'application/json' },
     });
 
+  return json({ error: 'Online checkout is paused. Pre-order on Kickstarter soon, or message via Discord.' }, 503);
+
   if (!env?.STRIPE_SECRET_KEY) {
     return json({ error: 'Stripe not configured (STRIPE_SECRET_KEY missing).' }, 500);
   }

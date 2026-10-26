@@ -4,10 +4,10 @@
 
   /* ---------- product catalogue (single source of truth) ---------- */
   var PRODUCTS = {
-    typixdeck: { img: "/assets/cyberdeck.png", usd: 119,
+    typixdeck: { img: "/assets/cyberdeck.png", usd: 186,
       name: { en: "TypixDeck (body only)", zh: "TypixDeck（仅机身）", ja: "TypixDeck（本体のみ）" } },
     /* CM0/CM4/CM5 are NOT separate SKUs — TypixDeck is one configurable product:
-       base 119 + the chosen `compute` option delta (see TYPIXDECK_OPTIONS below). */
+       base 186 (~¥1,250 @ live ~6.72) + the chosen `compute` option delta (see TYPIXDECK_OPTIONS below). */
     "cm0-adapter": { img: "/assets/cm0-adapter.png", usd: 40,
       name: { en: "CM0→CM4 Adapter (CM0 soldered)", zh: "CM0 转 CM4 转接板（已贴片 CM0）", ja: "CM0→CM4 アダプタ（CM0 実装済）" } },
     "cm0-module": { img: "/assets/cm0-module.jpeg", usd: 30,
@@ -28,18 +28,20 @@
      Mirror of TYPIXDECK_OPTIONS in src/lib/catalog.ts. Used ONLY for showing
      live prices in the UI; the SERVER re-derives the real price on checkout
      and never trusts these client values. Keep deltas in sync with catalog.ts. */
-  var TYPIXDECK_BASE = 119;
+  var TYPIXDECK_BASE = 186;
+  function priceTBA(sku) { return sku === "typixdeck"; }
+  function tbaLabel() { return L("deck.price", lang); }
   var TYPIXDECK_OPTIONS = {
     compute: {
       i18n: "cfg.compute", def: "body",
       values: {
         body: { delta: 0, i18n: "cfg.compute.body" },
         cm0: { delta: 40, i18n: "cfg.compute.cm0" },
-        cm4_2g: { delta: 75, i18n: "cfg.compute.cm4_2g" },
-        cm4: { delta: 95, i18n: "cfg.compute.cm4" },
-        cm5: { delta: 105, i18n: "cfg.compute.cm5" },
-        cm5_8g: { delta: 130, i18n: "cfg.compute.cm5_8g" },
-        cm5_16g: { delta: 165, i18n: "cfg.compute.cm5_16g" },
+        cm4_2g: { delta: 71, i18n: "cfg.compute.cm4_2g" },
+        cm4: { delta: 107, i18n: "cfg.compute.cm4" },
+        cm5: { delta: 119, i18n: "cfg.compute.cm5" },
+        cm5_8g: { delta: 192, i18n: "cfg.compute.cm5_8g" },
+        cm5_16g: { delta: 339, i18n: "cfg.compute.cm5_16g" },
         // "custom" is not an add-to-cart price; selecting it opens the
         // custom-order email form instead (handled in initConfigurator).
         custom: { delta: 0, i18n: "cfg.compute.custom", custom: true }
@@ -59,7 +61,7 @@
   // Base price for typixdeck comes from the catalogue (DB-driven via /api/products),
   // falling back to the seed PRODUCTS price.
   function typixdeckBase() {
-    return baseUsdOf("typixdeck") || 119;
+    return baseUsdOf("typixdeck") || 186;
   }
   // Localized label for an option value: prefer a DB-provided label map, else the i18n key.
   function optLabel(val) {
@@ -132,26 +134,11 @@
       var custom = root.querySelector("#cfgCustom");
       if (bar) bar.style.display = isCustom ? "none" : "";
       if (custom) custom.style.display = isCustom ? "block" : "none";
-      var price = lineUsd({ id: "typixdeck", options: o });
       var pe = root.querySelector("#cfgPrice");
       if (pe) {
-        var pr = activePromo("typixdeck");
-        if (pr) {
-          // Same option deltas, but priced off the regular base -> the "was" total.
-          var deltas = price - baseUsdOf("typixdeck");
-          var regular = ((PRODUCTS.typixdeck && typeof PRODUCTS.typixdeck.usd === "number") ? PRODUCTS.typixdeck.usd : 119) + deltas;
-          pe.innerHTML = "";
-          var w = document.createElement("s"); w.className = "pr-was"; w.textContent = money(regular, cur);
-          var n = document.createElement("span"); n.className = "pr-now"; n.textContent = money(price, cur);
-          var b = document.createElement("span"); b.className = "pr-badge"; b.textContent = L("promo.badge", lang);
-          pe.appendChild(w); pe.appendChild(document.createTextNode(" ")); pe.appendChild(n); pe.appendChild(b);
-          pe.setAttribute("title", promoTitle(pr));
-          pe.classList.add("has-promo");
-        } else {
-          pe.textContent = money(price, cur);
-          pe.classList.remove("has-promo");
-          pe.removeAttribute("title");
-        }
+        pe.textContent = tbaLabel();
+        pe.classList.remove("has-promo");
+        pe.removeAttribute("title");
       }
       // Advisory note: show the note of any selected option value that has one.
       var note = root.querySelector("#cfgNote");
@@ -183,7 +170,7 @@
         var dEl = lab.querySelector(".cfg__d");
         if (dEl) {
           if (v.custom) dEl.textContent = L("cfg.custom.badge", lang);
-          else dEl.textContent = v.delta ? ("+" + money(v.delta, cur)) : L("cfg.delta.0", lang);
+          else dEl.textContent = "";
         }
       });
       // --- two-step platform picker sync ---
@@ -292,13 +279,13 @@
       "home.h1": 'A complete computer<br/>the size of <span class="grad">your palm</span>',
       "home.lead": "A small, carefully made family of machines — the CNC-aluminum TypixDeck, a card-sized keyboard, and a wearable Macintosh. Open-source, shipped worldwide.",
       "home.cta1": "Meet TypixDeck →", "home.cta2": "Browse all products",
-      "pin.fanless": "Raspberry Pi CM0/CM4/CM5", "pin.stock": "Pre-order", "pin.silent": "Truly silent",
-      "save.title": "PRE-ORDER", "save.sub": "",
+      "pin.fanless": "Raspberry Pi CM0/CM4/CM5", "pin.stock": "Soon available", "pin.silent": "Truly silent",
+      "save.title": "SOON", "save.sub": "Kickstarter pre-order",
       "prod.kicker": "The catalogue", "prod.title": "All products",
       "prod.sub": "Compact open hardware · open-source · shipped worldwide", "prod.scroll": "Scroll",
       "cfg.compute": "Compute",
       "cfg.storage": "Storage",
-      "cfg.total": "Total",
+      "cfg.total": "Total", "deck.price": "TBA",
       "cfg.delta.0": "Included",
       "cfg.compute.body": "Body only",
       "cfg.compute.cm0": "CM0 (soldered CM0→CM4 adapter)",
@@ -439,8 +426,10 @@
       "cta.deck.b2": "See all products",
       /* cart */
       "cart.title": "Your cart", "cart.empty": "Your cart is empty.", "cart.sub": "Subtotal",
-      "cart.checkout": "Checkout", "cart.note": "Taxes & shipping calculated at checkout.", "cart.add": "Add to cart",
+      "cart.checkout": "Checkout", "cart.note": "Online checkout is paused. Pre-order on Kickstarter soon, or message me on Discord.", "cart.add": "Add to cart",
       "cart.unavailable": "Online payment is being set up — please check back soon.",
+      "cart.ks.soon": "Soon", "cart.ks": "Pre-Order on Kickstarter.com", "cart.or": "or",
+      "cart.discord": "Discord message to contact me",
       "see.all": "See all products", "look": "Look inside",
       "doc.kb": "BLE Keyboard — card-sized wireless keyboard | TypixNode",
       "kb.h1": 'A full keyboard,<br/><span class="grad">the size of a card.</span>',
@@ -555,13 +544,13 @@
       "home.h1": '一台完整的电脑<br/>只有<span class="grad">掌心大小</span>',
       "home.lead": "一个精心打造的小型机器家族——CNC 铝合金 TypixDeck、卡片大小的键盘，以及可随身的麦金塔。完全开源、全球发货。",
       "home.cta1": "了解 TypixDeck →", "home.cta2": "浏览全部产品",
-      "pin.fanless": "Raspberry Pi CM0/CM4/CM5", "pin.stock": "预售", "pin.silent": "全程静音",
-      "save.title": "预售", "save.sub": "",
+      "pin.fanless": "Raspberry Pi CM0/CM4/CM5", "pin.stock": "即将发售", "pin.silent": "全程静音",
+      "save.title": "即将推出", "save.sub": "Kickstarter 预售",
       "prod.kicker": "产品目录", "prod.title": "全部产品",
       "prod.sub": "紧凑开源硬件 · 开源 · 全球发货", "prod.scroll": "横向滑动",
       "cfg.compute": "核心",
       "cfg.storage": "存储",
-      "cfg.total": "合计",
+      "cfg.total": "合计", "deck.price": "价格待定",
       "cfg.delta.0": "已包含",
       "cfg.compute.body": "仅机身",
       "cfg.compute.cm0": "CM0（含贴片 CM0→CM4 转接板）",
@@ -700,8 +689,10 @@
       "cta.deck.t": "打造你的口袋 Linux 实验室", "cta.deck.p": "静音、开源、为打开而生。由树莓派平台驱动，背靠全球数百万开发者共享的开源生态。",
       "cta.deck.b2": "查看全部产品",
       "cart.title": "你的购物车", "cart.empty": "购物车是空的。", "cart.sub": "小计",
-      "cart.checkout": "结账", "cart.note": "税费与运费将在结账时计算。", "cart.add": "加入购物车",
+      "cart.checkout": "结账", "cart.note": "暂不开放在线支付。即将在 Kickstarter.com 开启预售，或通过 Discord 私信联系我。", "cart.add": "加入购物车",
       "cart.unavailable": "在线支付正在开通中，请稍后再来。",
+      "cart.ks.soon": "即将推出", "cart.ks": "在 Kickstarter.com 预售", "cart.or": "或",
+      "cart.discord": "通过 Discord 私信联系我",
       "see.all": "查看全部产品", "look": "看看内部",
       "doc.kb": "蓝牙键盘 — 卡片大小无线键盘 | TypixNode",
       "kb.h1": '一块全键盘，<br/><span class="grad">只有卡片大小。</span>',
@@ -817,13 +808,13 @@
       "home.h1": '完全なコンピュータが<br/><span class="grad">手のひらサイズで</span>',
       "home.lead": "丁寧に作られた小さなマシンの家族——CNC アルミ合金の TypixDeck、カードサイズのキーボード、身につけられる Macintosh。完全オープンソース、世界中へ発送。",
       "home.cta1": "TypixDeck を見る →", "home.cta2": "製品一覧を見る",
-      "pin.fanless": "Raspberry Pi CM0/CM4/CM5", "pin.stock": "予約販売", "pin.silent": "完全な静音",
-      "save.title": "予約販売", "save.sub": "",
+      "pin.fanless": "Raspberry Pi CM0/CM4/CM5", "pin.stock": "まもなく公開", "pin.silent": "完全な静音",
+      "save.title": "近日公開", "save.sub": "Kickstarter 予約",
       "prod.kicker": "カタログ", "prod.title": "製品一覧",
       "prod.sub": "コンパクトなオープンハードウェア · オープンソース · 世界中へ発送", "prod.scroll": "スクロール",
       "cfg.compute": "コンピュート",
       "cfg.storage": "ストレージ",
-      "cfg.total": "合計",
+      "cfg.total": "合計", "deck.price": "価格未定",
       "cfg.delta.0": "込み",
       "cfg.compute.body": "本体のみ",
       "cfg.compute.cm0": "CM0（CM0→CM4 アダプタ実装済）",
@@ -961,8 +952,10 @@
       "cta.deck.t": "ポケット Linux ラボを作ろう", "cta.deck.p": "静かで、オープンで、開けるために作られた。Raspberry Pi プラットフォームと、世界中の数百万の開発者が共有するオープンエコシステムを搭載。",
       "cta.deck.b2": "製品一覧を見る",
       "cart.title": "カート", "cart.empty": "カートは空です。", "cart.sub": "小計",
-      "cart.checkout": "レジに進む", "cart.note": "税・送料はレジで計算されます。", "cart.add": "カートに追加",
+      "cart.checkout": "レジに進む", "cart.note": "オンライン決済は停止中です。まもなく Kickstarter.com でプレオーダー、または Discord でご連絡ください。", "cart.add": "カートに追加",
       "cart.unavailable": "オンライン決済は準備中です。しばらくお待ちください。",
+      "cart.ks.soon": "近日公開", "cart.ks": "Kickstarter.com でプレオーダー", "cart.or": "または",
+      "cart.discord": "Discord でメッセージする",
       "see.all": "製品一覧を見る", "look": "内部を見る",
       "doc.kb": "BLE キーボード — カードサイズのワイヤレスキーボード | TypixNode",
       "kb.h1": 'フルキーボードを、<br/><span class="grad">カードサイズで。</span>',
@@ -1085,17 +1078,17 @@
       "home.cta1": "認識 TypixDeck →",
       "home.cta2": "瀏覽全部產品",
       "pin.fanless": "Raspberry Pi CM0/CM4/CM5",
-      "pin.stock": "預購",
+      "pin.stock": "即將發售",
       "pin.silent": "真正靜音",
-      "save.title": "預購",
-      "save.sub": "",
+      "save.title": "即將推出",
+      "save.sub": "Kickstarter 預購",
       "prod.kicker": "產品型錄",
       "prod.title": "全部產品",
       "prod.sub": "精巧的開源硬體 · 開源 · 銷往全球",
       "prod.scroll": "捲動",
       "cfg.compute": "核心",
       "cfg.storage": "儲存",
-      "cfg.total": "總計",
+      "cfg.total": "總計", "deck.price": "價格待定",
       "cfg.delta.0": "已包含",
       "cfg.compute.body": "僅機身",
       "cfg.compute.cm0": "CM0（含貼片 CM0→CM4 轉接板）",
@@ -1284,9 +1277,13 @@
       "cart.empty": "你的購物車是空的。",
       "cart.sub": "小計",
       "cart.checkout": "結帳",
-      "cart.note": "稅金與運費於結帳時計算。",
+      "cart.note": "暫不開放線上付款。即將在 Kickstarter.com 開啟預購，或透過 Discord 私訊聯繫我。",
       "cart.add": "加入購物車",
       "cart.unavailable": "線上付款正在設定中——請稍後再回來查看。",
+      "cart.ks.soon": "即將推出",
+      "cart.ks": "在 Kickstarter.com 預購",
+      "cart.or": "或",
+      "cart.discord": "透過 Discord 私訊聯繫我",
       "see.all": "查看全部產品",
       "look": "看看內部",
       "doc.kb": "BLE Keyboard — 卡片大小的無線鍵盤 | TypixNode",
@@ -1485,17 +1482,17 @@
       "home.cta1": "TypixDeck entdecken →",
       "home.cta2": "Alle Produkte ansehen",
       "pin.fanless": "Raspberry Pi CM0/CM4/CM5",
-      "pin.stock": "Vorbestellung",
+      "pin.stock": "Bald verfügbar",
       "pin.silent": "Wirklich lautlos",
-      "save.title": "VORBESTELLUNG",
-      "save.sub": "",
+      "save.title": "BALD",
+      "save.sub": "Kickstarter-Vorbestellung",
       "prod.kicker": "Der Katalog",
       "prod.title": "Alle Produkte",
       "prod.sub": "Kompakte Open Hardware · Open Source · weltweit versandt",
       "prod.scroll": "Scrollen",
       "cfg.compute": "Compute",
       "cfg.storage": "Speicher",
-      "cfg.total": "Gesamt",
+      "cfg.total": "Gesamt", "deck.price": "TBA",
       "cfg.delta.0": "Inklusive",
       "cfg.compute.body": "Nur Gehäuse",
       "cfg.compute.cm0": "CM0 (gelöteter CM0→CM4-Adapter)",
@@ -1684,9 +1681,13 @@
       "cart.empty": "Ihr Warenkorb ist leer.",
       "cart.sub": "Zwischensumme",
       "cart.checkout": "Zur Kasse",
-      "cart.note": "Steuern & Versand werden an der Kasse berechnet.",
+      "cart.note": "Die Online-Zahlung ist pausiert. Bald Vorbestellung auf Kickstarter.com, oder schreib mir auf Discord.",
       "cart.add": "In den Warenkorb",
       "cart.unavailable": "Die Online-Zahlung wird gerade eingerichtet — bitte schauen Sie bald wieder vorbei.",
+      "cart.ks.soon": "Bald",
+      "cart.ks": "Pre-Order auf Kickstarter.com",
+      "cart.or": "oder",
+      "cart.discord": "Schreib mir auf Discord",
       "see.all": "Alle Produkte ansehen",
       "look": "Blick ins Innere",
       "doc.kb": "BLE Keyboard — kartengroße kabellose Tastatur | TypixNode",
@@ -1885,17 +1886,17 @@
       "home.cta1": "Découvrir le TypixDeck →",
       "home.cta2": "Voir tous les produits",
       "pin.fanless": "Raspberry Pi CM0/CM4/CM5",
-      "pin.stock": "Précommande",
+      "pin.stock": "Bientôt disponible",
       "pin.silent": "Vraiment silencieux",
-      "save.title": "PRÉCOMMANDE",
-      "save.sub": "",
+      "save.title": "BIENTÔT",
+      "save.sub": "Précommande Kickstarter",
       "prod.kicker": "Le catalogue",
       "prod.title": "Tous les produits",
       "prod.sub": "Open hardware compact · open-source · expédié dans le monde entier",
       "prod.scroll": "Faire défiler",
       "cfg.compute": "Calcul",
       "cfg.storage": "Stockage",
-      "cfg.total": "Total",
+      "cfg.total": "Total", "deck.price": "TBA",
       "cfg.delta.0": "Inclus",
       "cfg.compute.body": "Châssis seul",
       "cfg.compute.cm0": "CM0 (adaptateur CM0→CM4 soudé)",
@@ -2084,9 +2085,13 @@
       "cart.empty": "Votre panier est vide.",
       "cart.sub": "Sous-total",
       "cart.checkout": "Paiement",
-      "cart.note": "Taxes &amp; livraison calculées au paiement.",
+      "cart.note": "Le paiement en ligne est en pause. Précommande bientôt sur Kickstarter.com, ou écris-moi sur Discord.",
       "cart.add": "Ajouter au panier",
       "cart.unavailable": "Le paiement en ligne est en cours de mise en place — revenez bientôt.",
+      "cart.ks.soon": "Bientôt",
+      "cart.ks": "Précommande sur Kickstarter.com",
+      "cart.or": "ou",
+      "cart.discord": "Écris-moi sur Discord",
       "see.all": "Voir tous les produits",
       "look": "Voir l'intérieur",
       "doc.kb": "BLE Keyboard — clavier sans fil de la taille d'une carte | TypixNode",
@@ -2285,17 +2290,17 @@
       "home.cta1": "Conoce la TypixDeck →",
       "home.cta2": "Ver todos los productos",
       "pin.fanless": "Raspberry Pi CM0/CM4/CM5",
-      "pin.stock": "Reserva",
+      "pin.stock": "Pronto disponible",
       "pin.silent": "Realmente silenciosa",
-      "save.title": "RESERVA",
-      "save.sub": "",
+      "save.title": "PRONTO",
+      "save.sub": "Preventa Kickstarter",
       "prod.kicker": "El catálogo",
       "prod.title": "Todos los productos",
       "prod.sub": "Hardware abierto y compacto · open-source · envío a todo el mundo",
       "prod.scroll": "Desliza",
       "cfg.compute": "Cómputo",
       "cfg.storage": "Almacenamiento",
-      "cfg.total": "Total",
+      "cfg.total": "Total", "deck.price": "TBA",
       "cfg.delta.0": "Incluido",
       "cfg.compute.body": "Solo chasis",
       "cfg.compute.cm0": "CM0 (adaptador CM0→CM4 soldado)",
@@ -2484,9 +2489,13 @@
       "cart.empty": "Tu carrito está vacío.",
       "cart.sub": "Subtotal",
       "cart.checkout": "Pagar",
-      "cart.note": "Impuestos y envío se calculan al pagar.",
+      "cart.note": "El pago en línea está pausado. Preventa pronto en Kickstarter.com, o escríbeme por Discord.",
       "cart.add": "Agregar al carrito",
       "cart.unavailable": "El pago en línea se está configurando — vuelve pronto, por favor.",
+      "cart.ks.soon": "Pronto",
+      "cart.ks": "Preventa en Kickstarter.com",
+      "cart.or": "o",
+      "cart.discord": "Escríbeme por Discord",
       "see.all": "Ver todos los productos",
       "look": "Mira por dentro",
       "doc.kb": "BLE Keyboard — teclado inalámbrico del tamaño de una tarjeta | TypixNode",
@@ -2685,17 +2694,17 @@
       "home.cta1": "Conheça o TypixDeck →",
       "home.cta2": "Ver todos os produtos",
       "pin.fanless": "Raspberry Pi CM0/CM4/CM5",
-      "pin.stock": "Pré-venda",
+      "pin.stock": "Em breve",
       "pin.silent": "Totalmente silencioso",
-      "save.title": "PRÉ-VENDA",
-      "save.sub": "",
+      "save.title": "EM BREVE",
+      "save.sub": "Pré-venda Kickstarter",
       "prod.kicker": "O catálogo",
       "prod.title": "Todos os produtos",
       "prod.sub": "Open hardware compacto · open-source · enviado para o mundo todo",
       "prod.scroll": "Rolar",
       "cfg.compute": "Computação",
       "cfg.storage": "Armazenamento",
-      "cfg.total": "Total",
+      "cfg.total": "Total", "deck.price": "TBA",
       "cfg.delta.0": "Incluído",
       "cfg.compute.body": "Somente chassi",
       "cfg.compute.cm0": "CM0 (adaptador CM0→CM4 soldado)",
@@ -2884,9 +2893,13 @@
       "cart.empty": "Seu carrinho está vazio.",
       "cart.sub": "Subtotal",
       "cart.checkout": "Finalizar compra",
-      "cart.note": "Impostos & frete calculados no checkout.",
+      "cart.note": "O pagamento online está pausado. Pré-venda em breve no Kickstarter.com, ou envie uma mensagem no Discord.",
       "cart.add": "Adicionar ao carrinho",
       "cart.unavailable": "O pagamento online está sendo configurado — volte em breve.",
+      "cart.ks.soon": "Em breve",
+      "cart.ks": "Pré-venda no Kickstarter.com",
+      "cart.or": "ou",
+      "cart.discord": "Envie uma mensagem no Discord",
       "see.all": "Ver todos os produtos",
       "look": "Veja por dentro",
       "doc.kb": "BLE Keyboard — teclado sem fio do tamanho de um cartão | TypixNode",
@@ -3085,17 +3098,17 @@
       "home.cta1": "TypixDeck 만나보기 →",
       "home.cta2": "전체 제품 둘러보기",
       "pin.fanless": "Raspberry Pi CM0/CM4/CM5",
-      "pin.stock": "사전 예약",
+      "pin.stock": "곧 출시",
       "pin.silent": "완전 무소음",
-      "save.title": "사전 예약",
-      "save.sub": "",
+      "save.title": "곧 공개",
+      "save.sub": "Kickstarter 프리오더",
       "prod.kicker": "카탈로그",
       "prod.title": "전체 제품",
       "prod.sub": "컴팩트 오픈 하드웨어 · 오픈소스 · 전 세계 배송",
       "prod.scroll": "스크롤",
       "cfg.compute": "컴퓨트",
       "cfg.storage": "스토리지",
-      "cfg.total": "합계",
+      "cfg.total": "합계", "deck.price": "가격 미정",
       "cfg.delta.0": "포함",
       "cfg.compute.body": "본체만",
       "cfg.compute.cm0": "CM0 (CM0→CM4 어댑터 납땜)",
@@ -3284,9 +3297,13 @@
       "cart.empty": "장바구니가 비어 있습니다.",
       "cart.sub": "소계",
       "cart.checkout": "결제하기",
-      "cart.note": "세금 & 배송비는 결제 시 계산됩니다.",
+      "cart.note": "온라인 결제가 일시 중단되었습니다. 곧 Kickstarter.com에서 프리오더하거나 Discord로 메시지를 보내 주세요.",
       "cart.add": "장바구니에 담기",
       "cart.unavailable": "온라인 결제를 준비 중입니다 — 곧 다시 확인해 주세요.",
+      "cart.ks.soon": "곧 공개",
+      "cart.ks": "Kickstarter.com에서 프리오더",
+      "cart.or": "또는",
+      "cart.discord": "Discord로 메시지 보내기",
       "see.all": "전체 제품 보기",
       "look": "내부 살펴보기",
       "doc.kb": "BLE Keyboard — 카드 크기 무선 키보드 | TypixNode",
@@ -3485,17 +3502,17 @@
       "home.cta1": "Scopri TypixDeck →",
       "home.cta2": "Sfoglia tutti i prodotti",
       "pin.fanless": "Raspberry Pi CM0/CM4/CM5",
-      "pin.stock": "Preordine",
+      "pin.stock": "Presto disponibile",
       "pin.silent": "Davvero silenzioso",
-      "save.title": "PREORDINE",
-      "save.sub": "",
+      "save.title": "PRESTO",
+      "save.sub": "Preordine Kickstarter",
       "prod.kicker": "Il catalogo",
       "prod.title": "Tutti i prodotti",
       "prod.sub": "Hardware compatto e open · open-source · spedito in tutto il mondo",
       "prod.scroll": "Scorri",
       "cfg.compute": "Calcolo",
       "cfg.storage": "Archiviazione",
-      "cfg.total": "Totale",
+      "cfg.total": "Totale", "deck.price": "TBA",
       "cfg.delta.0": "Incluso",
       "cfg.compute.body": "Solo chassis",
       "cfg.compute.cm0": "CM0 (adattatore CM0→CM4 saldato)",
@@ -3684,9 +3701,13 @@
       "cart.empty": "Il tuo carrello è vuoto.",
       "cart.sub": "Subtotale",
       "cart.checkout": "Checkout",
-      "cart.note": "Tasse e spedizione calcolate al checkout.",
+      "cart.note": "Il pagamento online è in pausa. Preordina presto su Kickstarter.com, o scrivimi su Discord.",
       "cart.add": "Aggiungi al carrello",
       "cart.unavailable": "Il pagamento online è in fase di configurazione — riprova a breve.",
+      "cart.ks.soon": "Presto",
+      "cart.ks": "Preordina su Kickstarter.com",
+      "cart.or": "oppure",
+      "cart.discord": "Scrivimi su Discord",
       "see.all": "Vedi tutti i prodotti",
       "look": "Guarda all'interno",
       "doc.kb": "BLE Keyboard — tastiera wireless grande come una carta | TypixNode",
@@ -3939,6 +3960,9 @@
       if (el.hasAttribute("data-sku")) { renderPrice(el); return; }
       el.textContent = money(parseFloat(el.dataset.usd), cur);
     });
+    document.querySelectorAll("[data-sku]").forEach(function (el) {
+      if (priceTBA(el.dataset.sku)) renderPrice(el);
+    });
     document.querySelectorAll(".js-cursel").forEach(function (cs) { cs.value = cur; });
     renderCart();
     if (window.__cfgUpdate) window.__cfgUpdate();
@@ -3948,6 +3972,13 @@
   // price so dashboard edits and sales both reflect here.
   function renderPrice(el) {
     var sku = el.dataset.sku;
+    if (priceTBA(sku)) {
+      el.textContent = tbaLabel();
+      el.classList.add("pr--tba");
+      el.classList.remove("has-promo");
+      el.removeAttribute("title");
+      return;
+    }
     var base = (PRODUCTS[sku] && typeof PRODUCTS[sku].usd === "number")
       ? PRODUCTS[sku].usd : (parseFloat(el.dataset.usd) || 0);
     var pr = activePromo(sku);
@@ -3994,7 +4025,7 @@
     var c = loadCart(), key = lineKey(item);
     var f = c.find(function (i) { return lineKey(i) === key; });
     if (f) f.qty++; else c.push(item);
-    saveCart(c); renderCart(); openCart(); renderPayPal();
+    saveCart(c); renderCart(); openCart();
   }
   function setQty(key, d) {
     var c = loadCart(), f = c.find(function (i) { return lineKey(i) === key; });
@@ -4022,106 +4053,22 @@
         }
         return '<div class="ci"><div class="cimg"><img src="' + lineImg(i) + '" alt=""></div>' +
           '<div><div class="nm">' + (i.id === "typixdeck" ? "TypixDeck" : lineName(i)) + '</div>' + sub +
-          '<div class="pr">' + money(lineUsd(i), cur) + '</div>' +
+          '<div class="pr">' + (priceTBA(i.id) ? tbaLabel() : money(lineUsd(i), cur)) + '</div>' +
           '<button class="rm" data-rm="' + esc + '">' + (lang === "zh" || lang === "zh-Hant" ? "移除" : lang === "ja" ? "削除" : "Remove") + '</button></div>' +
           '<div class="qty"><button data-dec="' + esc + '">−</button><span>' + i.qty + '</span><button data-inc="' + esc + '">+</button></div></div>';
       }).join("");
     }
-    var sub = c.reduce(function (n, i) { return n + lineUsd(i) * i.qty; }, 0);
-    var st = document.getElementById("cartSub"); if (st) st.textContent = money(sub, cur);
-    // toggle checkout controls by cart emptiness + which providers are enabled
+    var priced = c.filter(function (i) { return !priceTBA(i.id); });
+    var sub = priced.reduce(function (n, i) { return n + lineUsd(i) * i.qty; }, 0);
+    var st = document.getElementById("cartSub");
+    if (st) st.textContent = (!priced.length && c.length) ? tbaLabel() : money(sub, cur);
     var empty = !c.length;
-    var cfg = window.TNX_CFG || {};
-    var stripeOn = !!cfg.stripeEnabled;          // Stripe disabled by default
-    var paypalOn = !!cfg.paypalClientId;         // PayPal shown when configured
-    var cb = document.getElementById("checkoutBtn");
-    if (cb) cb.style.display = (!empty && stripeOn) ? "block" : "none";
-    var pw = document.getElementById("paypalWrap"); if (pw) pw.style.display = empty ? "none" : "block";
     var cn = document.getElementById("cartNote"); if (cn) cn.style.display = empty ? "none" : "block";
-    // If nothing is configured, tell the user instead of showing a dead cart.
     var err = document.getElementById("cartErr");
-    if (err && !empty && !stripeOn && !paypalOn) {
-      err.textContent = L("cart.unavailable", lang);
-      err.style.display = "block";
-    } else if (err && (stripeOn || paypalOn)) {
-      // don't clobber a real error message
-      if (err.dataset.kind !== "error") { err.textContent = ""; err.style.display = "none"; }
-    }
+    if (err && err.dataset.kind !== "error") { err.textContent = ""; err.style.display = "none"; }
   }
   function openCart() { var o = document.getElementById("cartOv"), d = document.getElementById("cartDrawer"); if (o) o.classList.add("on"); if (d) d.classList.add("on"); }
   function closeCart() { var o = document.getElementById("cartOv"), d = document.getElementById("cartDrawer"); if (o) o.classList.remove("on"); if (d) d.classList.remove("on"); }
-
-  /* ---------- checkout ---------- */
-  function cartPayload() {
-    return {
-      items: loadCart().map(function (i) {
-        var line = { id: i.id, qty: i.qty };
-        if (i.id === "typixdeck") line.options = normOptions(i.options);
-        return line;
-      }),
-      locale: lang
-    };
-  }
-  function showCartErr(msg) {
-    var e = document.getElementById("cartErr");
-    if (e) {
-      e.textContent = msg || "";
-      e.style.display = msg ? "block" : "none";
-      e.dataset.kind = msg ? "error" : "";
-    }
-  }
-  // Stripe: POST /api/checkout -> redirect to hosted checkout
-  // Disabled by default (window.TNX_CFG.stripeEnabled). Retained for future
-  // re-enable once a Stripe-eligible (e.g. HK) entity is available.
-  function stripeCheckout() {
-    var cfg = window.TNX_CFG || {};
-    if (!cfg.stripeEnabled) return;
-    var cart = loadCart();
-    if (!cart.length) return;
-    var btn = document.getElementById("checkoutBtn");
-    if (btn) { btn.disabled = true; btn.dataset.busy = "1"; }
-    showCartErr("");
-    fetch("/api/checkout", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(cartPayload())
-    }).then(function (r) { return r.json(); }).then(function (d) {
-      if (d && d.url) { location.href = d.url; }
-      else { showCartErr((d && d.error) || "Checkout failed."); if (btn) btn.disabled = false; }
-    }).catch(function () { showCartErr("Network error."); if (btn) btn.disabled = false; });
-  }
-  // PayPal: render buttons into #paypalWrap if SDK + client id present
-  var paypalRendered = false;
-  function renderPayPal() {
-    var wrap = document.getElementById("paypalWrap");
-    var cfg = window.TNX_CFG || {};
-    if (!wrap || paypalRendered || !window.paypal || !cfg.paypalClientId) return;
-    if (!loadCart().length) return;
-    paypalRendered = true;
-    window.paypal.Buttons({
-      style: { layout: "horizontal", height: 40, tagline: false },
-      createOrder: function () {
-        return fetch("/api/paypal/create", {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(cartPayload())
-        }).then(function (r) { return r.json(); }).then(function (d) {
-          if (d && d.id) return d.id;
-          throw new Error((d && d.error) || "create failed");
-        });
-      },
-      onApprove: function (data) {
-        return fetch("/api/paypal/capture", {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderID: data.orderID })
-        }).then(function (r) { return r.json(); }).then(function (d) {
-          if (d && d.status === "COMPLETED") {
-            saveCart([]);
-            location.href = "/success?provider=paypal" + (d.orderId ? "&order=" + d.orderId : "");
-          } else { showCartErr("Payment not completed."); }
-        });
-      },
-      onError: function () { showCartErr("PayPal error. Try card checkout."); }
-    }).render("#paypalWrap");
-  }
 
   /* ---------- wire up ---------- */
   document.addEventListener("DOMContentLoaded", function () {
@@ -4155,7 +4102,12 @@
       var prods = data.products || {};
       Object.keys(prods).forEach(function (sku) {
         var p = prods[sku];
-        if (p && typeof p.usd === "number") {
+        if (!p) return;
+        if (p.tba || priceTBA(sku)) {
+          if (PRODUCTS[sku]) PRODUCTS[sku].name = p.name || PRODUCTS[sku].name;
+          return;
+        }
+        if (typeof p.usd === "number") {
           PRODUCTS[sku] = { img: p.img, usd: p.usd, name: p.name, promo: p.promo || null };
         }
       });
@@ -4433,8 +4385,7 @@
         addToCart(aid, aid === "typixdeck" ? readConfig() : null);
         return;
       }
-      if (e.target.closest(".cartbtn")) { e.preventDefault(); openCart(); renderPayPal(); return; }
-      if (e.target.closest("#checkoutBtn")) { e.preventDefault(); stripeCheckout(); return; }
+      if (e.target.closest(".cartbtn")) { e.preventDefault(); openCart(); return; }
       if (e.target.id === "cartOv" || e.target.closest("[data-cart-close]")) { closeCart(); return; }
       var inc = e.target.closest("[data-inc]"); if (inc) { setQty(inc.dataset.inc, 1); return; }
       var dec = e.target.closest("[data-dec]"); if (dec) { setQty(dec.dataset.dec, -1); return; }
