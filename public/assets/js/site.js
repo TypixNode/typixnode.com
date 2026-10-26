@@ -189,6 +189,34 @@
       var opts2 = root.querySelector(".cfg__opts--compute");
       if (step2) step2.style.display = multi ? "" : "none";
       if (opts2) opts2.style.display = multi ? "" : "none";
+      // --- internal-PCB preview sync ---
+      // Each combo is a full board-aligned render, so we just swap the single
+      // preview image to match the chosen family + storage type. Available
+      // renders: body, cm0_tf, cm4_tf, cm4_ssd, cm5_tf, cm5_ssd. Missing combos
+      // fall back to the closest render (cm0 only ships a TF render).
+      var st = o.storage || "none";
+      var stKind = (st === "ssd128" || st === "ssd256") ? "ssd"
+                 : (st === "tf64" || st === "tf128") ? "tf" : "";
+      var pcb = "body";
+      if (fam === "cm4") pcb = stKind === "ssd" ? "cm4_ssd" : "cm4_tf";
+      else if (fam === "cm5") pcb = stKind === "ssd" ? "cm5_ssd" : "cm5_tf";
+      else if (fam === "cm0") pcb = "cm0_tf";
+      var pcbImg = root.querySelector("#pcbMain");
+      if (pcbImg) {
+        var wantSrc = "/assets/pcb/" + pcb + ".png";
+        if (pcbImg.getAttribute("src") !== wantSrc) pcbImg.setAttribute("src", wantSrc);
+      }
+      // --- live "your build" summary sync (left rail) ---
+      var SUM_MEM = { body: "\u2014", cm0: "512MB", cm4_2g: "2GB \u00b7 WiFi", cm4: "4GB \u00b7 WiFi", cm5: "4GB \u00b7 WiFi", cm5_8g: "8GB \u00b7 WiFi", cm5_16g: "16GB \u00b7 WiFi", custom: "\u2014" };
+      var SUM_STO = { none: "\u2014", tf64: "TF 64GB", ssd128: "M.2 SSD 128GB", tf128: "TF 128GB", ssd256: "M.2 SSD 256GB" };
+      var sumPlat = root.querySelector("#cfgSumPlat");
+      var sumMem = root.querySelector("#cfgSumMem");
+      var sumSto = root.querySelector("#cfgSumSto");
+      var sumPrice = root.querySelector("#cfgSumPrice");
+      if (sumPlat) sumPlat.textContent = L("cfg.plat." + fam, lang);
+      if (sumMem) sumMem.textContent = SUM_MEM[o.compute] || "\u2014";
+      if (sumSto) sumSto.textContent = isCustom ? L("cfg.custom.badge", lang) : (SUM_STO[o.storage] || "\u2014");
+      if (sumPrice) sumPrice.textContent = isCustom ? L("cfg.custom.badge", lang) : money(price, cur);
     }
     root.addEventListener("change", function (e) { if (e.target && e.target.name && e.target.name.indexOf("cfg-") === 0) update(); });
     // Step-1 platform buttons: pick the family's default (cheapest) variant if
@@ -318,7 +346,15 @@
       "cfg.plat.cm5": "CM5",
       "cfg.plat.cm5.d": "Quad A76 @2.4GHz · 4–16GB — near-desktop PC",
       "cfg.plat.custom": "Custom",
-      "cfg.plat.custom.d": "Other RAM/storage/bulk — we'll email a quote",      "cfg.custom.sending": "Sending…",
+      "cfg.plat.custom.d": "Other RAM/storage/bulk — we'll email a quote",
+      "cfg.pcb.cap": "Illustration — real modules shown in their slots",
+      "cfg.sum.title": "Your TypixDeck",
+      "cfg.sum.plat": "Platform",
+      "cfg.sum.mem": "Memory",
+      "cfg.sum.sto": "Storage",
+      "cfg.sum.disp": "Display",
+      "cfg.sum.disp.v": "3.5″ touch",
+      "cfg.custom.sending": "Sending…",
       "cfg.custom.ok": "Thanks — we've received your request and will reply by email.",
       "cfg.custom.invalid": "Please enter a valid email address.",
       "cfg.custom.err": "Something went wrong. Please try again.",
@@ -590,6 +626,12 @@
       "cfg.step2": "第二步 · 选择具体配置",
       "cfg.plat.body": "仅机身",
       "cfg.plat.body.d": "仅外壳 — 需自备计算模块",
+      "cfg.sum.title": "你的 TypixDeck",
+      "cfg.sum.plat": "平台",
+      "cfg.sum.mem": "内存",
+      "cfg.sum.sto": "存储",
+      "cfg.sum.disp": "屏幕",
+      "cfg.sum.disp.v": "3.5″ 触摸屏",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "四核 A53 @1GHz · 512MB — 入门 · 超低功耗",
       "cfg.plat.cm4": "CM4",
@@ -868,6 +910,12 @@
       "cfg.step2": "ステップ2 · 構成を選択",
       "cfg.plat.body": "本体のみ",
       "cfg.plat.body.d": "筐体のみ — モジュールは別途",
+      "cfg.sum.title": "あなたの TypixDeck",
+      "cfg.sum.plat": "プラットフォーム",
+      "cfg.sum.mem": "メモリ",
+      "cfg.sum.sto": "ストレージ",
+      "cfg.sum.disp": "ディスプレイ",
+      "cfg.sum.disp.v": "3.5インチ タッチ",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "クアッド A53 @1GHz · 512MB — 入門・超低消費電力",
       "cfg.plat.cm4": "CM4",
@@ -1156,6 +1204,12 @@
       "cfg.step2": "第二步 · 選擇詳細配置",
       "cfg.plat.body": "僅機身",
       "cfg.plat.body.d": "僅外殼 — 需自備運算模組",
+      "cfg.sum.title": "你的 TypixDeck",
+      "cfg.sum.plat": "平台",
+      "cfg.sum.mem": "記憶體",
+      "cfg.sum.sto": "儲存",
+      "cfg.sum.disp": "螢幕",
+      "cfg.sum.disp.v": "3.5″ 觸控螢幕",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "四核 A53 @1GHz · 512MB — 入門 · 超低功耗",
       "cfg.plat.cm4": "CM4",
@@ -1574,6 +1628,12 @@
       "cfg.step2": "Schritt 2 · Konfiguration wählen",
       "cfg.plat.body": "Nur Gehäuse",
       "cfg.plat.body.d": "Nur Gehäuse — eigenes Modul einsetzen",
+      "cfg.sum.title": "Dein TypixDeck",
+      "cfg.sum.plat": "Plattform",
+      "cfg.sum.mem": "Arbeitsspeicher",
+      "cfg.sum.sto": "Speicher",
+      "cfg.sum.disp": "Display",
+      "cfg.sum.disp.v": "3,5″ Touch",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "Quad A53 @1GHz · 512MB — Einstieg, sehr sparsam",
       "cfg.plat.cm4": "CM4",
@@ -1992,6 +2052,12 @@
       "cfg.step2": "Étape 2 · Choisir la configuration",
       "cfg.plat.body": "Boîtier seul",
       "cfg.plat.body.d": "Boîtier seul — ajoutez votre module",
+      "cfg.sum.title": "Votre TypixDeck",
+      "cfg.sum.plat": "Plateforme",
+      "cfg.sum.mem": "Mémoire",
+      "cfg.sum.sto": "Stockage",
+      "cfg.sum.disp": "Écran",
+      "cfg.sum.disp.v": "tactile 3,5″",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "Quad A53 @1GHz · 512 Mo — entrée de gamme, très basse consommation",
       "cfg.plat.cm4": "CM4",
@@ -2410,6 +2476,12 @@
       "cfg.step2": "Paso 2 · Elige la configuración",
       "cfg.plat.body": "Solo carcasa",
       "cfg.plat.body.d": "Solo carcasa — añade tu propio módulo",
+      "cfg.sum.title": "Tu TypixDeck",
+      "cfg.sum.plat": "Plataforma",
+      "cfg.sum.mem": "Memoria",
+      "cfg.sum.sto": "Almacenamiento",
+      "cfg.sum.disp": "Pantalla",
+      "cfg.sum.disp.v": "táctil 3,5″",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "Quad A53 @1GHz · 512MB — básico, muy bajo consumo",
       "cfg.plat.cm4": "CM4",
@@ -2828,6 +2900,12 @@
       "cfg.step2": "Passo 2 · Escolha a configuração",
       "cfg.plat.body": "Somente estrutura",
       "cfg.plat.body.d": "Somente carcaça — use seu próprio módulo",
+      "cfg.sum.title": "Seu TypixDeck",
+      "cfg.sum.plat": "Plataforma",
+      "cfg.sum.mem": "Memória",
+      "cfg.sum.sto": "Armazenamento",
+      "cfg.sum.disp": "Tela",
+      "cfg.sum.disp.v": "toque 3,5″",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "Quad A53 @1GHz · 512MB — entrada, consumo muito baixo",
       "cfg.plat.cm4": "CM4",
@@ -3246,6 +3324,12 @@
       "cfg.step2": "2단계 · 세부 구성 선택",
       "cfg.plat.body": "본체만",
       "cfg.plat.body.d": "케이스만 — 모듈은 별도 장착",
+      "cfg.sum.title": "나의 TypixDeck",
+      "cfg.sum.plat": "플랫폼",
+      "cfg.sum.mem": "메모리",
+      "cfg.sum.sto": "저장장치",
+      "cfg.sum.disp": "디스플레이",
+      "cfg.sum.disp.v": "3.5″ 터치",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "쿼드 A53 @1GHz · 512MB — 입문 · 초저전력",
       "cfg.plat.cm4": "CM4",
@@ -3664,6 +3748,12 @@
       "cfg.step2": "Passo 2 · Scegli la configurazione",
       "cfg.plat.body": "Solo telaio",
       "cfg.plat.body.d": "Solo scocca — aggiungi il tuo modulo",
+      "cfg.sum.title": "Il tuo TypixDeck",
+      "cfg.sum.plat": "Piattaforma",
+      "cfg.sum.mem": "Memoria",
+      "cfg.sum.sto": "Archiviazione",
+      "cfg.sum.disp": "Display",
+      "cfg.sum.disp.v": "touch 3,5″",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "Quad A53 @1GHz · 512MB — base, consumo bassissimo",
       "cfg.plat.cm4": "CM4",
