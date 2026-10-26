@@ -1,0 +1,210 @@
+---
+// ── Style Lab ─────────────────────────────────────────────────────────
+// A self-contained, prerendered showcase that re-skins the real TypixNode
+// homepage content through several distinct visual directions.
+//
+// Switch styles from the floating dock (bottom-right) or with keys 1–4.
+// Every style is driven purely by <html data-style="…"> — the markup below
+// is intentionally neutral so each theme can interpret it freely.
+//
+// NOT linked from the main site. Local dev only. Safe to delete.
+// Prerendered (static) — the initial style is picked client-side from ?style=
+// so this page stays independent of any SSR bindings.
+export const prerender = true;
+const products = [
+  { name: 'TypixDeck',        tag: 'Flagship', img: '/assets/cyberdeck.png',       price: 'TBA', ds: 'Palm-sized fanless Linux computer in CNC aluminum. Raspberry Pi CM0 / CM4 / CM5.' },
+  { name: 'BLE Keyboard',     tag: '',         img: '/assets/keyboard.jpg',        price: 39,  ds: 'Card-sized full keyboard with gyro air-mouse and white backlight. Bluetooth 5.2 or USB-C.' },
+  { name: 'DIY Suite',        tag: '',         img: '/assets/diysuite.jpg',         price: 9,   ds: 'Solder your own 48-key keyboard in an afternoon. Open-source PCB and QMK firmware.' },
+  { name: 'Pico-Mac Nano',    tag: '',         img: '/assets/picomac.jpg',         price: 60,  ds: 'A palm-sized 1984 Macintosh that boots classic Mac OS over USB-C.' },
+  { name: 'CM0 Adapter',      tag: 'New',      img: '/assets/cm0-adapter.png',     price: 40,  ds: 'CM0 soldered onto a CM4-footprint adapter.' },
+  { name: 'CM0 Module',       tag: '',         img: '/assets/cm0-module.jpeg',     price: 30,  ds: 'Bare Raspberry Pi CM0 compute module.' },
+  { name: 'CM0 Adapter (bare)', tag: '',      img: '/assets/cm0-adapter-raw.png', price: 10,  ds: 'Bare CM0→CM4 adapter PCB, no module.' },
+];
+// Decide the initial style on the SERVER from ?style= so the first paint
+// (and any headless screenshot) is already correct — no client-JS race.
+const ALLOWED_STYLES = ['aurora', 'terminal', 'blueprint', 'industrial'];
+const styleParam = Astro.url.searchParams.get('style');
+const initialStyle = ALLOWED_STYLES.includes(styleParam) ? styleParam : 'aurora';
+const styles = [
+  { id: 'aurora',    n: '01', name: 'Aurora Glass',  note: 'current' },
+  { id: 'terminal',  n: '02', name: 'CRT Terminal',  note: 'phosphor' },
+  { id: 'blueprint', n: '03', name: 'Blueprint',     note: 'schematic' },
+  { id: 'industrial',n: '04', name: 'Industrial',    note: 'nameplate' },
+];
+---
+<!doctype html>
+<html lang="en" data-style={initialStyle}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Style Lab — TypixNode</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/assets/typixnode-logo.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800;900&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/css/lab.css" />
+  </head>
+  <body>
+    <!-- ── Style switcher ─────────────────────────────────────────── -->
+    <aside class="dock" aria-label="Style switcher">
+      <div class="dock__title"><span>STYLE</span><span class="dock__hint">1–4</span></div>
+      {styles.map((s) => (
+        <button class={`dock__btn swatch-${s.id}`} data-style-target={s.id} aria-label={s.name}>
+          <span class="dock__n">{s.n}</span>
+          <span class="dock__meta"><b>{s.name}</b><i>{s.note}</i></span>
+        </button>
+      ))}
+    </aside>
+
+    <!-- ── Top bar ────────────────────────────────────────────────── -->
+    <header class="topbar">
+      <a class="brand" href="/">
+        <span class="brand__mark">◣</span>
+        <span class="brand__name">TypixNode</span>
+      </a>
+      <nav class="topnav">
+        <a href="#">TypixDeck</a>
+        <a href="#">Products</a>
+        <a href="#">Technology</a>
+        <a href="#">Open</a>
+      </nav>
+      <div class="topactions">
+        <button class="iconbtn" aria-label="Language">EN</button>
+        <button class="iconbtn" aria-label="Currency">USD</button>
+        <button class="iconbtn" aria-label="Cart">Cart · 0</button>
+        <a class="buybtn" href="#">Buy now</a>
+      </div>
+    </header>
+
+    <main class="lab">
+      <!-- ── Hero ─────────────────────────────────────────────────── -->
+      <section class="hero">
+        <div class="hero__copy">
+          <span class="kicker">Compact open hardware · Est. 2026</span>
+          <h1 class="hero__h1">A complete computer<br /><em>the size of your palm</em></h1>
+          <p class="hero__lead">TypixNode builds compact open hardware — a CNC-aluminum Linux computer, a card-sized keyboard, and a palm-sized Macintosh. Open-source, shipped worldwide.</p>
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="/typixdeck">Meet TypixDeck <span aria-hidden="true">→</span></a>
+            <a class="btn btn--ghost" href="/products">Browse all products</a>
+          </div>
+          <ul class="hero__stats">
+            <li><b>Fanless</b><span>silent</span></li>
+            <li><b>CM0–CM5</b><span>compute</span></li>
+            <li><b>100%</b><span>open source</span></li>
+          </ul>
+        </div>
+        <figure class="hero__stage">
+          <span class="pin pin--tl"><b>TypixDeck</b><i>Fanless Linux</i></span>
+          <span class="pin pin--br"><b>TBA</b><i>Kickstarter soon</i></span>
+          <img src="/assets/cyberdeck.png" alt="TypixDeck — fanless Linux computer" />
+        </figure>
+      </section>
+
+      <!-- ── Products ────────────────────────────────────────────── -->
+      <section class="products">
+        <header class="sechead">
+          <div>
+            <span class="kicker">The catalogue</span>
+            <h2>All products</h2>
+            <p>Compact open hardware · open-source · shipped worldwide</p>
+          </div>
+          <a class="seelink" href="#">See all <span aria-hidden="true">→</span></a>
+        </header>
+        <div class="grid">
+          {products.map((p) => (
+            <a class="card" href="#">
+              <div class="card__img">
+                {p.tag && <span class="card__tag">{p.tag}</span>}
+                <img src={p.img} alt={p.name} />
+              </div>
+              <h3>{p.name}</h3>
+              <p>{p.ds}</p>
+              <div class="card__foot">
+                <span class="price">{typeof p.price === 'number' ? `$${p.price}` : p.price}</span>
+                <button class="add" aria-label={`Add ${p.name}`}>+</button>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- ── Why ─────────────────────────────────────────────────── -->
+      <section class="why">
+        <header class="sechead sechead--center">
+          <span class="kicker">Why TypixNode</span>
+          <h2>Built small, built open</h2>
+        </header>
+        <div class="features">
+          <article class="feature">
+            <div class="feature__ic" aria-hidden="true">❄</div>
+            <h4>Fanless &amp; silent</h4>
+            <p>CNC aluminum bodies double as heatsinks — full performance at 0 dB, no fans to fail.</p>
+          </article>
+          <article class="feature">
+            <div class="feature__ic" aria-hidden="true">▣</div>
+            <h4>Fully open source</h4>
+            <p>Schematics, firmware and STEP files are all public, so you can repair, mod and build on everything.</p>
+          </article>
+          <article class="feature">
+            <div class="feature__ic" aria-hidden="true">◽</div>
+            <h4>Pocket-sized</h4>
+            <p>From a palm computer to a card-sized keyboard, every device is made to travel with you.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ── Closing CTA ─────────────────────────────────────────── -->
+      <section class="closer">
+        <h2>Start with TypixDeck</h2>
+        <p>A silent, open, CNC-aluminum Linux computer that fits in your hand — built on the Raspberry Pi ecosystem shared by millions of developers.</p>
+        <div class="hero__cta">
+          <a class="btn btn--primary" href="#">Meet TypixDeck</a>
+          <a class="btn btn--ghost" href="#">See all products</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="foot__brand">
+        <span class="brand__mark">◣</span> TypixNode
+        <small>Compact open hardware, CNC-machined in small batches. Built tiny, shipped worldwide.</small>
+      </div>
+      <div class="foot__cols">
+        <div><h5>Products</h5><a href="#">TypixDeck</a><a href="#">Keyboard</a><a href="#">DIY Suite</a><a href="#">Pico-Mac</a></div>
+        <div><h5>Company</h5><a href="#">About</a><a href="#">Support</a><a href="#">Shipping</a><a href="#">Warranty</a></div>
+        <div><h5>Open</h5><a href="#">CAD files</a><a href="#">Firmware</a><a href="#">Docs</a><a href="#">GitHub</a></div>
+      </div>
+      <div class="foot__copy">© 2026 TypixNode — Compact Open Hardware</div>
+    </footer>
+
+    <script>
+      (function () {
+        const root = document.documentElement;
+        const btns = document.querySelectorAll('.dock__btn');
+        const apply = (id) => {
+          root.setAttribute('data-style', id);
+          btns.forEach((b) => b.classList.toggle('is-active', b.dataset.styleTarget === id));
+          try { localStorage.setItem('tnx-lab-style', id); } catch (e) {}
+        };
+        btns.forEach((b) => b.addEventListener('click', () => apply(b.dataset.styleTarget)));
+        window.addEventListener('keydown', (e) => {
+          const map = { '1': 'aurora', '2': 'terminal', '3': 'blueprint', '4': 'industrial' };
+          if (map[e.key]) apply(map[e.key]);
+        });
+        // The Cloudflare dev adapter doesn't surface ?style= to Astro.url on
+        // the server, so the authoritative initial style is read client-side
+        // from the URL (then persisted to localStorage). SSR's data-style is
+        // just a safe fallback.
+        const allowed = ['aurora', 'terminal', 'blueprint', 'industrial'];
+        const urlStyle = new URLSearchParams(location.search).get('style');
+        let initial = allowed.includes(urlStyle) ? urlStyle : (root.getAttribute('data-style') || 'aurora');
+        if (!urlStyle) { try { const s = localStorage.getItem('tnx-lab-style'); if (allowed.includes(s)) initial = s; } catch (e) {} }
+        apply(initial);
+      })();
+    </script>
+  </body>
+</html>

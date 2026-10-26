@@ -15,10 +15,16 @@ export const GET: APIRoute = async ({ locals }) => {
   const now = Date.now();
   const products: Record<
     string,
-    { img: string; usd: number; name: Record<string, string>; promo?: { usd: number; ends: string | null } }
+    { img: string; usd?: number; name: Record<string, string>; promo?: { usd: number; ends: string | null }; tba?: boolean }
   > = {};
   for (const [sku, p] of Object.entries(catalog)) {
     const promo = activePromoUsd(p, now);
+    if (sku === 'typixdeck') {
+      // Kickstarter price is TBA and may be several times the old body number —
+      // do not publish a dollar figure the storefront (or scrapers) can quote.
+      products[sku] = { img: p.img, name: p.name, tba: true };
+      continue;
+    }
     products[sku] = {
       img: p.img,
       usd: p.usd,

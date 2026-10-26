@@ -26,13 +26,13 @@ interface Card {
   alt: string;
   tag?: string;      // i18n key for a badge
   fromPrice?: boolean; // show "from $X" (configurable product) instead of a flat price
+  hidePrice?: boolean; // Kickstarter TBA — do not print a dollar amount
 }
 
-// TypixDeck is one configurable product (base $119 + compute/storage option
-// deltas), so it's a single "from $119" card that opens the configurator on
-// /typixdeck — not separate CM0/CM4/CM5 SKUs.
+// TypixDeck is one configurable product. Kickstarter price is TBA (likely
+// several times the old body number), so the card does not print a USD figure.
 const computers: Card[] = [
-  { id: 'typixdeck', usd: 119, href: '/typixdeck#buy', name: 'TypixDeck', img: '/assets/cyberdeck.png', alt: 'TypixDeck', ds: 'p.deck.ds', tag: 'tag.flagship', fromPrice: true },
+  { id: 'typixdeck', usd: 186, href: '/typixdeck#buy', name: 'TypixDeck', img: '/assets/cyberdeck.png', alt: 'TypixDeck', ds: 'p.deck.ds', tag: 'tag.flagship', fromPrice: true, hidePrice: true },
   { id: 'picomac', usd: 60, href: '/picomac', name: 'Pico-Mac Nano', img: '/assets/picomac.jpg', alt: 'Pico-Mac Nano', ds: 'p.mac.ds' },
 ];
 
@@ -78,9 +78,11 @@ const sections = [
               ? <p class="ds" data-i18n={p.ds} set:html={L(p.ds, lang)}></p>
               : <p class="ds">{p.name}</p>}
             <div class="foot">
-              <span class="pr" data-sku={p.id} data-usd={p.usd}>
-                {p.fromPrice && <span class="from" data-i18n="pg.from" set:html={L('pg.from', lang)}></span>}${p.usd}
-              </span>
+              {p.hidePrice
+                ? <span class="pr pr--tba" data-sku={p.id} data-i18n="deck.price" set:html={L('deck.price', lang)}></span>
+                : <span class="pr" data-sku={p.id} data-usd={p.usd}>
+                    {p.fromPrice && <span class="from" data-i18n="pg.from" set:html={L('pg.from', lang)}></span>}${p.usd}
+                  </span>}
               {p.fromPrice
                 ? <span class="add cfg" aria-hidden="true" data-i18n="pg.configure" set:html={L('pg.configure', lang)}></span>
                 : <button class="add" data-add={p.id} aria-label="Add">+</button>}
