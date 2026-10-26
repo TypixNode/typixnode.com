@@ -216,7 +216,7 @@
       if (sumPlat) sumPlat.textContent = L("cfg.plat." + fam, lang);
       if (sumMem) sumMem.textContent = SUM_MEM[o.compute] || "\u2014";
       if (sumSto) sumSto.textContent = isCustom ? L("cfg.custom.badge", lang) : (SUM_STO[o.storage] || "\u2014");
-      if (sumPrice) sumPrice.textContent = isCustom ? L("cfg.custom.badge", lang) : money(price, cur);
+      if (sumPrice) sumPrice.textContent = isCustom ? L("cfg.custom.badge", lang) : tbaLabel();
     }
     root.addEventListener("change", function (e) { if (e.target && e.target.name && e.target.name.indexOf("cfg-") === 0) update(); });
     // Step-1 platform buttons: pick the family's default (cheapest) variant if
@@ -353,7 +353,7 @@
       "cfg.sum.mem": "Memory",
       "cfg.sum.sto": "Storage",
       "cfg.sum.disp": "Display",
-      "cfg.sum.disp.v": "3.5″ touch",
+      "cfg.sum.disp.v": "3.2″ touch",
       "cfg.custom.sending": "Sending…",
       "cfg.custom.ok": "Thanks — we've received your request and will reply by email.",
       "cfg.custom.invalid": "Please enter a valid email address.",
@@ -631,7 +631,7 @@
       "cfg.sum.mem": "内存",
       "cfg.sum.sto": "存储",
       "cfg.sum.disp": "屏幕",
-      "cfg.sum.disp.v": "3.5″ 触摸屏",
+      "cfg.sum.disp.v": "3.2″ 触摸屏",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "四核 A53 @1GHz · 512MB — 入门 · 超低功耗",
       "cfg.plat.cm4": "CM4",
@@ -915,7 +915,7 @@
       "cfg.sum.mem": "メモリ",
       "cfg.sum.sto": "ストレージ",
       "cfg.sum.disp": "ディスプレイ",
-      "cfg.sum.disp.v": "3.5インチ タッチ",
+      "cfg.sum.disp.v": "3.2インチ タッチ",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "クアッド A53 @1GHz · 512MB — 入門・超低消費電力",
       "cfg.plat.cm4": "CM4",
@@ -1209,7 +1209,7 @@
       "cfg.sum.mem": "記憶體",
       "cfg.sum.sto": "儲存",
       "cfg.sum.disp": "螢幕",
-      "cfg.sum.disp.v": "3.5″ 觸控螢幕",
+      "cfg.sum.disp.v": "3.2″ 觸控螢幕",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "四核 A53 @1GHz · 512MB — 入門 · 超低功耗",
       "cfg.plat.cm4": "CM4",
@@ -1633,7 +1633,7 @@
       "cfg.sum.mem": "Arbeitsspeicher",
       "cfg.sum.sto": "Speicher",
       "cfg.sum.disp": "Display",
-      "cfg.sum.disp.v": "3,5″ Touch",
+      "cfg.sum.disp.v": "3,2″ Touch",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "Quad A53 @1GHz · 512MB — Einstieg, sehr sparsam",
       "cfg.plat.cm4": "CM4",
@@ -2057,7 +2057,7 @@
       "cfg.sum.mem": "Mémoire",
       "cfg.sum.sto": "Stockage",
       "cfg.sum.disp": "Écran",
-      "cfg.sum.disp.v": "tactile 3,5″",
+      "cfg.sum.disp.v": "tactile 3,2″",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "Quad A53 @1GHz · 512 Mo — entrée de gamme, très basse consommation",
       "cfg.plat.cm4": "CM4",
@@ -2481,7 +2481,7 @@
       "cfg.sum.mem": "Memoria",
       "cfg.sum.sto": "Almacenamiento",
       "cfg.sum.disp": "Pantalla",
-      "cfg.sum.disp.v": "táctil 3,5″",
+      "cfg.sum.disp.v": "táctil 3,2″",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "Quad A53 @1GHz · 512MB — básico, muy bajo consumo",
       "cfg.plat.cm4": "CM4",
@@ -2905,7 +2905,7 @@
       "cfg.sum.mem": "Memória",
       "cfg.sum.sto": "Armazenamento",
       "cfg.sum.disp": "Tela",
-      "cfg.sum.disp.v": "toque 3,5″",
+      "cfg.sum.disp.v": "toque 3,2″",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "Quad A53 @1GHz · 512MB — entrada, consumo muito baixo",
       "cfg.plat.cm4": "CM4",
@@ -3329,7 +3329,7 @@
       "cfg.sum.mem": "메모리",
       "cfg.sum.sto": "저장장치",
       "cfg.sum.disp": "디스플레이",
-      "cfg.sum.disp.v": "3.5″ 터치",
+      "cfg.sum.disp.v": "3.2″ 터치",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "쿼드 A53 @1GHz · 512MB — 입문 · 초저전력",
       "cfg.plat.cm4": "CM4",
@@ -3753,7 +3753,7 @@
       "cfg.sum.mem": "Memoria",
       "cfg.sum.sto": "Archiviazione",
       "cfg.sum.disp": "Display",
-      "cfg.sum.disp.v": "touch 3,5″",
+      "cfg.sum.disp.v": "touch 3,2″",
       "cfg.plat.cm0": "CM0",
       "cfg.plat.cm0.d": "Quad A53 @1GHz · 512MB — base, consumo bassissimo",
       "cfg.plat.cm4": "CM4",
