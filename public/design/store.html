@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypixDeck — Pocket Linux Computer | TypixNode Store</title>
+<style>
+  /* ============================================================
+     Variant F — "Store" · m5shark/SharkDeck 转化型电商产品页
+     Announcement bar, gallery + sticky buy box, bundle pricing,
+     comparison table, review strip, FAQ. Utilitarian, dense.
+     ============================================================ */
+  :root{
+    --bg:#ffffff; --ink:#16191c; --mut:#5c646c; --line:#e4e7ea;
+    --acc:#0a55d0; --acc-d:#083f9a; --ok:#0a8a3c; --warn:#c2410c;
+    --soft:#f5f7f9;
+    --f:-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15.5px;line-height:1.6}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+  .b{font-weight:700}
+
+  .announce{background:var(--ink);color:#fff;font-size:13px;text-align:center;padding:8px 14px}
+  .announce b{color:#7fd4a8}
+
+  header{border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:20}
+  header .wrap{display:flex;align-items:center;gap:26px;height:58px}
+  header .logo{font-weight:800;font-size:17px;letter-spacing:-.01em}
+  header nav{display:flex;gap:20px;font-size:14px;color:var(--mut)}
+  header nav a:hover{color:var(--ink)}
+  header .sp{flex:1}
+  header .cart{font-size:13.5px;font-weight:700;border:1.5px solid var(--ink);border-radius:6px;padding:8px 16px}
+
+  /* breadcrumbs */
+  .crumbs{font-size:12.5px;color:var(--mut);padding:14px 0}
+  .crumbs a:hover{text-decoration:underline}
+
+  /* product layout */
+  .product{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;padding-bottom:40px}
+  @media(max-width:900px){.product{grid-template-columns:1fr}}
+  .gallery .main{border:1px solid var(--line);border-radius:10px;background:var(--soft);padding:24px}
+  .gallery .main img{margin:0 auto;max-height:430px}
+  .thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+  .thumbs button{border:1px solid var(--line);border-radius:8px;background:var(--soft);padding:8px;cursor:pointer}
+  .thumbs button.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+  .thumbs img{height:64px;object-fit:contain;margin:0 auto}
+
+  .buy .flags{display:flex;gap:8px;margin-bottom:10px}
+  .flag{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:4px}
+  .flag.hot{background:#fdeaea;color:#b91c1c}
+  .flag.ship{background:#e7f4ec;color:var(--ok)}
+  .buy h1{font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;line-height:1.15}
+  .rating{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mut);margin:8px 0 14px}
+  .stars{color:#f59e0b;letter-spacing:2px;font-size:14px}
+  .pricerow{display:flex;align-items:baseline;gap:12px;margin:6px 0 4px}
+  .pricerow .now{font-size:30px;font-weight:800}
+  .pricerow .was{color:var(--mut);text-decoration:line-through}
+  .pricerow .save{font-size:12.5px;font-weight:700;color:#b91c1c;background:#fdeaea;padding:3px 8px;border-radius:4px}
+  .ship-eta{font-size:13px;color:var(--mut);margin-bottom:16px}
+  .ship-eta b{color:var(--ok)}
+
+  .sellpoints{border:1px solid var(--line);border-radius:8px;margin:14px 0;overflow:hidden}
+  .sellpoints li{list-style:none;display:flex;gap:10px;padding:9px 14px;font-size:14px;border-bottom:1px solid var(--line)}
+  .sellpoints li:last-child{border-bottom:0}
+  .sellpoints li::before{content:"✓";color:var(--ok);font-weight:800}
+
+  .optgroup{margin:16px 0}
+  .optgroup .lbl{font-size:13px;font-weight:700;margin-bottom:8px}
+  .optgroup .lbl span{color:var(--mut);font-weight:400}
+  .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .opt{border:1.5px solid var(--line);border-radius:8px;padding:9px 14px;font-size:13.5px;cursor:pointer;background:#fff}
+  .opt small{display:block;color:var(--mut);font-size:11.5px}
+  .opt.on{border-color:var(--acc);background:#eef4fd;font-weight:700}
+  .opt.dis{opacity:.45;cursor:not-allowed;text-decoration:line-through}
+
+  .bundle{border:1.5px dashed var(--acc);border-radius:8px;padding:14px 16px;margin:16px 0;background:#f6faff}
+  .bundle .t{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--acc);text-transform:uppercase;margin-bottom:8px}
+  .bundle .row{display:flex;justify-content:space-between;font-size:14px;padding:5px 0}
+  .bundle .row b{color:var(--acc-d)}
+
+  .atc{display:block;width:100%;text-align:center;background:var(--acc);color:#fff;font-size:16.5px;font-weight:800;border:0;border-radius:8px;padding:15px 0;cursor:pointer}
+  .atc:hover{background:var(--acc-d)}
+  .paybtn{display:block;width:100%;text-align:center;background:#ffc439;border-radius:8px;font-weight:800;padding:13px 0;margin-top:8px;font-size:15px;color:#003087}
+  .guarantee{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--mut);margin-top:12px;flex-wrap:wrap}
+
+  /* tab strip */
+  .tabs{display:flex;gap:2px;border-bottom:2px solid var(--ink);margin-top:14px;overflow-x:auto}
+  .tabs a{font-size:13.5px;font-weight:700;padding:11px 18px;background:var(--soft);border:1px solid var(--line);border-bottom:0;border-radius:8px 8px 0 0;white-space:nowrap}
+  .tabs a.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  section.blk{padding:44px 0;border-bottom:1px solid var(--line)}
+  section.blk h2{font-size:24px;letter-spacing:-.01em;margin-bottom:6px}
+  section.blk .sub{color:var(--mut);margin-bottom:24px;max-width:70ch}
+
+  .capgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:860px){.capgrid{grid-template-columns:1fr}}
+  .capcard{border:1px solid var(--line);border-radius:10px;padding:20px}
+  .capcard .ic{font-size:13px;font-weight:800;color:var(--acc);letter-spacing:.05em;text-transform:uppercase}
+  .capcard h3{font-size:16.5px;margin:6px 0 6px}
+  .capcard p{font-size:13.5px;color:var(--mut)}
+
+  /* comparison */
+  .cmp{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:720px}
+  th,td{border:1px solid var(--line);padding:11px 14px;text-align:left;vertical-align:top}
+  thead th{background:var(--soft);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+  thead th.me{background:#eef4fd;color:var(--acc-d)}
+  td.me{background:#f6faff;font-weight:600}
+  td .y{color:var(--ok);font-weight:800}
+  td .n{color:var(--mut)}
+
+  /* reviews */
+  .reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:860px){.reviews{grid-template-columns:1fr}}
+  .rev{border:1px solid var(--line);border-radius:10px;padding:18px}
+  .rev .stars{margin-bottom:6px}
+  .rev p{font-size:14px}
+  .rev .who{font-size:12.5px;color:var(--mut);margin-top:10px}
+  .rev .who b{color:var(--ok)}
+
+  /* faq */
+  details{border:1px solid var(--line);border-radius:8px;margin-bottom:8px;overflow:hidden}
+  summary{cursor:pointer;font-weight:700;font-size:14.5px;padding:14px 16px;list-style:none;display:flex;justify-content:space-between}
+  summary::after{content:"+";color:var(--mut);font-weight:400}
+  details[open] summary::after{content:"–"}
+  details p{padding:0 16px 14px;font-size:14px;color:var(--mut)}
+
+  footer{padding:30px 0 50px;color:var(--mut);font-size:13px}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+</style>
+</head>
+<body>
+
+<div class="announce">TypixDeck batch #4 — pre-order open · <b>FREE worldwide shipping</b> · est. dispatch end of Q3 2026</div>
+
+<header><div class="wrap">
+  <span class="logo">TypixNode</span>
+  <nav><a href="#caps">Capabilities</a><a href="#cmp">Compare</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav>
+  <span class="sp"></span>
+  <a class="cart" href="#">Cart · 0</a>
+</div></header>
+
+<div class="wrap">
+  <div class="crumbs"><a href="#">Home</a> / <a href="#">Computers</a> / TypixDeck</div>
+
+  <div class="product">
+    <div class="gallery">
+      <div class="main"><img id="mainimg" src="/assets/cyberdeck.png" alt="TypixDeck"></div>
+      <div class="thumbs">
+        <button class="on" onclick="swap(this,'/assets/cyberdeck.png')"><img src="/assets/cyberdeck.png" alt=""></button>
+        <button onclick="swap(this,'/assets/cyberdeck-open.png')"><img src="/assets/cyberdeck-open.png" alt=""></button>
+        <button onclick="swap(this,'/assets/cyberdeck-internals.png')"><img src="/assets/cyberdeck-internals.png" alt=""></button>
+        <button onclick="swap(this,'/assets/keyboard.jpg')"><img src="/assets/keyboard.jpg" alt=""></button>
+      </div>
+    </div>
+
+    <div class="buy">
+      <div class="flags"><span class="flag hot">Hot product · low stock</span><span class="flag ship">Free shipping</span></div>
+      <h1>TypixDeck — CNC-Aluminum Fanless Pocket Linux Computer</h1>
+      <div class="rating"><span class="stars">★★★★★</span> 4.9 · 87 reviews · <a href="#reviews" style="text-decoration:underline">read all</a></div>
+      <div class="pricerow"><span class="now">$119</span><span class="was">$139</span><span class="save">SAVE 14%</span></div>
+      <div class="ship-eta">Estimated dispatch: <b>end of Sep 2026</b> · full refund before shipping</div>
+
+      <ul class="sellpoints">
+        <li><b>0 dB fanless</b> — the CNC aluminum body is the heatsink</li>
+        <li><b>Raspberry Pi CM socket</b> — CM0 / CM4 / CM5, swap any time</li>
+        <li><b>Real repairability</b> — 4 captive screws, no glue, public teardown</li>
+        <li><b>M.2 NVMe + microSD</b> — plus 40-pin GPIO for hardware projects</li>
+        <li><b>100% open</b> — STEP, schematics &amp; firmware on GitHub</li>
+      </ul>
+
+      <div class="optgroup">
+        <div class="lbl">Compute <span>— pick your module</span></div>
+        <div class="opts">
+          <button class="opt on">Body only<small>$119</small></button>
+          <button class="opt">CM0<small>+$40</small></button>
+          <button class="opt">CM4 · 4GB<small>+$95</small></button>
+          <button class="opt">CM5 · 4GB<small>+$105</small></button>
+          <button class="opt">CM5 · 16GB<small>+$165</small></button>
+        </div>
+      </div>
+      <div class="optgroup">
+        <div class="lbl">Storage <span>— OS preloaded</span></div>
+        <div class="opts">
+          <button class="opt on">None<small>$0</small></button>
+          <button class="opt">TF 64GB<small>+$19</small></button>
+          <button class="opt">M.2 SSD 128GB<small>+$25</small></button>
+          <button class="opt">M.2 SSD 256GB<small>+$45</small></button>
+        </div>
+      </div>
+
+      <div class="bundle">
+        <div class="t">Bundle &amp; save</div>
+        <div class="row"><span>+ BLE Keyboard (card-sized, ZMK)</span><b>$39 → $29</b></div>
+        <div class="row"><span>+ DIY snap-dome kit</span><b>$9 → $5</b></div>
+      </div>
+
+      <button class="atc">Add to cart — $119</button>
+      <a class="paybtn" href="#">PayPal</a>
+      <div class="guarantee"><span>✓ Ships worldwide</span><span>✓ Cancel any time pre-ship</span><span>✓ Spare parts stocked</span></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <a class="on" href="#caps">Capabilities</a><a href="#cmp">Comparison</a><a href="#specs">Specs &amp; box</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a>
+  </div>
+</div>
+
+<section class="blk" id="caps"><div class="wrap">
+  <h2>Core capabilities</h2>
+  <p class="sub">A compact Linux machine for terminal work, self-hosting, coding on the go, and hardware projects.</p>
+  <div class="capgrid">
+    <div class="capcard"><div class="ic">Silent</div><h3>Fanless full Linux desktop</h3><p>Boot Raspberry Pi OS or your distro of choice. Code, SSH, browse — with zero fan noise on your desk, ever.</p></div>
+    <div class="capcard"><div class="ic">Upgradable</div><h3>Standard CM socket</h3><p>CM4 and CM5 seat directly; CM0 drops in via our castellated 132-pin adapter. Your next upgrade is a module, not a new computer.</p></div>
+    <div class="capcard"><div class="ic">Fast storage</div><h3>M.2 NVMe + microSD</h3><p>Run the OS from a real SSD. Preloaded storage options at checkout, or bring your own.</p></div>
+    <div class="capcard"><div class="ic">GPIO</div><h3>40-pin header</h3><p>LEDs, sensors, HATs, serial consoles — the full Raspberry Pi GPIO ecosystem works out of the box.</p></div>
+    <div class="capcard"><div class="ic">Repairable</div><h3>4 screws, no glue</h3><p>Labeled connectors and a printed teardown guide. Spare parts and CAD stay published, so repair never means replacement.</p></div>
+    <div class="capcard"><div class="ic">Open</div><h3>Everything on GitHub</h3><p>Full STEP files, schematics and firmware. If we disappeared tomorrow, your hardware wouldn't.</p></div>
+  </div>
+</div></section>
+
+<section class="blk" id="cmp"><div class="wrap">
+  <h2>Device comparison</h2>
+  <p class="sub">How TypixDeck positions against other small Linux handhelds. Specs summarized from public product pages, Jul 2026.</p>
+  <div class="cmp"><table>
+    <thead><tr><th>Feature</th><th class="me">TypixDeck</th><th>SharkDeck</th><th>RootBoard</th><th>uConsole</th></tr></thead>
+    <tbody>
+      <tr><td>Body</td><td class="me">CNC 6061-T6 aluminum</td><td>3D-printed shell</td><td>Kit enclosure</td><td>Aluminum + plastic</td></tr>
+      <tr><td>Compute</td><td class="me">RPi CM0 / CM4 / CM5, socketed</td><td>WalnutPi Zero 2W, 1GB</td><td>Bring-your-own Pi Zero</td><td>CM4 (+ others)</td></tr>
+      <tr><td>Max RAM</td><td class="me">16 GB (CM5)</td><td>1–4 GB (board swap)</td><td>512 MB (Zero 2 W)</td><td>8 GB</td></tr>
+      <tr><td>Storage</td><td class="me">M.2 NVMe + microSD</td><td>microSD only</td><td>microSD only</td><td>microSD</td></tr>
+      <tr><td>Cooling</td><td class="me"><span class="y">0 dB passive, chassis = heatsink</span></td><td>Passive</td><td>Passive</td><td>Passive</td></tr>
+      <tr><td>Open hardware</td><td class="me"><span class="y">Full STEP + schematics + firmware</span></td><td><span class="n">Partial</span></td><td><span class="y">Promised open</span></td><td><span class="y">Schematics public</span></td></tr>
+      <tr><td>Price (base)</td><td class="me">$119</td><td>$150</td><td>$115 (KS)</td><td>$139+</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section class="blk" id="specs"><div class="wrap">
+  <h2>Technical specs &amp; what's included</h2>
+  <p class="sub"></p>
+  <div class="capgrid">
+    <div class="capcard"><div class="ic">Specs</div><h3>TypixDeck</h3><p>
+      Compute: RPi CM4/CM5 socketed, CM0 via adapter<br>
+      Chassis: CNC 6061-T6, bead-blasted, anodized<br>
+      Ports: HDMI · USB-C PD · 2× USB-A · GbE · GPIO<br>
+      Wireless: Wi-Fi 5 / BT 5.0 (CM-dependent)<br>
+      Size: 95 × 62 × 22 mm · 280 g</p></div>
+    <div class="capcard"><div class="ic">In the box</div><h3>Body kit</h3><p>
+      ✓ CNC aluminum chassis (anodized)<br>
+      ✓ Mainboard: CM socket, M.2, GPIO<br>
+      ✓ Display + bonded cover glass<br>
+      ✓ Tool + spare screws<br>
+      ✓ Printed teardown &amp; setup guide</p></div>
+    <div class="capcard"><div class="ic">Not included</div><h3>Bring or add</h3><p>
+      – Compute module (add from +$40)<br>
+      – microSD / M.2 SSD (add from +$19)<br>
+      – Your favorite Linux distro<br><br>
+      Same rule as RootBoard: use parts you already own.</p></div>
+  </div>
+</div></section>
+
+<section class="blk" id="reviews"><div class="wrap">
+  <h2>Customer reviews</h2>
+  <p class="sub">4.9 average · 87 verified orders</p>
+  <div class="reviews">
+    <div class="rev"><div class="stars">★★★★★</div><p>"Replaced my always-on home server. Dead silent on the shelf, NVMe makes it feel like a real computer, not a Pi in a box."</p><div class="who">Mika T. · <b>Verified purchase</b></div></div>
+    <div class="rev"><div class="stars">★★★★★</div><p>"The teardown guide is real. Opened it, swapped the CM4 for a CM5, closed it. Ten minutes, no drama."</p><div class="who">D. Alvarez · <b>Verified purchase</b></div></div>
+    <div class="rev"><div class="stars">★★★★☆</div><p>"Anodizing and machining are nicer than photos suggest. Wish the batch cadence were faster — mine took six weeks."</p><div class="who">jun.w · <b>Verified purchase</b></div></div>
+  </div>
+</div></section>
+
+<section class="blk" id="faq"><div class="wrap">
+  <h2>Frequently asked questions</h2>
+  <p class="sub"></p>
+  <details open><summary>Does it come with a Raspberry Pi compute module?</summary><p>It ships as a chassis kit. Add a CM4 or CM5 at checkout, or drop in one you already own — it uses the standard compute-module socket.</p></details>
+  <details><summary>How does a fanless computer stay cool?</summary><p>The CNC aluminum chassis is the heatsink. The module is thermally bonded to the body, so heat spreads across the whole chassis and dissipates silently, even under sustained load.</p></details>
+  <details><summary>Can I really open and repair it myself?</summary><p>Yes. Four captive screws, no glue, labeled connectors, and a public teardown guide. Spare parts and CAD files are available.</p></details>
+  <details><summary>When does my pre-order ship?</summary><p>Built in small batches; estimated dispatch is end of Q3 2026. We email tracking when it ships, and you can cancel for a full refund any time before then.</p></details>
+</div></section>
+
+<footer><div class="wrap">
+  <span>© 2026 TypixNode · compact open hardware</span>
+  <span>github.com/TypixNode · support@typixnode.com</span>
+</div></footer>
+
+<script>
+function swap(btn,src){
+  document.getElementById('mainimg').src=src;
+  document.querySelectorAll('.thumbs button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+document.querySelectorAll('.opts').forEach(g=>{
+  g.addEventListener('click',e=>{
+    const b=e.target.closest('.opt'); if(!b||b.classList.contains('dis'))return;
+    g.querySelectorAll('.opt').forEach(o=>o.classList.remove('on')); b.classList.add('on');
+  });
+});
+</script>
+
+</body>
+</html>

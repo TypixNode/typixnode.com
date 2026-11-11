@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypixNode — 设计方案试验场</title>
+<style>
+  :root{--ink:#151515;--mut:#777;--line:#e5e5e5;--f:'Helvetica Neue',Helvetica,'PingFang SC','Microsoft YaHei',Arial,sans-serif}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--f);color:var(--ink);background:#fff;font-size:16px;line-height:1.7}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:980px;margin:0 auto;padding:0 24px}
+  header{padding:56px 0 8px}
+  h1{font-size:34px;letter-spacing:-.02em}
+  header p{color:var(--mut);margin-top:10px;max-width:70ch}
+  header p code{background:#f4f4f4;padding:1px 6px;border-radius:3px;font-size:14px}
+  .card{display:grid;grid-template-columns:120px 1fr auto;gap:24px;align-items:baseline;padding:26px 0;border-bottom:1px solid var(--line)}
+  .card:first-of-type{border-top:1px solid var(--line);margin-top:34px}
+  .card .tag{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+  .card h2{font-size:22px;letter-spacing:-.01em}
+  .card h2 small{font-weight:400;color:var(--mut);font-size:14px;margin-left:10px}
+  .card p{color:#555;font-size:14.5px;margin-top:6px;max-width:66ch}
+  .card p b{color:var(--ink)}
+  .card .go{font-size:14px;font-weight:700;border:1.5px solid var(--ink);padding:9px 20px;white-space:nowrap}
+  .card .go:hover{background:var(--ink);color:#fff}
+  @media(max-width:720px){.card{grid-template-columns:1fr}.card .go{justify-self:start}}
+  footer{padding:30px 0 60px;color:var(--mut);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>TypixNode 设计方案试验场</h1>
+    <p>六套完整可点的首页/产品页方向，全部只用站内现有素材与真实文案，刻意避开"AI 味"
+    （渐变网格、玻璃拟态、紫绿渐变字、emoji 图标堆砌）。每套都是独立的静态页：
+    <code>/design/*.html</code>，不影响现有站点。</p>
+  </header>
+
+  <a class="card" href="/design/campaign.html">
+    <span class="tag">Variant B</span>
+    <span>
+      <h2>Campaign<small>Kickstarter / RootBoard 众筹叙事风</small></h2>
+      <p>长页故事线：宣言黑板块 + 资金进度侧栏 + 档位卡（rewards）+ "What's in the box" +
+      Risks &amp; challenges。参考 RootBoard campaign 的<b>诚实清单</b>与克制排版。</p>
+    </span>
+    <span class="go">打开 →</span>
+  </a>
+
+  <a class="card" href="/design/workshop.html">
+    <span class="tag">Variant C</span>
+    <span>
+      <h2>Workshop<small>MNT Reform / 工程图纸风</small></h2>
+      <p>图纸标题栏导航、网格绘图区带尺寸标注、NOTE 1/2/3 工程注记、BOM 物料表、
+      SKU 价目表、红色 "APPROVED" 印章。<b>把产品当图纸卖</b>。</p>
+    </span>
+    <span class="go">打开 →</span>
+  </a>
+
+  <a class="card" href="/design/terminal.html">
+    <span class="tag">Variant D</span>
+    <span>
+      <h2>Terminal<small>cyberdeck 亚文化 / TUI 终端风</small></h2>
+      <p>黑底磷光绿、扫描线、motd 开场、<b>ls -la 商品目录</b>、neofetch 规格卡、
+      man page 式 FAQ。给 r/cyberdeck 人群的会心一击。</p>
+    </span>
+    <span class="go">打开 →</span>
+  </a>
+
+  <a class="card" href="/design/catalog.html">
+    <span class="tag">Variant E</span>
+    <span>
+      <h2>Catalogue<small>Teenage Engineering / 瑞士印刷目录风</small></h2>
+      <p>白纸黑字一种字体，巨号标题 + 编号目录（01–05）+ 大幅图版（Plate I）+
+      Colophon 版权页。<b>像一本印刷目录</b>，零装饰。</p>
+    </span>
+    <span class="go">打开 →</span>
+  </a>
+
+  <a class="card" href="/design/store.html">
+    <span class="tag">Variant F</span>
+    <span>
+      <h2>Store<small>m5shark / SharkDeck 转化型电商风</small></h2>
+      <p>公告条 + 图库缩略图 + 星级评分 + 划线价 + 选配按钮 + <b>Bundle &amp; Save</b> +
+      对比表（vs SharkDeck / RootBoard / uConsole）+ 评价 + 折叠 FAQ。信息密度最高的一版。</p>
+    </span>
+    <span class="go">打开 →</span>
+  </a>
+
+  <a class="card" href="/design/night.html">
+    <span class="tag">Variant G</span>
+    <span>
+      <h2>Night shift<small>暗色硬件品牌摄影风</small></h2>
+      <p>近黑背景 + 单一橙色点缀 + 点阵小标 + <b>超大规格数字</b>（0 dB / 280 g / 4 screws）+
+      三步选配器（带实时算价）。克制的暗色，不是赛博紫。</p>
+    </span>
+    <span class="go">打开 →</span>
+  </a>
+
+  <footer>参考来源：kickstarter.com/projects/dian-lieu/rootboard · m5shark.com SharkDeck ·
+  clockworkpi.com uConsole/DevTerm · mntre.com Reform。所有价格与规格文案取自站内现有 catalog/i18n。</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypixDeck — silent aluminum Linux computer</title>
+<style>
+  /* ============================================================
+     Variant G — "Night shift" · 硬件品牌暗色摄影风
+     Near-black, one warm accent, dot-matrix labels, oversized
+     spec numbers. No gradient meshes, no glass, no purple.
+     ============================================================ */
+  :root{
+    --bg:#101010; --panel:#161616; --ink:#ececec; --mut:#8f8f8f;
+    --line:#262626; --acc:#e04b1a;
+    --dot:'Courier New', ui-monospace, Menlo, monospace;
+    --f:'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 26px}
+  .dot{font-family:var(--dot);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--mut)}
+  .dot.acc{color:var(--acc)}
+
+  header{position:sticky;top:0;z-index:30;background:#101010e6;backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  header .wrap{display:flex;align-items:center;gap:28px;height:60px}
+  header .logo{font-weight:800;letter-spacing:.02em}
+  header nav{display:flex;gap:22px;font-size:13.5px;color:var(--mut)}
+  header nav a:hover{color:var(--ink)}
+  header .sp{flex:1}
+  header .buy{font-size:13px;font-weight:700;border:1px solid var(--ink);border-radius:2px;padding:9px 20px}
+  header .buy:hover{background:var(--acc);border-color:var(--acc);color:#fff}
+
+  /* hero */
+  .hero{padding:78px 0 0;border-bottom:1px solid var(--line)}
+  .hero .top{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+  .hero h1{font-size:clamp(40px,7vw,92px);line-height:.98;letter-spacing:-.04em;font-weight:800;max-width:14ch}
+  .hero h1 em{font-style:normal;color:var(--acc)}
+  .hero .aside{max-width:34ch;color:var(--mut);font-size:15px;padding-bottom:10px}
+  .hero .aside .price{color:var(--ink);font-size:22px;font-weight:800;display:block;margin-top:12px}
+  .heroimg{margin-top:44px;position:relative;background:#0a0a0a;border:1px solid var(--line);border-bottom:0}
+  .heroimg img{margin:0 auto;max-height:560px;filter:brightness(.96) contrast(1.04)}
+  .heroimg .tag{position:absolute;font-family:var(--dot);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);border:1px solid var(--line);background:#101010;padding:5px 10px}
+  .t1{top:22px;left:22px}.t2{bottom:22px;right:22px;color:var(--acc);border-color:var(--acc)}
+
+  /* big numbers strip */
+  .numbers{border-bottom:1px solid var(--line)}
+  .numbers .grid{display:grid;grid-template-columns:repeat(4,1fr)}
+  @media(max-width:860px){.numbers .grid{grid-template-columns:repeat(2,1fr)}}
+  .numbers .cell{padding:36px 26px;border-right:1px solid var(--line)}
+  .numbers .cell:last-child{border-right:0}
+  @media(max-width:860px){.numbers .cell:nth-child(2){border-right:0}.numbers .cell:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+  .numbers .n{font-size:clamp(34px,4.6vw,56px);font-weight:800;letter-spacing:-.03em;line-height:1}
+  .numbers .n small{font-size:.45em;color:var(--mut);font-weight:600;letter-spacing:0}
+  .numbers .l{margin-top:10px}
+
+  /* feature rows: photo + copy */
+  .feat{border-bottom:1px solid var(--line)}
+  .feat .grid{display:grid;grid-template-columns:1fr 1fr;min-height:480px}
+  @media(max-width:900px){.feat .grid{grid-template-columns:1fr}}
+  .feat .im{background:#0a0a0a;display:flex;align-items:center;justify-content:center;padding:36px;border-right:1px solid var(--line)}
+  .feat.alt .grid{direction:rtl}
+  .feat.alt .grid>*{direction:ltr}
+  .feat.alt .im{border-right:0;border-left:1px solid var(--line)}
+  .feat .tx{padding:52px 48px;display:flex;flex-direction:column;justify-content:center}
+  .feat h2{font-size:clamp(24px,3vw,38px);letter-spacing:-.025em;line-height:1.06;margin:14px 0 16px;font-weight:800}
+  .feat p{color:var(--mut);max-width:48ch;font-size:15.5px}
+  .feat p b{color:var(--ink)}
+  .feat p+p{margin-top:10px}
+  .feat .mini{margin-top:26px;display:flex;gap:0;border:1px solid var(--line)}
+  .feat .mini div{flex:1;padding:12px 16px;border-right:1px solid var(--line);font-family:var(--dot);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+  .feat .mini div:last-child{border-right:0}
+  .feat .mini b{display:block;font-family:var(--f);font-size:17px;letter-spacing:-.01em;color:var(--ink);margin-top:3px}
+
+  /* configurator strip */
+  .config{border-bottom:1px solid var(--line);padding:56px 0}
+  .config h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-.02em;margin:12px 0 30px}
+  .steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  @media(max-width:860px){.steps{grid-template-columns:1fr}}
+  .step{border:1px solid var(--line);background:var(--panel)}
+  .step .h{padding:12px 16px;border-bottom:1px solid var(--line);font-family:var(--dot);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+  .step ul{list-style:none}
+  .step li{display:flex;justify-content:space-between;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);font-size:14px;cursor:pointer}
+  .step li:last-child{border-bottom:0}
+  .step li:hover{background:#1c1c1c}
+  .step li.on{background:#1c1c1c;box-shadow:inset 3px 0 0 var(--acc)}
+  .step li span:last-child{color:var(--mut);font-variant-numeric:tabular-nums}
+  .confoot{display:flex;align-items:center;gap:22px;margin-top:26px;flex-wrap:wrap}
+  .confoot .total{font-size:30px;font-weight:800;letter-spacing:-.02em}
+  .confoot .total small{color:var(--mut);font-size:13px;font-weight:400;margin-left:8px}
+  .confoot .go{background:var(--acc);color:#fff;font-weight:800;font-size:15px;padding:14px 34px;border-radius:2px}
+  .confoot .go:hover{background:#c23e12}
+  .confoot .note{color:var(--mut);font-size:13px}
+
+  /* lineup */
+  .lineup{border-bottom:1px solid var(--line)}
+  .lineup .grid{display:grid;grid-template-columns:repeat(3,1fr)}
+  @media(max-width:860px){.lineup .grid{grid-template-columns:1fr}}
+  .lineup .cell{padding:30px;border-right:1px solid var(--line)}
+  .lineup .cell:last-child{border-right:0}
+  @media(max-width:860px){.lineup .cell{border-right:0;border-bottom:1px solid var(--line)}}
+  .lineup .cell img{height:200px;object-fit:contain;margin:0 auto 20px;filter:brightness(.95)}
+  .lineup h3{display:flex;justify-content:space-between;font-size:17px;font-weight:800}
+  .lineup h3 span{font-weight:400;color:var(--mut)}
+  .lineup p{font-size:13.5px;color:var(--mut);margin-top:6px}
+  .lineup a.g{display:inline-block;margin-top:14px;font-family:var(--dot);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc)}
+
+  /* spec appendix */
+  .specs{padding:56px 0;border-bottom:1px solid var(--line)}
+  .specs .grid{display:grid;grid-template-columns:280px 1fr;gap:40px;margin-top:26px}
+  @media(max-width:800px){.specs .grid{grid-template-columns:1fr}}
+  .specs h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-.02em;margin-top:10px}
+  .srow{display:grid;grid-template-columns:170px 1fr;gap:20px;padding:13px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+  .srow .k{font-family:var(--dot);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);padding-top:3px}
+
+  footer{padding:30px 0 60px;color:var(--mut);font-size:13px}
+  footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <span class="logo">TypixNode</span>
+  <nav><a href="#deck">Deck</a><a href="#config">Configure</a><a href="#lineup">Lineup</a><a href="#specs">Specs</a></nav>
+  <span class="sp"></span>
+  <a class="buy" href="#config">Order — $119</a>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <div class="top">
+    <div>
+      <span class="dot acc">TND-001 · Batch 4 · Pre-order</span>
+      <h1>Runs all night.<br>Says <em>nothing.</em></h1>
+    </div>
+    <div class="aside">
+      A fanless Linux computer milled from one block of aluminum. Raspberry Pi CM inside,
+      every design file public.
+      <span class="price">$119 <small style="color:var(--mut);font-size:13px;font-weight:400">body kit · free worldwide shipping</small></span>
+    </div>
+  </div>
+  <div class="heroimg">
+    <img src="/assets/cyberdeck.png" alt="TypixDeck">
+    <span class="tag t1">AL 6061-T6 · anodized</span>
+    <span class="tag t2">0 dB · always</span>
+  </div>
+</div></section>
+
+<section class="numbers"><div class="wrap" style="padding:0"><div class="grid">
+  <div class="cell"><div class="n">0<small> dB</small></div><div class="dot l">acoustic output</div></div>
+  <div class="cell"><div class="n">280<small> g</small></div><div class="dot l">one-piece chassis</div></div>
+  <div class="cell"><div class="n">4<small> screws</small></div><div class="dot l">full teardown</div></div>
+  <div class="cell"><div class="n">100<small> %</small></div><div class="dot l">files on github</div></div>
+</div></div></section>
+
+<section class="feat" id="deck"><div class="wrap" style="padding:0"><div class="grid">
+  <div class="im"><img src="/assets/cyberdeck-open.png" alt="TypixDeck open" style="max-height:420px"></div>
+  <div class="tx">
+    <span class="dot acc">01 · Thermal design</span>
+    <h2>The case is the cooler.</h2>
+    <p>The compute module bonds thermally to the milled body, so <b>280 grams of aluminum</b>
+    do the work a fan would — silently, with no dust and nothing to wear out.</p>
+    <p>A CM4 holds sustained load at 0 dB. For CM5 heavy-lifting there's an optional
+    4-pin PWM header and a dedicated vented case, in development.</p>
+    <div class="mini">
+      <div>material<b>6061-T6</b></div>
+      <div>finish<b>bead-blast + anodize</b></div>
+      <div>noise<b>0 dB</b></div>
+    </div>
+  </div>
+</div></div></section>
+
+<section class="feat alt"><div class="wrap" style="padding:0"><div class="grid">
+  <div class="im"><img src="/assets/cyberdeck-internals.png" alt="TypixDeck internals" style="max-height:460px"></div>
+  <div class="tx">
+    <span class="dot acc">02 · Longevity</span>
+    <h2>Upgrade the module.<br>Keep the machine.</h2>
+    <p>The standard compute-module socket takes <b>CM4 and CM5</b> directly, and the tiny
+    <b>CM0</b> through our castellated 132-pin adapter. When a faster module ships,
+    your computer gets faster — the chassis stays.</p>
+    <p>Inside: M.2 NVMe, microSD, and a 40-pin GPIO header for hardware experiments.</p>
+    <div class="mini">
+      <div>socket<b>CM0/4/5</b></div>
+      <div>storage<b>M.2 + microSD</b></div>
+      <div>expansion<b>40-pin GPIO</b></div>
+    </div>
+  </div>
+</div></div></section>
+
+<section class="config" id="config"><div class="wrap">
+  <span class="dot acc">03 · Build yours</span>
+  <h2>Three choices. Nothing else.</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="h">Step 1 — Compute</div>
+      <ul>
+        <li class="on"><span>Body only (bring your CM)</span><span>$119</span></li>
+        <li><span>CM0 on adapter</span><span>+$40</span></li>
+        <li><span>CM4 · 4GB · Wi-Fi</span><span>+$95</span></li>
+        <li><span>CM5 · 4GB · Wi-Fi</span><span>+$105</span></li>
+        <li><span>CM5 · 16GB · Wi-Fi</span><span>+$165</span></li>
+      </ul>
+    </div>
+    <div class="step">
+      <div class="h">Step 2 — Storage</div>
+      <ul>
+        <li class="on"><span>None (bring your own)</span><span>$0</span></li>
+        <li><span>TF 64GB · OS preloaded</span><span>+$19</span></li>
+        <li><span>M.2 SSD 128GB · preloaded</span><span>+$25</span></li>
+        <li><span>M.2 SSD 256GB · preloaded</span><span>+$45</span></li>
+      </ul>
+    </div>
+    <div class="step">
+      <div class="h">Step 3 — Companions</div>
+      <ul>
+        <li><span>BLE Keyboard · ZMK · air-mouse</span><span>+$39</span></li>
+        <li><span>DIY snap-dome kit</span><span>+$9</span></li>
+        <li><span>Pico-Mac Nano</span><span>+$60</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="confoot">
+    <span class="total">$119<small>free worldwide shipping</small></span>
+    <a class="go" href="#">Add to cart</a>
+    <span class="note">Small batches. Est. dispatch end of Q3 2026 · full refund before shipping.</span>
+  </div>
+</div></section>
+
+<section class="lineup" id="lineup"><div class="wrap" style="padding:0"><div class="grid">
+  <div class="cell">
+    <img src="/assets/keyboard.jpg" alt="BLE keyboard">
+    <h3>BLE Keyboard <span>$39</span></h3>
+    <p>Card-sized · nRF52840 · ZMK · BLE + USB-C · 6-axis air-mouse.</p>
+    <a class="g" href="#">Add →</a>
+  </div>
+  <div class="cell">
+    <img src="/assets/picomac.jpg" alt="Pico-Mac Nano">
+    <h3>Pico-Mac Nano <span>$60</span></h3>
+    <p>A working 1984 Macintosh, sized for a shirt pocket.</p>
+    <a class="g" href="#">Add →</a>
+  </div>
+  <div class="cell">
+    <img src="/assets/cm0-adapter.png" alt="CM0 adapter">
+    <h3>CM0 Adapter <span>$40</span></h3>
+    <p>CM0 pre-soldered on a castellated 132-pin CM0→CM4 adapter.</p>
+    <a class="g" href="#">Add →</a>
+  </div>
+</div></div></section>
+
+<section class="specs" id="specs"><div class="wrap">
+  <span class="dot acc">04 · Data</span>
+  <div class="grid">
+    <h2>Specification</h2>
+    <div>
+      <div class="srow"><span class="k">Compute</span><span>Raspberry Pi CM4 / CM5 (socketed) — or CM0 via the castellated 132-pin CM0→CM4 adapter</span></div>
+      <div class="srow"><span class="k">Chassis</span><span>CNC-milled 6061-T6 aluminum, bead-blasted &amp; anodized</span></div>
+      <div class="srow"><span class="k">Cooling</span><span>Passive 0 dB on CM0/CM4; CM5 adds an optional 4-pin PWM fan header</span></div>
+      <div class="srow"><span class="k">Storage</span><span>microSD + internal M.2 NVMe slot</span></div>
+      <div class="srow"><span class="k">Ports</span><span>HDMI, USB-C (PD), 2× USB-A, Gigabit Ethernet, 40-pin GPIO</span></div>
+      <div class="srow"><span class="k">Wireless</span><span>Wi-Fi 5 / Bluetooth 5.0 (CM-dependent)</span></div>
+      <div class="srow"><span class="k">Dimensions</span><span>95 × 62 × 22 mm · 280 g</span></div>
+      <div class="srow"><span class="k">Open source</span><span>Full STEP files, schematics &amp; firmware on GitHub</span></div>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <span>© 2026 TypixNode — compact open hardware</span>
+  <span>github.com/TypixNode · typixnode.com</span>
+</div></footer>
+
+<script>
+document.querySelectorAll('.step ul').forEach(u=>{
+  u.addEventListener('click',e=>{
+    const li=e.target.closest('li');if(!li)return;
+    const isStep3=u.closest('.step').querySelector('.h').textContent.includes('3');
+    if(isStep3){li.classList.toggle('on')}
+    else{u.querySelectorAll('li').forEach(x=>x.classList.remove('on'));li.classList.add('on')}
+    let t=119;
+    document.querySelectorAll('.step li.on span:last-child').forEach(s=>{
+      const m=s.textContent.match(/\+\$(\d+)/);if(m)t+=+m[1];
+    });
+    document.querySelector('.confoot .total').firstChild.textContent='$'+t;
+  });
+});
+</script>
+
+</body>
+</html>
