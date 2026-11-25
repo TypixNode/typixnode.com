@@ -1,9 +1,9 @@
-name: Read-only subscriber statistics
+name: Read-only encrypted campaign recipient export
 on:
   workflow_dispatch:
     inputs:
       recipient_certificate:
-        description: 'Public PEM certificate used to encrypt the aggregate report (keep its private key locally)'
+        description: 'Public PEM certificate used to encrypt the private recipient manifest (keep its private key locally)'
         required: true
         type: string
 permissions:
