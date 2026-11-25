@@ -6,6 +6,7 @@ interface Props {
   links?: NavLink[];
   buyHref?: string;
   buyAdd?: string;
+  buyLabel?: string;
   showBuy?: boolean;
 }
 const homeLinks: NavLink[] = [
@@ -14,7 +15,7 @@ const homeLinks: NavLink[] = [
   { href: '/#why', key: 'nav.tech', label: 'Technology' },
   { href: 'https://github.com/TypixNode', key: 'nav.open', label: 'Open' },
 ];
-const { links = homeLinks, buyHref = '/typixdeck', buyAdd, showBuy = true } = Astro.props;
+const { links = homeLinks, buyHref = '/typixdeck', buyAdd, buyLabel = 'nav.buy', showBuy = true } = Astro.props;
 // Discord nav entry style — switchable for preview via ?dc=icon|ghost|soft|pill.
 // Default "icon": a subtle glass icon button that matches the other nav controls
 // (the loud solid-blurple pill felt out of place in the top bar).
@@ -47,7 +48,7 @@ const dIcon = `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentCo
     <button class="ctrl cartbtn" aria-label="Cart">🛍<span class="cc">0</span></button>
     {showBuy && (buyAdd
       ? <button class="btn btn--fill navbuy" data-add={buyAdd} data-i18n="nav.buy" set:html={L('nav.buy', lang)}></button>
-      : <a class="btn btn--fill navbuy" href={buyHref} data-i18n="nav.buy" set:html={L('nav.buy', lang)}></a>)}
+      : <a class="btn btn--fill navbuy" href={buyHref} data-i18n={buyLabel} set:html={L(buyLabel, lang)}></a>)}
     <button class="burger" id="burger" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
   </div>
 </div></nav>

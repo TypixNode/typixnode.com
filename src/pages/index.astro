@@ -1,5 +1,6 @@
 ---
 import { L } from "../lib/i18n";
+import { KICKSTARTER_URL } from "../lib/campaign";
 const lang = (Astro.locals as any).lang ?? "en";
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
@@ -24,7 +25,7 @@ import DiscordCTA from '../components/DiscordCTA.astro';
       <div class="cta rise d3"><a class="btn btn--fill" href="/typixdeck" data-i18n="home.cta1" set:html={L('home.cta1', lang)}></a><a class="btn btn--glass cta2" href="/products" data-i18n="home.cta2" set:html={L('home.cta2', lang)}></a></div>
     </div>
     <div class="stage home rise d4">
-      <span class="savebadge"><span data-i18n="save.title" set:html={L('save.title', lang)}></span><small data-i18n="save.sub" set:html={L('save.sub', lang)}></small></span>
+      <a class="savebadge" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer"><span data-i18n="save.title" set:html={L('save.title', lang)}></span><small data-i18n="save.sub" set:html={L('save.sub', lang)}></small></a>
       <span class="pin p1"><div class="k">TypixDeck</div><div class="v" data-i18n="pin.fanless" set:html={L('pin.fanless', lang)}></div></span>
       <a href="/typixdeck"><img src="/assets/cyberdeck.png" alt="TypixDeck — fanless Linux computer"></a>
       <span class="pin p2"><div class="k"><span class="pr pr--tba" data-sku="typixdeck" data-i18n="deck.price" set:html={L('deck.price', lang)}></span></div><div class="v" data-i18n="pin.stock" set:html={L('pin.stock', lang)}></div></span>

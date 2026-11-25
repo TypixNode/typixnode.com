@@ -450,7 +450,7 @@ footer{padding:24px 0 60px}
 .cart .cf .sub b{font-family:var(--d);font-weight:800;font-size:1.4rem}
 .cart .cf .note{color:var(--soft2);font-size:.78rem;text-align:center}
 .cart .cf .cart-cta{display:grid;gap:10px}
-.cart .cf .cart-ks{width:100%;padding:13px 16px;border:0;border-radius:14px;background:var(--ink);color:var(--bg);font-weight:700;font-size:.92rem;display:flex;align-items:center;justify-content:center;gap:10px;cursor:default;opacity:.88;line-height:1.25;text-align:center}
+.cart .cf .cart-ks{width:100%;padding:13px 16px;border:0;border-radius:14px;background:var(--ink);color:var(--bg);font-weight:700;font-size:.92rem;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;line-height:1.25;text-align:center;text-decoration:none}
 .cart .cf .cart-ks__soon{flex:none;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#05ce78;color:#04140f;padding:4px 8px;border-radius:999px}
 .cart .cf .cart-or{text-align:center;color:var(--soft2);font-size:.78rem}
 .cart .cf .cart-dc{width:100%;padding:13px 16px;border-radius:14px;background:#5865F2;color:#fff;font-weight:700;font-size:.92rem;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;line-height:1.25;text-align:center;transition:filter .2s,transform .18s}
@@ -658,3 +658,7 @@ footer{padding:24px 0 60px}
 /* mobile-menu Discord button spans the row */
 .mobnav .dc-nav{justify-content:center;margin-top:10px}
 @media(max-width:560px){.dc-cta{padding:24px}.dc-cta .txt h3{font-size:1.28rem}}
+
+.savebadge{text-decoration:none}
+.savebadge:focus-visible,.cart-ks:focus-visible{outline:3px solid var(--teal);outline-offset:4px}
+.cart .cf .cart-ks:hover{filter:brightness(1.15)}

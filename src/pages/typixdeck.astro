@@ -1,5 +1,6 @@
 ---
 import { L } from "../lib/i18n";
+import { KICKSTARTER_URL } from "../lib/campaign";
 const lang = (Astro.locals as any).lang ?? "en";
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
@@ -39,7 +40,7 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
   ogTitle="TypixDeck — A fanless Linux computer"
   ogDescription="A thin, palm-sized fanless Linux computer in a CNC-machined aluminum body, built around a Raspberry Pi Compute Module."
 >
-  <Nav links={links} buyAdd="typixdeck" />
+  <Nav links={links} buyHref={KICKSTARTER_URL} buyLabel="cart.ks" />
 
   <header class="prod" id="buy"><div class="wrap">
     <div class="hero" data-fix={heroFix}>
@@ -50,7 +51,7 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
       </div>
 
       <div class="stage rise d4">
-        <span class="savebadge r"><span data-i18n="save.title" set:html={L('save.title', lang)}></span><small data-i18n="save.sub" set:html={L('save.sub', lang)}></small></span>
+        <a class="savebadge r" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer"><span data-i18n="save.title" set:html={L('save.title', lang)}></span><small data-i18n="save.sub" set:html={L('save.sub', lang)}></small></a>
         <span class="pin p1"><div class="k">TypixDeck</div><div class="v" data-i18n="pin.fanless" set:html={L('pin.fanless', lang)}></div></span>
         <img src="/assets/cyberdeck.png" alt="TypixDeck — fanless Linux computer">
         <span class="pin p2"><div class="k">0 dB</div><div class="v" data-i18n="pin.silent" set:html={L('pin.silent', lang)}></div></span>
@@ -140,7 +141,7 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
         </div>
         <div class="cfg__bar">
           <div class="cfg__price"><b id="cfgPrice" class="pr--tba" data-i18n="deck.price" set:html={L('deck.price', lang)}></b><span class="cfg__ship" data-i18n="deck.ship" set:html={L('deck.ship', lang)}></span></div>
-          <div class="cta"><button class="btn btn--fill" data-add="typixdeck" data-i18n="deck.add" set:html={L('deck.add', lang)}></button><a class="btn btn--glass" href="#inside" data-i18n="deck.look" set:html={L('deck.look', lang)}></a></div>
+          <div class="cta"><a class="btn btn--fill" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer" data-i18n="cart.ks" set:html={L('cart.ks', lang)}></a><a class="btn btn--glass" href="#inside" data-i18n="deck.look" set:html={L('deck.look', lang)}></a></div>
         </div>
         <form class="cfg__custom" id="cfgCustom" style="display:none">
           <div class="cfg__custom-h" data-i18n="cfg.custom.title" set:html={L('cfg.custom.title', lang)}></div>
@@ -269,7 +270,7 @@ const heroFix = (fixRaw === 'fill' || fixRaw === 'narrow') ? fixRaw : 'baseline'
     <div class="ctab">
       <h2 data-i18n="cta.deck.t" set:html={L('cta.deck.t', lang)}></h2>
       <p data-i18n="cta.deck.p" set:html={L('cta.deck.p', lang)}></p>
-      <div class="cta"><button class="btn btn--fill" data-add="typixdeck" data-i18n="cart.add" set:html={L('cart.add', lang)}></button><a class="btn btn--glass" href="/products" data-i18n="cta.deck.b2" set:html={L('cta.deck.b2', lang)}></a></div>
+      <div class="cta"><a class="btn btn--fill" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer" data-i18n="cart.ks" set:html={L('cart.ks', lang)}></a><a class="btn btn--glass" href="/products" data-i18n="cta.deck.b2" set:html={L('cta.deck.b2', lang)}></a></div>
     </div>
   </div></section>
 

@@ -1,0 +1,37 @@
+name: Read-only subscriber statistics
+on:
+  workflow_dispatch:
+    inputs:
+      recipient_certificate:
+        description: 'Public PEM certificate used to encrypt the aggregate report (keep its private key locally)'
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  statistics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Read counts and encrypt report
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          RECIPIENT_CERTIFICATE: ${{ inputs.recipient_certificate }}
+        run: |
+          set -euo pipefail
+          umask 077
+          printf '%s\n' "$RECIPIENT_CERTIFICATE" > "$RUNNER_TEMP/recipient.pem"
+          openssl x509 -in "$RUNNER_TEMP/recipient.pem" -noout
+          export STATS_OUTPUT="$RUNNER_TEMP/subscriber-stats.json"
+          node scripts/subscriber-stats.mjs
+          openssl cms -encrypt -binary -aes-256-cbc -in "$STATS_OUTPUT" -outform DER -out "$RUNNER_TEMP/subscriber-stats.cms" "$RUNNER_TEMP/recipient.pem"
+          rm "$STATS_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: encrypted-subscriber-statistics
+          path: ${{ runner.temp }}/subscriber-stats.cms
+          retention-days: 1

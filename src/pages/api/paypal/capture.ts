@@ -12,7 +12,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const json = (d: unknown, s = 200) =>
     new Response(JSON.stringify(d), { status: s, headers: { 'Content-Type': 'application/json' } });
 
-  return json({ error: 'Online checkout is paused. Pre-order on Kickstarter soon, or message via Discord.' }, 503);
+  return json({ error: 'Online checkout is paused. Visit the TypixDeck Kickstarter page, or message via Discord.' }, 503);
 
   if (!paypalConfigured(env)) return json({ error: 'PayPal not configured.' }, 500);
 
